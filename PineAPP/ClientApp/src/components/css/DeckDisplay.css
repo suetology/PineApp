@@ -1,0 +1,17 @@
+﻿.image-container {
+    position: relative;
+}
+
+.text-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 12pt;
+    font-weight: bold;
+    color: #333;
+}

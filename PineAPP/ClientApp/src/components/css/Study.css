@@ -1,0 +1,19 @@
+﻿
+
+main {
+    height: 90vh;
+}
+
+#card {
+    cursor: pointer;
+}
+
+.btn-success {
+    background: #FFFCF5;
+    color: black;
+}
+
+.btn-danger {
+    background: #FFFCF5;
+    color: black;
+}
