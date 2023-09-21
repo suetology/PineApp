@@ -1,7 +1,7 @@
 ﻿import React, {useState} from 'react';
 import {Accordion, AccordionBody, AccordionHeader, AccordionItem, Col, Input} from "reactstrap";
 
-function CardsDisplay () {
+const CardsDisplay = () => {
     
     //temp list
     const cards = [

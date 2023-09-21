@@ -1,7 +1,7 @@
-import { Home } from "./components/Home";
-import { Browse } from "./components/Browse";
-import { Create } from "./components/Create";
-import {Study} from "./components/Study";
+import Home from "./components/Home";
+import Browse from "./components/Browse";
+import Create from "./components/Create";
+import Study from "./components/Study";
 
 const AppRoutes = [
   {

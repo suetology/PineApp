@@ -1,10 +1,7 @@
-import React, { Component } from 'react';
+import React from 'react';
 import {Col, Container, Row} from "reactstrap";
 
-export class Home extends Component {
-  static displayName = Home.name;
-
-  render() {
+const Home = () => {
     return (
         <Container fluid>
             <Row>
@@ -22,5 +19,6 @@ export class Home extends Component {
             </Row>
         </Container>
     );
-  }
 }
+
+export default Home;

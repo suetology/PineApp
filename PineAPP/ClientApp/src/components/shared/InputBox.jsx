@@ -1,7 +1,7 @@
 ﻿import React, {useState} from "react";
 import {Button, Input} from "reactstrap";
 
-function InputBox({initialValue, type, className}) {
+const InputBox = ({initialValue, type, className}) => {
     
     const [isEditing, setEditing] = useState(false);
     const [value, setValue] = useState(initialValue);

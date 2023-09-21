@@ -3,7 +3,7 @@ import {Button, Modal, ModalHeader, ModalBody, ModalFooter, NavLink, Input, Labe
 import {Link} from "react-router-dom";
 import Config from "bootstrap/js/src/util/config";
 
-function Login(args) {
+const Login = (args) => {
     const [modal, setModal] = useState(false);
 
     const toggle = () => setModal(!modal);
