@@ -2,7 +2,6 @@
 import {Accordion, AccordionBody, AccordionHeader, AccordionItem, Col, Input} from "reactstrap";
 
 const CardsDisplay = () => {
-    
     //temp list
     const cards = [
         'card1',

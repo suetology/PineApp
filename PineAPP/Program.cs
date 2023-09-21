@@ -1,8 +1,25 @@
+using Microsoft.EntityFrameworkCore;
+using PineAPP.Data;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+const string allowSpecificOrigin = "AllowSpecificOrigin";
+const string origin = "https://localhost:44496";
 
+// Add services to the container.
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: allowSpecificOrigin,
+        policy  =>
+        {
+            policy.WithOrigins(origin).AllowAnyHeader().AllowAnyMethod();
+        });
+});
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDbConnection"));
+});
 
 var app = builder.Build();
 
@@ -16,7 +33,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
+app.UseCors(allowSpecificOrigin);
 
 app.MapControllerRoute(
     name: "default",

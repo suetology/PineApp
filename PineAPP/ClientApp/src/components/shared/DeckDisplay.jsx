@@ -2,30 +2,17 @@
 import { Container, Row, Col } from 'reactstrap';
 import '../css/DeckDisplay.css'
 
-//temp list
-var decks = [
-    'deck1',
-    'deck2',
-    'deck3',
-    'deck4',
-    'deck5',
-    'deck6',
-    'deck7',
-    'deck8',
-    'deck9'
-];
-
-const DeckDisplay = () => {
+const DeckDisplay = (props) => {
     const itemsPerRow = 6;
     const rows = [];
     
-    for (let i = 0; i < decks.length; i += itemsPerRow) {
-        const row = decks.slice(i, i + itemsPerRow);
+    for (let i = 0; i < props.decks.length; i += itemsPerRow) {
+        const row = props.decks.slice(i, i + itemsPerRow);
 
         const rowElements = row.map((deck, index) => (
             <Col key={index} md={12/itemsPerRow} xs={6}>
-                <div className="image-container">
-                    <a href="/create"><div className="text-overlay">{deck}</div></a>
+                <div className="image-container pl-2">
+                    <a href="/create"><div className="text-overlay">{deck.name}</div></a>
                     <img src="/deck.svg" className="img-fluid"  alt="deck:"/>
                 </div>
             </Col>
