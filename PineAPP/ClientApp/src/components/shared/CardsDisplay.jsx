@@ -1,22 +1,11 @@
 ﻿import React, {useState} from 'react';
 import {Accordion, AccordionBody, AccordionHeader, AccordionItem, Col, Input} from "reactstrap";
 
-const CardsDisplay = () => {
-    //temp list
-    const cards = [
-        'card1',
-        'card2',
-        'card3',
-        'card4',
-        'card5',
-        'card6',
-        'card7',
-        'card8',
-        'card9'
-    ]
+const CardsDisplay = (props) => {
+    //TODO accordion title disappears while editing
 
     const [open, setOpen] = useState('');
-    const [values, setValue] = useState(cards);
+    const [values, setValue] = useState(props.cards);
     const toggle = (id) => {
         if (open === id) {
             setOpen();
@@ -25,34 +14,33 @@ const CardsDisplay = () => {
         }
     };
     
-    let rows = [];
+    const handleInputChange = (e, i) => {
+        const updatedValues = [...values];
+        updatedValues[i] = e.target.value;
+        setValue(updatedValues);
+    }
 
-    for (let i = 0; i < cards.length; i++) {
-        rows.push(
-            
+    const renderAccordionItems = () => {
+        return values.map((card, i) => (
                 <AccordionItem>
-                    <AccordionHeader targetId={i}>{values[i]} Front side</AccordionHeader>
+                    <AccordionHeader targetId={i}>{values[i].front}</AccordionHeader>
                     <AccordionBody accordionId={i}>
                         <Col>
                             <Input
-                                value={values[i]}
-                                onChange={(e) => {
-                                    const updatedValues = [...values];
-                                    updatedValues[i] = e.target.value;
-                                    setValue(updatedValues);
-                                }}
+                                value={values[i].front}
+                                onChange={(e) => handleInputChange(e, i)}
                             />
-                            <Input value="Back side"/>
+                            <Input value={values[i].back}/>
                         </Col>
                         <img src="/trash.svg" className="btn" alt="delete"/>
                     </AccordionBody>
                 </AccordionItem>
-        );
-    }
+        ));
+    };
     
     return (
         <Accordion open={open} toggle={toggle}>
-            {rows}
+            {renderAccordionItems()}
         </Accordion>
     );
 }

@@ -13,7 +13,7 @@ const AppRoutes = [
     element: <Browse />
   },
   {
-    path: '/create',
+    path: '/create/:id',
     element: <Create />
   },
   {
