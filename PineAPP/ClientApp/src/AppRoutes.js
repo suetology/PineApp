@@ -17,7 +17,7 @@ const AppRoutes = [
     element: <Create />
   },
   {
-    path: '/study',
+    path: '/study/:id',
     element: <Study />
   }
 ];

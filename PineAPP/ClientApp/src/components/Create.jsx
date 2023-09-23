@@ -15,8 +15,6 @@ const Create = () => {
     
     const deckResult = deckData.data.result[0];
     
-    console.log(deckResult);
-    
     return(
         <div>
         <Row className="m-5">
@@ -42,7 +40,7 @@ const Create = () => {
                         </Col>
                     </Row>
                 </Container>
-                <a href="/study" className="btn text-white w-100 " style={{backgroundColor:'#aed683', borderWidth: '0'}}>Study</a>
+                <a href={`/study/${id}`} className="btn text-white w-100 " style={{backgroundColor:'#aed683', borderWidth: '0'}}>Study</a>
             </Col>
         </Row>
         

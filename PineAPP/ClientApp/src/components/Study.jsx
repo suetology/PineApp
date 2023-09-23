@@ -1,15 +1,29 @@
-﻿import React, {Component, useState} from 'react';
+﻿import React, {Component, useEffect, useState} from 'react';
 import {Button, Col, Container, Input, Row} from "reactstrap";
+import {useParams} from 'react-router-dom';
+import {useGetDeckByIdQuery} from '../api/decksApi'
 import './css/Study.css';
 
 const Study = () => {
+    const { id } = useParams();
+    
     const [isFlipped, setFlipped] = useState(false);
     const [isEditing, setEditing] = useState(false);
-    const [card, setCard] = useState({
-        front: 'Front side',
-        back: 'Back side',
-        examples: 'Example'
-    });
+    const [isLoading, setLoading] = useState(true);
+    const [index, setIndex] = useState(0);
+    const [cards, setCards] = useState({});
+    
+    const deckData = useGetDeckByIdQuery(id);
+
+    useEffect(() => {
+        if (!deckData.isLoading && deckData.isSuccess) {
+            setCards(deckData.data.result[0].cards);
+            setLoading(false);
+        }
+    }, [deckData]);
+    
+    if (isLoading)
+        return (<div>Loading...</div>)
 
     const handleCardClick = () => {
         setFlipped(true);
@@ -19,42 +33,68 @@ const Study = () => {
         setEditing(true);
     };
 
+    const handleBackClick = () => {
+        if (index !== 0)
+            setIndex(index-1);
+    }
+
     const handleFrontChange = (newValue) => {
-        const newCard = {...this.state.card, front: newValue};
-        setCard(newCard);
+        const newCard = [...cards];
+        newCard[index] = {...newCard[index], front: newValue}
+        setCards(newCard);
     }
 
     const handleBackChange = (newValue) => {
-        const newCard = {...this.state.card, back: newValue};
-        setCard(newCard);
+        const newCard = [...cards];
+        newCard[index] = {...newCard[index], back: newValue}
+        setCards(newCard);
     }
 
     const handleExamplesChange = (newValue) => {
-        const newCard = {...this.state.card, examples: newValue};
-        setCard(newCard);
+        const newCard = [...cards];
+        newCard[index] = {...newCard[index], examples: newValue}
+        setCards(newCard);
     }
 
     const handleSave = () => {
         setEditing(false);
     }
 
+    const handleCorrectClick = () => {
+        //TODO kazkokio velnio neapsivercia atgal AAAAAAAAA
+        //TODO completion message
+        setFlipped(false);
+        if (index < cards.length - 1)
+            setIndex(index + 1);
+        else
+            return(<div>congrats</div>);
+    };
+
+    const handleWrongClick = () => {
+        setFlipped(false);
+        if (index < cards.length - 1)
+            setIndex(index + 1);
+        else
+            return(<div>congrats</div>);
+    }
+
     let editableContent = isEditing
         ? <div>
-            <Input className="fw-bold mb-2" value={card.front} onChange={
+            <Input className="fw-bold mb-2" value={cards[index].front} onChange={
                 (e) => handleFrontChange(e.target.value)
             }/>
-            <Input value={card.back} type="textarea" onChange={
+            <Input value={cards[index].back} type="textarea" onChange={
                 (e) => handleBackChange(e.target.value)
             }/>
-            <Input value={card.examples} type="textarea" onChange={
+            <Input value={cards[index].examples} type="textarea" onChange={
                 (e) => handleExamplesChange(e.target.value)
             }/>
             <Button onClick={handleSave}>Save</Button>
         </div>
         : <div>
-            <h2 className="fw-bold mb-2">{card.front}</h2>
-            <p>{card.back}</p>
-            <p>{card.examples}</p>
+            <h2 className="fw-bold mb-2">{cards[index].front}</h2>
+            <p>{cards[index].back}</p>
+            <p>{cards[index].examples}</p>
         </div>;
 
     let content = isFlipped
@@ -62,14 +102,14 @@ const Study = () => {
             {editableContent}
         </div>
         : <div>
-            <h2 className="fw-bold mb-2">{card.front}</h2>
-            <p>{card.back}</p>
+            <h2 className="fw-bold mb-2">{cards[index].front}</h2>
+            <p style={{fontSize: '10pt'}}>click to flip card</p>
         </div>;
 
     let buttons = isFlipped
         ? <div className="mt-5">
-            <Button className="m-1 btn-success shadow">Correct</Button>
-            <Button className="btn-danger shadow">Wrong</Button>
+            <Button className="m-1 btn-success shadow" onClick={handleCorrectClick}>Correct</Button>
+            <Button className="btn-danger shadow" onClick={handleWrongClick}>Wrong</Button>
         </div>
         : null;
     
@@ -84,7 +124,7 @@ const Study = () => {
             >
                 <Row className="h-100">
                     <Col xs={1}>
-                        <img className="btn" src="/arrow-90deg-left.svg" alt="back" />
+                        <img className="btn" src="/arrow-90deg-left.svg" alt="back" onClick={handleBackClick}/>
                     </Col>
                     <Col xs={10} className="d-flex align-items-center justify-content-center">
                         <div>
@@ -102,114 +142,3 @@ const Study = () => {
 }
 
 export default Study;
-/*export class Study extends Component {
-    static displayName = Study.name;
-    
-    constructor(props) {
-        super(props);
-        this.state = {
-            isFlipped: false,
-            isEditing: false,
-
-            //temp values
-            card: {
-                front: 'Front side',
-                back: 'Back side',
-                examples: 'Example'
-            }
-        };
-    }
-
-    handleCardClick = () => {
-        this.setState({ isFlipped: true });
-    };
-    
-    handleEditClick = () => {
-      this.setState({isEditing: true})  
-    };
-    
-    handleFrontChange = (e) => {
-        const newCard = {...this.state.card, front: e}
-        this.setState({card: newCard})
-    }
-
-    handleBackChange = (e) => {
-        const newCard = {...this.state.card, back: e}
-        this.setState({card: newCard})
-    }
-
-    handleExamplesChange = (e) => {
-        const newCard = {...this.state.card, examples: e}
-        this.setState({card: newCard})
-    }
-    
-    handleSave = () => {
-        this.setState({isEditing: false})
-    }
-
-    render() {
-
-        let editableContent = this.state.isEditing
-            ? <div>
-                <Input className="fw-bold mb-2" value={this.state.card.front} onChange={
-                    (e) => this.handleFrontChange(e.target.value)
-                }/>
-                <Input value={this.state.card.back} type="textarea" onChange={
-                    (e) => this.handleBackChange(e.target.value)
-                }/>
-                <Input value={this.state.card.examples} type="textarea" onChange={
-                    (e) => this.handleExamplesChange(e.target.value)
-                }/>
-                <Button onClick={this.handleSave}>Save</Button>
-            </div>
-            : <div>
-                <h2 className="fw-bold mb-2">{this.state.card.front}</h2>
-                <p>{this.state.card.back}</p>
-                <p>{this.state.card.examples}</p>
-            </div>
-        
-        let content = this.state.isFlipped
-            ? <div>
-                {editableContent}
-              </div>
-            : <div>
-                <h2 className="fw-bold mb-2">{this.state.card.front}</h2>
-                <p>{this.state.card.back}</p>
-              </div>
-        
-        let buttons = this.state.isFlipped
-            ? <div className="mt-5">
-                <Button className="m-1 btn-success shadow">Correct</Button>
-                <Button className="btn-danger shadow">Wrong</Button>
-              </div>
-            : null
-
-        return (
-            <Row className="h-75 justify-content-center align-items-center pt-2">
-                <Col
-                    id="card"
-                    className={"h-100 bg-white border rounded shadow p-4 text-center"}
-                    md={8}
-                    sm={10}
-                    onClick={this.handleCardClick}
-                >
-                    <Row className="h-100">
-                        <Col xs={1}>
-                            <img className="btn" src="/arrow-90deg-left.svg" alt="back" />
-                        </Col>
-                        <Col xs={10} className="d-flex align-items-center justify-content-center">
-                            <div>
-                                {content}
-                            </div>
-                        </Col>
-                        <Col xs={1}>
-                            <img className="bg-white btn" src="/pencil.svg" alt="edit" onClick={this.handleEditClick}/>
-                        </Col>
-                    </Row>
-                    {buttons}
-                </Col>
-            </Row>
-        );
-    }
-}
-*/

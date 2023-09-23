@@ -7,8 +7,6 @@ const DeckDisplay = (props) => {
     const itemsPerRow = 6;
     const rows = [];
     
-    console.log(props.decks);
-    
     for (let i = 0; i < props.decks.length; i += itemsPerRow) {
         const row = props.decks.slice(i, i + itemsPerRow);
 
