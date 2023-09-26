@@ -7,7 +7,7 @@
 namespace PineAPP.Migrations
 {
     /// <inheritdoc />
-    public partial class some : Migration
+    public partial class initialMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,7 +21,8 @@ namespace PineAPP.Migrations
                     Name = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: true),
                     IsPersonal = table.Column<bool>(type: "bit", nullable: false),
-                    CreatorId = table.Column<int>(type: "int", nullable: false)
+                    CreatorId = table.Column<int>(type: "int", nullable: false),
+                    Test = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,11 +53,11 @@ namespace PineAPP.Migrations
 
             migrationBuilder.InsertData(
                 table: "Decks",
-                columns: new[] { "Id", "CreatorId", "Description", "IsPersonal", "Name" },
+                columns: new[] { "Id", "CreatorId", "Description", "IsPersonal", "Name", "Test" },
                 values: new object[,]
                 {
-                    { 1, 1, "A few cards to test your basic math skills", false, "Simple Math (Community)" },
-                    { 2, 1, "A few cards to test your basic math skills", true, "Simple Math (Personal)" }
+                    { 1, 1, "A few cards to test your basic math skills", false, "Simple Math (Community)", 0 },
+                    { 2, 1, "A few cards to test your basic math skills", true, "Simple Math (Personal)", 0 }
                 });
 
             migrationBuilder.InsertData(

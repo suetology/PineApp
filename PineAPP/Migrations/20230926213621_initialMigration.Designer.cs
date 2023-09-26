@@ -11,8 +11,8 @@ using PineAPP.Data;
 namespace PineAPP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230926173009_some")]
-    partial class some
+    [Migration("20230926213621_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -129,6 +129,9 @@ namespace PineAPP.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("Test")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Decks");
@@ -140,7 +143,8 @@ namespace PineAPP.Migrations
                             CreatorId = 1,
                             Description = "A few cards to test your basic math skills",
                             IsPersonal = false,
-                            Name = "Simple Math (Community)"
+                            Name = "Simple Math (Community)",
+                            Test = 0
                         },
                         new
                         {
@@ -148,7 +152,8 @@ namespace PineAPP.Migrations
                             CreatorId = 1,
                             Description = "A few cards to test your basic math skills",
                             IsPersonal = true,
-                            Name = "Simple Math (Personal)"
+                            Name = "Simple Math (Personal)",
+                            Test = 0
                         });
                 });
 

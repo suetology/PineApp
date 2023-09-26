@@ -18,7 +18,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDbConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"));
 });
 
 var app = builder.Build();

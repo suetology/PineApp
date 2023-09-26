@@ -9,5 +9,13 @@
       <jdbc-url>Server=(localdb)\MSSQLLocalDB;</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="PineAppDb@pineapp.database.windows.net" uuid="c278645c-64b2-4088-85b6-ee13e1dde52e">
+      <driver-ref>azure.ms</driver-ref>
+      <synchronize>true</synchronize>
+      <configured-by-url>true</configured-by-url>
+      <jdbc-driver>com.microsoft.sqlserver.jdbc.SQLServerDriver</jdbc-driver>
+      <jdbc-url>jdbc:sqlserver://pineapp.database.windows.net:1433;database=PineAppDb;encrypt=true;trustServerCertificate=false;hostNameInCertificate=*.database.windows.net;loginTimeout=30;Authentication=ActiveDirectoryIntegrated</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

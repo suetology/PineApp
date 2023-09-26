@@ -21,4 +21,6 @@ public class Deck
     public int CreatorId { get; set; }
 
     public List<Card> Cards { get; set; }
+
+    public int Test { get; set; }
 }
