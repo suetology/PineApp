@@ -3,12 +3,14 @@ import {Button, Col, Container, Input, Row} from "reactstrap";
 import {useParams} from 'react-router-dom';
 import {useGetDeckByIdQuery} from '../api/decksApi'
 import './css/Study.css';
+import Completion from "./shared/Completion";
 
 const Study = () => {
     const { id } = useParams();
     
     const [isFlipped, setFlipped] = useState(false);
     const [isEditing, setEditing] = useState(false);
+    const [isCompleted, setCompleted] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [index, setIndex] = useState(0);
     const [cards, setCards] = useState({});
@@ -24,6 +26,9 @@ const Study = () => {
     
     if (isLoading)
         return (<div>Loading...</div>)
+    
+    if (isCompleted)
+        return (<Completion/>)
 
     const handleCardClick = () => {
         setFlipped(true);
@@ -65,12 +70,16 @@ const Study = () => {
         setFlipped(false);
         if (index < cards.length - 1)
             setIndex(index + 1);
+        else 
+            setCompleted(true);
     };
 
     const handleWrongClick = () => {
         setFlipped(false);
         if (index < cards.length - 1)
             setIndex(index + 1);
+        else
+            setCompleted(true);
     }
 
     let editableContent = isEditing
