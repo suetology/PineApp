@@ -2,7 +2,6 @@
 import {Accordion, AccordionBody, AccordionHeader, AccordionItem, Col, Input} from "reactstrap";
 
 const CardsDisplay = (props) => {
-    //TODO accordion title disappears while editing
 
     const [open, setOpen] = useState('');
     const [values, setValue] = useState(props.cards);
@@ -20,8 +19,13 @@ const CardsDisplay = (props) => {
         setValue(updatedValues);
     }
 
+    const handleBackInputChange = (e, i) => {
+        const updatedValues = [...values];
+        updatedValues[i] = { ...updatedValues[i], back: e.target.value };
+        setValue(updatedValues);
+    }
+
     const renderAccordionItems = () => {
-        console.log(values);
         return values.map((card, i) => (
                 <AccordionItem key={i}>
                     <AccordionHeader targetId={i}>{values[i].front}</AccordionHeader>
@@ -31,7 +35,10 @@ const CardsDisplay = (props) => {
                                 value={values[i].front}
                                 onChange={(e) => handleFrontInputChange(e, i)}
                             />
-                            <Input value={values[i].back}/>
+                            <Input 
+                                value={values[i].back}
+                                onChange={(e) => handleBackInputChange(e, i)}
+                            />
                         </Col>
                         <img src="/trash.svg" className="btn" alt="delete"/>
                     </AccordionBody>

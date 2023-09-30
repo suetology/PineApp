@@ -15,8 +15,6 @@ const Create = () => {
     
     const deckResult = deckData.data.result;
     
-    console.log(deckResult);
-    
     return(
         <div>
         <Row className="m-5">
