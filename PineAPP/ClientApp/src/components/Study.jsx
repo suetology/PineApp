@@ -66,7 +66,6 @@ const Study = () => {
     }
 
     const handleCorrectClick = () => {
-        //TODO completion message
         setFlipped(false);
         if (index < cards.length - 1)
             setIndex(index + 1);

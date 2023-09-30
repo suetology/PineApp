@@ -24,6 +24,12 @@ const CardsDisplay = (props) => {
         updatedValues[i] = { ...updatedValues[i], back: e.target.value };
         setValue(updatedValues);
     }
+    
+    const handleNewCard = () => {
+        //TODO currently temp card
+        const updatedValues = [...values, {back: "aa", front: "aaa"}];
+        setValue(updatedValues);
+    }
 
     const renderAccordionItems = () => {
         return values.map((card, i) => (
@@ -47,9 +53,18 @@ const CardsDisplay = (props) => {
     };
     
     return (
-        <Accordion open={open} toggle={toggle}>
-            {renderAccordionItems()}
-        </Accordion>
+        <div>
+            <Accordion open={open} toggle={toggle}>
+                {renderAccordionItems()}
+            </Accordion>
+            
+            <div className="border border-dark border-opacity-10 border-1 rounded bg-white justify-content-center d-flex"
+                 style={{height: '50px', cursor: 'pointer'}}
+                 onClick={handleNewCard}>
+                <img src="/plus.svg" alt="add"/>
+            </div>
+        </div>
+        
     );
 }
 
