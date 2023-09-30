@@ -106,6 +106,7 @@ const Study = () => {
             <p style={{fontSize: '10pt'}}>click to flip card</p>
         </div>;
 
+    
     let buttons = isFlipped
         ? <div className="mt-5">
             <Button className="m-1 btn-success shadow" onClick={handleCorrectClick}>Correct</Button>

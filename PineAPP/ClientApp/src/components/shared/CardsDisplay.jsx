@@ -14,21 +14,22 @@ const CardsDisplay = (props) => {
         }
     };
     
-    const handleInputChange = (e, i) => {
+    const handleFrontInputChange = (e, i) => {
         const updatedValues = [...values];
-        updatedValues[i] = e.target.value;
+        updatedValues[i] = { ...updatedValues[i], front: e.target.value };
         setValue(updatedValues);
     }
 
     const renderAccordionItems = () => {
+        console.log(values);
         return values.map((card, i) => (
-                <AccordionItem>
+                <AccordionItem key={i}>
                     <AccordionHeader targetId={i}>{values[i].front}</AccordionHeader>
                     <AccordionBody accordionId={i}>
                         <Col>
                             <Input
                                 value={values[i].front}
-                                onChange={(e) => handleInputChange(e, i)}
+                                onChange={(e) => handleFrontInputChange(e, i)}
                             />
                             <Input value={values[i].back}/>
                         </Col>
