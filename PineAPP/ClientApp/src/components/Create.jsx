@@ -13,7 +13,7 @@ const Create = () => {
     if (deckData.isLoading)
         return(<div>Loading...</div>);
     
-    const deckResult = deckData.data.result[0];
+    const deckResult = deckData.data.result;
     
     return(
         <div>

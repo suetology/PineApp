@@ -3,12 +3,14 @@ import {Button, Col, Container, Input, Row} from "reactstrap";
 import {useParams} from 'react-router-dom';
 import {useGetDeckByIdQuery} from '../api/decksApi'
 import './css/Study.css';
+import Completion from "./shared/Completion";
 
 const Study = () => {
     const { id } = useParams();
     
     const [isFlipped, setFlipped] = useState(false);
     const [isEditing, setEditing] = useState(false);
+    const [isCompleted, setCompleted] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [index, setIndex] = useState(0);
     const [cards, setCards] = useState({});
@@ -17,13 +19,16 @@ const Study = () => {
 
     useEffect(() => {
         if (!deckData.isLoading && deckData.isSuccess) {
-            setCards(deckData.data.result[0].cards);
+            setCards(deckData.data.result.cards);
             setLoading(false);
         }
     }, [deckData]);
     
     if (isLoading)
         return (<div>Loading...</div>)
+    
+    if (isCompleted)
+        return (<Completion/>)
 
     const handleCardClick = () => {
         setFlipped(true);
@@ -61,13 +66,11 @@ const Study = () => {
     }
 
     const handleCorrectClick = () => {
-        //TODO kazkokio velnio neapsivercia atgal AAAAAAAAA
-        //TODO completion message
         setFlipped(false);
         if (index < cards.length - 1)
             setIndex(index + 1);
-        else
-            return(<div>congrats</div>);
+        else 
+            setCompleted(true);
     };
 
     const handleWrongClick = () => {
@@ -75,7 +78,7 @@ const Study = () => {
         if (index < cards.length - 1)
             setIndex(index + 1);
         else
-            return(<div>congrats</div>);
+            setCompleted(true);
     }
 
     let editableContent = isEditing
@@ -106,8 +109,9 @@ const Study = () => {
             <p style={{fontSize: '10pt'}}>click to flip card</p>
         </div>;
 
+
     let buttons = isFlipped
-        ? <div className="mt-5">
+        ? <div className="p-1">
             <Button className="m-1 btn-success shadow" onClick={handleCorrectClick}>Correct</Button>
             <Button className="btn-danger shadow" onClick={handleWrongClick}>Wrong</Button>
         </div>
@@ -135,8 +139,10 @@ const Study = () => {
                         <img className="bg-white btn" src="/pencil.svg" alt="edit" onClick={handleEditClick}/>
                     </Col>
                 </Row>
-                {buttons}
             </Col>
+            <div className="d-flex justify-content-center align-items-center">
+                {buttons}
+            </div>
         </Row>
     );
 }
