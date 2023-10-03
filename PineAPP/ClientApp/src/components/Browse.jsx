@@ -5,6 +5,8 @@ import {
     useGetCommunityDecksQuery,
     useGetPersonalDecksQuery
 } from "../api/decksApi";
+import { useEffect } from 'react';
+
 
 const Browse = () => {
     //temp
@@ -12,6 +14,13 @@ const Browse = () => {
     
     const personalData = useGetPersonalDecksQuery(userId);
     const communityData = useGetCommunityDecksQuery();
+
+    useEffect(() => {
+        // Trigger data fetching when the component mounts
+        // Component being when we navigate back to /browse
+        personalData.refetch();
+        communityData.refetch();
+    }, []);
     
     if (personalData.isLoading || communityData.isLoading) 
         return(<div>Loading...</div>);
