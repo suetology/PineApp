@@ -2,6 +2,7 @@ import Home from "./components/Home";
 import Browse from "./components/Browse";
 import Create from "./components/Create";
 import Study from "./components/Study";
+import CreateDeck from "./components/CreateDeck"
 
 const AppRoutes = [
   {
@@ -17,8 +18,12 @@ const AppRoutes = [
     element: <Create />
   },
   {
-    path: '/study/:id',
+    path: '/study',
     element: <Study />
+  },
+  {
+    path : '/create',
+    element : <CreateDeck/>
   }
 ];
 
