@@ -10,8 +10,9 @@ const decksApi = createApi({
             query: () => ({
                 url: "api/Decks",
                 method: "GET",
-                params: {}    
-            })
+                params: {}
+            }),
+            providesTags : ["Decks"],
         }),
         getCommunityDecks: builder.query({
             query: () => ({
@@ -34,11 +35,33 @@ const decksApi = createApi({
                 params: {}
             })
         }),
+        addDeck : builder.mutation({
+            query : ({Name, IsPersonal, CreatorId, Description}) => ({
+                url: "api/Decks/Add",
+                method : "POST",
+                body: {
+                    Name,
+                    IsPersonal,
+                    CreatorId,
+                    Description,
+                }
+            }),
+            invalidatesTags : ["Decks"],
+        }),
+        deleteDeckById : builder.mutation ({
+            query : (deckId) => ({
+                url : `api/Decks/Delete/${deckId}`,
+                method : "DELETE",
+                params : {}
+            })
+        })
     })
 });
 
 export { decksApi };
-export const { useGetAllDecksQuery, 
-               useGetCommunityDecksQuery,
-               useGetPersonalDecksQuery,
-               useGetDeckByIdQuery } = decksApi;
+export const { useGetAllDecksQuery,
+    useGetCommunityDecksQuery,
+    useGetPersonalDecksQuery,
+    useGetDeckByIdQuery,
+    useAddDeckMutation,
+    useDeleteDeckByIdMutation } = decksApi;
