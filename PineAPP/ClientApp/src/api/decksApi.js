@@ -54,6 +54,24 @@ const decksApi = createApi({
                 method : "DELETE",
                 params : {}
             })
+        }),
+        addCard : builder.mutation({
+            query : ({Front, Back, DeckId}) => ({
+                url: "api/Decks/Add/Card",
+                method : "POST",
+                body: {
+                    Front,
+                    Back,
+                    DeckId
+                }
+            }),
+        }),
+        deleteCardById : builder.mutation ({
+            query : (cardId) => ({
+                url : `api/Decks/Delete/Card/${cardId}`,
+                method : "DELETE",
+                params : {}
+            })
         })
     })
 });
@@ -64,4 +82,6 @@ export const { useGetAllDecksQuery,
     useGetPersonalDecksQuery,
     useGetDeckByIdQuery,
     useAddDeckMutation,
-    useDeleteDeckByIdMutation } = decksApi;
+    useDeleteDeckByIdMutation,
+    useAddCardMutation,
+    useDeleteCardByIdMutation} = decksApi;

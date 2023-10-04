@@ -159,16 +159,16 @@ public class DecksController : ControllerBase
     }
 
     [HttpPost("Add/Card")]
-    public async Task<ActionResult<ApiResponse<List<Deck>>>> addCard([FromBody] CreateCardDTO createCard)
+    public async Task<ActionResult<ApiResponse<Card>>> AddCard([FromBody] CreateCardDTO createCard)
     {
-
-        var response = new ApiResponse<List<Deck>>(
+        var response = new ApiResponse<Card>(
         isSuccess: false,
         statusCode: HttpStatusCode.BadRequest,
         result: null, // You can specify the result as needed
         errorMessage: "CreateDeckDTO is null.");
 
-        try{
+        try
+        {
 
             if(ModelState.IsValid)
             {
@@ -178,27 +178,27 @@ public class DecksController : ControllerBase
                 }    
             }
 
-        Card card = new()
-        {
-            Front = createCard.Front,
-            Back = createCard.Back,
-            DeckId = createCard.DeckId
-        };
+            Card card = new()
+            {
+                Front = createCard.Front,
+                Back = createCard.Back,
+                DeckId = createCard.DeckId
+            };
 
-        _db.Cards.Add(card);
-        _db.SaveChanges();
+            _db.Cards.Add(card);
+            _db.SaveChanges();
 
-        response = new ApiResponse<List<Deck>>(
-        isSuccess: true,
-        statusCode: HttpStatusCode.Created,
-        result: null,
-        errorMessage: null);
+            response = new ApiResponse<Card>(
+            isSuccess: true,
+            statusCode: HttpStatusCode.Created,
+            result: null,
+            errorMessage: null);
 
-        //return CreatedAtRoute("GetCard", new { deckId = card.DeckId }, response);       
-        return Ok(response);
+            //return CreatedAtRoute("GetCard", new { deckId = card.DeckId }, response);       
+            return Ok(response);
         } catch(Exception e)
         {
-            response = new ApiResponse<List<Deck>>(
+            response = new ApiResponse<Card>(
             isSuccess: false,
             statusCode: HttpStatusCode.InternalServerError,
             result: null,
@@ -207,6 +207,50 @@ public class DecksController : ControllerBase
 
             return BadRequest(response);
         }
+    }
+    
+    [HttpDelete("Delete/Card/{cardId:int}")]
+    public async Task<ActionResult<ApiResponse<Card>>> DeleteCardById(int cardId)
+    {
+        try
+        {
+            var response = new ApiResponse<Card>(
+                isSuccess : false,
+                statusCode : HttpStatusCode.InternalServerError,
+                result : null,
+                errorMessage: "Card id is 0, Deck does not exist/is invalid");
+
+            if (ModelState.IsValid)
+            {
+                Card card = await _db.Cards.FindAsync(cardId);
+                if (cardId == 0)
+                {
+                    return BadRequest(response);
+                }
+
+                response = new ApiResponse<Card>(
+                    isSuccess: true,
+                    statusCode: HttpStatusCode.NoContent,
+                    result: null,
+                    errorMessage: null);
+
+                _db.Cards.Remove(card);
+                _db.SaveChanges();
+                return Ok(response);
+            }
+        }
+        catch (Exception e)
+        {
+            var response = new ApiResponse<Card>(
+                isSuccess: false,
+                statusCode: HttpStatusCode.InternalServerError,
+                result: null,
+                errorMessage: e.ToString());
+        
+            return BadRequest(response);
+        }
+
+        return NotFound();
     }
 }
 

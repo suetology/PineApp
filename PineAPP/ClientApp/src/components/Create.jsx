@@ -22,6 +22,11 @@ const Create = () => {
             console.error('Error deleting deck:', error);
         }
     }
+    
+    const refetchData = async () => {
+        await deckData.refetch();
+        return deckData.data?.result;
+    }
 
     const { id } = useParams();
 
@@ -69,7 +74,7 @@ const Create = () => {
         
         <Col className="m-5">
             <p className="mb-2">Cards in deck:</p>
-            <CardsDisplay cards={deckResult.cards}/>
+            <CardsDisplay deck={deckResult} refetchData={refetchData}/>
         </Col>
         </div>
     );
