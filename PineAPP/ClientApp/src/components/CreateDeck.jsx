@@ -3,6 +3,7 @@ import {Button, Input, Label, Col, FormGroup, Form, Container, Row} from 'reacts
 import { useState } from 'react';
 import { useAddDeckMutation} from '../api/decksApi';
 import { useNavigate } from 'react-router-dom';
+import {FileUpload} from "./FileUpload";
 
 const CreateDeck = () => {
 
@@ -108,6 +109,7 @@ const CreateDeck = () => {
                     </div>
                     <div>
                         <Button className = "mt-3" type = "submit">Add Deck</Button>
+                        <FileUpload />
                     </div>
                 </Form>
             </Col>
