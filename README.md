@@ -1,11 +1,11 @@
 # PineApp - A Flashcard Web Application
 
 # Team members
-- Justas Balčiuūnas
-- Justas Buzys
-- Vitas Eliseenko
-- Patricija Katinaite
-- Matas Kvainauskas
+- [Justas Balčiuūnas](https://github.com/adaspera)
+- [Justas Buzys](https://github.com/Buztas)
+- [Vitas Eliseenko](https://github.com/suetology)
+- [Patricija Katinaite](https://github.com/Patriciakat)
+- [Matas Kvainauskas](https://github.com/MatasKvn)
 
 ## Description
 PineApp is a Single Page Application (SPA) designed to help users study effectively using flashcards. Flashcards have been proven to be an efficient method for memorization, leveraging active recall and spaced repetition. With PineApp, users can create decks of cards on various subjects digitally, ensuring a customizable and efficient study experience. 
