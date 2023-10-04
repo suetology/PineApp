@@ -1,6 +1,7 @@
 ﻿﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PineAPP.Data;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
@@ -155,6 +156,57 @@ public class DecksController : ControllerBase
         }
 
         return NotFound();
+    }
+
+    [HttpPost("Add/Card")]
+    public async Task<ActionResult<ApiResponse<List<Deck>>>> addCard([FromBody] CreateCardDTO createCard)
+    {
+
+        var response = new ApiResponse<List<Deck>>(
+        isSuccess: false,
+        statusCode: HttpStatusCode.BadRequest,
+        result: null, // You can specify the result as needed
+        errorMessage: "CreateDeckDTO is null.");
+
+        try{
+
+            if(ModelState.IsValid)
+            {
+                if(createCard == null)
+                {
+                    return BadRequest(response);
+                }    
+            }
+
+        Card card = new()
+        {
+            Front = createCard.Front,
+            Back = createCard.Back,
+            DeckId = createCard.DeckId
+        };
+
+        _db.Cards.Add(card);
+        _db.SaveChanges();
+
+        response = new ApiResponse<List<Deck>>(
+        isSuccess: true,
+        statusCode: HttpStatusCode.Created,
+        result: null,
+        errorMessage: null);
+
+        //return CreatedAtRoute("GetCard", new { deckId = card.DeckId }, response);       
+        return Ok(response);
+        } catch(Exception e)
+        {
+            response = new ApiResponse<List<Deck>>(
+            isSuccess: false,
+            statusCode: HttpStatusCode.InternalServerError,
+            result: null,
+            errorMessage: e.ToString()
+        );
+
+            return BadRequest(response);
+        }
     }
 }
 
