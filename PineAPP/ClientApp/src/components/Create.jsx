@@ -3,8 +3,7 @@ import {Button, Col, Container, Input, Row} from "reactstrap";
 import InputBox from "./shared/InputBox";
 import CardsDisplay from "./shared/CardsDisplay";
 import {useParams} from 'react-router-dom';
-import {useGetDeckByIdQuery, useGetAllDecksQuery, useDeleteDeckByIdMutation} from '../api/decksApi'
-import axios from 'axios';
+import {useGetDeckByIdQuery, useDeleteDeckByIdMutation} from '../api/decksApi'
 import { useNavigate } from 'react-router-dom';
 const Create = () => {
 
@@ -28,20 +27,16 @@ const Create = () => {
 
     const deckData = useGetDeckByIdQuery(id);
 
-    //console.log(deckData);
-
     if (deckData.isLoading)
         return(<div>Loading...</div>);
     
     console.log(deckData);
 
-    const deckResult = deckData.data?.result; // Use optional chaining
+    const deckResult = deckData.data?.result;
 
     if (!deckResult) {
         return <div>Deck not found</div>;
     }
-    
-    //console.log(deckResult);
     
     return(
         <div>
@@ -49,7 +44,7 @@ const Create = () => {
             <Col sm={4}>
                 <InputBox initialValue={deckResult.name} type="text" className="h3"/>
                 <InputBox initialValue={deckResult.description} type="textarea" className="border border-dark bg-light p-2 pr-5 pb-5"/>
-                <Button color="danger" onClick={() => {handleDelete(deckResult.id)}}><img src="/trash.svg" alt="delete"/> </Button>
+                <img onClick={() => {handleDelete(deckResult.id)}} style={{cursor: "pointer"}} src="/trash.svg" alt="delete"/>
             </Col>
             <Col sm={4}>
                 <Container className="border rounded border-dark bg-light p-2 mb-2">
@@ -81,33 +76,3 @@ const Create = () => {
 }
 
 export default Create;
-
-/*
-    const axiosInstance = axios.create({
-        baseURL: 'https://localhost:7074/',
-    });
-
-    async function deleteDeck(deckId)
-    {
-        try {
-            const response = await axiosInstance.delete(`api/Decks/Delete/${deckId}`);
-            return response.data;
-        } catch (error)
-        {
-            console.error('Error deleting deck with such id: ', error);
-            throw error;
-        }
-    }
-
-    const handleDelete = async(deckId) => {
-        try{
-            const response = await deleteDeck(deckId);
-            console.log("Successfully deleted deck: ", response);
-            
-            navigate("/browse");
-        } catch (error)
-        {
-            console.error('Error deleting deck:', error);
-        }
-    }
-*/

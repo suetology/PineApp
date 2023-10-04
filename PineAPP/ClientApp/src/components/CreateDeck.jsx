@@ -1,10 +1,8 @@
 import React from 'react';
-import {Button, Input, Label, Col, FormGroup, Form} from 'reactstrap';
+import {Button, Input, Label, Col, FormGroup, Form, Container, Row} from 'reactstrap';
 import { useState } from 'react';
-import {useGetDeckByIdQuery, useAddDeckMutation} from '../api/decksApi';
-import axios from 'axios';
+import { useAddDeckMutation} from '../api/decksApi';
 import { useNavigate } from 'react-router-dom';
-import {useGetAllDecksQuery} from '../api/decksApi';
 
 const CreateDeck = () => {
 
@@ -67,150 +65,54 @@ const CreateDeck = () => {
     }
 
     return(
-        <div>
-            <Form onSubmit={handleAddDeck}>
-            <div>
-                <label>Name</label>
-                <Input value = {name} onChange = {handleNameChange}></Input>
-                <label>Description</label>
-                <Input value = {description} onChange = {handleDescriptionChange}></Input>
-                <label>Enter your Creator Id</label>
-                <Input value = {creatorId} onChange = {handleCreatorIdChange}></Input>             
-            </div>
-            <div>
-                <label>What type of deck are you creating?</label>
-                <FormGroup check>
-                    <Input
-                        name="radio1"
-                        type="radio"
-                        value= "Personal"
-                        onChange={handleIsPersonalChange}
-                        checked={isPersonal}
-                    />
-                    {' '}
-                    <Label check>
-                        Personal Deck
-                    </Label>
-                    </FormGroup>
-                    <FormGroup check>
-                    <Input
-                        name="radio1"
-                        type="radio"
-                        value="Community"
-                        onChange = {handleIsPersonalChange}
-                        checked = {!isPersonal}
-                    />
-                    {' '}
-                    <Label check>
-                        Community Deck
-                    </Label>
-                    </FormGroup>
-            </div>
-            <div>
-                <Button className = "mt-3" type = "submit">Add Deck</Button>
-            </div>
-            </Form>
-        </div>
+        <Row className="justify-content-center mt-5">
+            <Col xs={10} xl={8} className="p-5 border border-light rounded shadow bg-white">
+                <Form onSubmit={handleAddDeck}>
+                    <div>
+                        <h1>Create new deck</h1>
+                        <label>Name</label>
+                        <Input value = {name} onChange = {handleNameChange}></Input>
+                        <label>Description</label>
+                        <Input value = {description} onChange = {handleDescriptionChange} type="textarea"></Input>
+                        <label>Enter your Creator Id</label>
+                        <Input value = {creatorId} onChange = {handleCreatorIdChange}></Input>
+                    </div>
+                    <div>
+                        <label>What type of deck are you creating?</label>
+                        <FormGroup check>
+                            <Input
+                                name="radio1"
+                                type="radio"
+                                value= "Personal"
+                                onChange={handleIsPersonalChange}
+                                checked={isPersonal}
+                            />
+                            {' '}
+                            <Label check>
+                                Personal Deck
+                            </Label>
+                        </FormGroup>
+                        <FormGroup check>
+                            <Input
+                                name="radio1"
+                                type="radio"
+                                value="Community"
+                                onChange = {handleIsPersonalChange}
+                                checked = {!isPersonal}
+                            />
+                            {' '}
+                            <Label check>
+                                Community Deck
+                            </Label>
+                        </FormGroup>
+                    </div>
+                    <div>
+                        <Button className = "mt-3" type = "submit">Add Deck</Button>
+                    </div>
+                </Form>
+            </Col>
+        </Row>
     );
 }
 
 export default CreateDeck
-
-/*
-    const [addDeck] = useAddDeckMutation();
-    
-    const handleAddDeck = async (e) => {
-        e.preventDefault();
-
-        const intCreatorId = +creatorId;
-
-        console.log(name, description, intCreatorId, isPersonal);
-    
-        const requestData =  {
-            Name : name,
-            IsPersonal : isPersonal,
-            CreatorId : intCreatorId,
-            Description : description,
-         };
-
-        try {
-            const response = await addDeck(JSON.stringify(requestData), {
-              headers: {
-                'Content-Type': 'application/json', // Set the content type to JSON
-              },
-            });
-            
-            console.log("No error: " , response);
-          } catch (error) {
-            console.error("Error adding deck:", error);
-            // Handle errors here
-          }
-    }
-*/
-
-
-    //   const [addDecker] = useAddDeckMutation();
-    
-    //   const handleAddDeck = async (e) => {
-    //       e.preventDefault();
-  
-    //       const intCreatorId = +creatorId;
-  
-    //       console.log(name, description, intCreatorId, isPersonal);
-      
-    //       const requestData =  {
-    //           Name : name,
-    //           IsPersonal : isPersonal,
-    //           CreatorId : intCreatorId,
-    //           Description : description,
-    //        };
-  
-    //        try {
-    //         const response = await addDecker(requestData, {
-    //           headers: {
-    //             'Content-Type': 'application/json', // Set the content type to JSON
-    //           },
-    //         });
-              
-    //           console.log("No error: " , response);
-    //         } catch (error) {
-    //           console.error("Error adding deck:", error);
-    //           // Handle errors here
-    //         }
-    //   }
-
-        /*
-      const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        const intCreatorId = +creatorId;
-
-        try {
-        const requestData =  {
-            Name : name,
-            IsPersonal : isPersonal,
-            CreatorId : intCreatorId,
-            Description : description,
-        };
-          console.log("It works")
-          const response = await addDeck(requestData);
-          console.log(response);
-          // Handle a successful response, e.g., show a success message
-            navigate('/browse');
-        } catch (error) {
-          //Handle any errors here
-          console.error('Error adding deck fart:', error);
-        }
-      };
-
-        async function addDeck(deckData) {
-        try {
-          const response = await axiosInstance.post('api/Decks/Add', deckData);
-          return response.data;
-        } catch (error) {
-          // Handle error here
-          console.error('Error adding deck:', error);
-          throw error;
-        }
-      }
-      */

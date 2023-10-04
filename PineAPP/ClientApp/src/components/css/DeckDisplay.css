@@ -9,6 +9,7 @@
     right: 0;
     bottom: 0;
     display: flex;
+    text-align: center;
     justify-content: center;
     align-items: center;
     font-size: 12pt;

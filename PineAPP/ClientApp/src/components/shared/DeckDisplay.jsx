@@ -13,7 +13,7 @@ const DeckDisplay = (props) => {
         const rowElements = row.map((deck, index) => (
             <Col key={index} md={12/itemsPerRow} xs={6}>
                 <div className="image-container pl-2">
-                    <Link to={`/create/${props.decks[i].id}`}><div className="text-overlay">{deck.name}</div></Link>
+                    <Link to={`/create/${props.decks[i].id}`}><div className="text-overlay me-4">{deck.name}</div></Link>
                     <img src="/deck.svg" className="img-fluid"  alt="deck:"/>
                 </div>
             </Col>
