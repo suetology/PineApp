@@ -1,4 +1,5 @@
 ﻿using PineAPP.Exceptions;
+using PineAPP.Extensions;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
 
@@ -6,6 +7,13 @@ namespace PineAPP.Controllers;
 
 public class DeckBuilder
 {
+    private int UserId { get; set; }
+
+    public DeckBuilder(int userId)
+    {
+        UserId = userId;
+    }
+    
     public Deck CreateDeckFromString(string data)
     {
         var lines = data.Split(Environment.NewLine);
@@ -14,6 +22,9 @@ public class DeckBuilder
             throw new InvalidFormatException("Data does not contain enough information about deck");
 
         var name = lines[0];
+        if (name.ContainsAnyOfChars(new List<char> { '_', '@', '&'}))
+            throw new InvalidFormatException("Deck name contains invalid symbols");
+        
         var description = lines[1];
         var isPersonalStr = lines[2];
 
@@ -36,7 +47,7 @@ public class DeckBuilder
             Name = name,
             Description = description,
             IsPersonal = isPersonal,
-            CreatorId = 1,      //temp
+            CreatorId = UserId,      //temp
             Cards = cards
         };
 

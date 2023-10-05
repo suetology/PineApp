@@ -89,6 +89,16 @@ public class DecksController : ControllerBase
             IsPersonal = createDeckDto.IsPersonal,
             CreatorId = createDeckDto.CreatorId,
         };
+        
+        if (Enumerable.Any(_db.Decks, d => d.Equals(createNewDeck)))
+        {
+            response = new ApiResponse<List<Deck>>(
+                statusCode: HttpStatusCode.Conflict,
+                isSuccess: false,
+                errorMessage: "Deck with such name already exists"
+            );
+            return Conflict(response);
+        }
  
         _db.Decks.Add(createNewDeck);
         _db.SaveChanges();

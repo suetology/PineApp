@@ -2,7 +2,7 @@
 
 namespace PineAPP.Models.Dto;
 
-public class CreateDeckDTO : IEquatable<Deck>
+public class CreateDeckDTO
 {
     [Required]
     [MaxLength(255)]
@@ -18,12 +18,4 @@ public class CreateDeckDTO : IEquatable<Deck>
     public int CreatorId { get; set; }
     
     //public List<Card> Cards { get; set; }
-
-    public bool Equals(Deck other)
-    {
-        if (other == null)
-            return false;
-        
-        return Name == other.Name;
-    }
 }

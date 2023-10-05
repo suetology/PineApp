@@ -21,9 +21,11 @@ public class UploadController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ApiResponse<Deck>>> UploadDeck(IFormFile file)
     {
+        ApiResponse<Deck> response;
+        
         if (file == null || file.Length == 0)
         {
-            var response = new ApiResponse<Deck>(
+            response = new ApiResponse<Deck>(
                 statusCode: HttpStatusCode.BadRequest,
                 isSuccess: false,
                 errorMessage: "File is null or empty"
@@ -36,13 +38,24 @@ public class UploadController : ControllerBase
         
         try
         {
-            var deckBuilder = new DeckBuilder();
+            var deckBuilder = new DeckBuilder(1);  //temporary hardcoded user id
             var deck = deckBuilder.CreateDeckFromString(content);
 
+            if (Enumerable.Any(_db.Decks, d => d.Equals(deck)))
+            {
+                response = new ApiResponse<Deck>(
+                    statusCode: HttpStatusCode.Conflict,
+                    isSuccess: false,
+                    errorMessage: "Deck with such name already exists"
+                );
+                return Conflict(response);
+            }
+            
             _db.Decks.Add(deck);
+            _db.Cards.AddRange(deck.Cards);
             await _db.SaveChangesAsync();
             
-            var response = new ApiResponse<Deck>(
+            response = new ApiResponse<Deck>(
                 statusCode: HttpStatusCode.Created,
                 isSuccess: true,
                 result: deck
@@ -52,7 +65,7 @@ public class UploadController : ControllerBase
         }
         catch (InvalidFormatException ex)
         {
-            var response = new ApiResponse<Deck>(
+            response = new ApiResponse<Deck>(
                 statusCode: HttpStatusCode.BadRequest,
                 isSuccess: false,
                 errorMessage: ex.Message

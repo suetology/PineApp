@@ -13,7 +13,6 @@ export const FileUpload = () => {
         setFile(e.target.files[0]);
     }
     
-    
     const handleUpload = async () => {
         if (!file)
             return;
@@ -25,6 +24,7 @@ export const FileUpload = () => {
         if (response.error) {
             isSuccess = false;
             errorMsg = response.error.data.errorMessage;
+            console.log(errorMsg);
         } else {
             isSuccess = true;
             if (fileInputRef.current)
