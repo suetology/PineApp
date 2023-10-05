@@ -89,7 +89,7 @@ public class DecksController : ControllerBase
             IsPersonal = createDeckDto.IsPersonal,
             CreatorId = createDeckDto.CreatorId,
         };
-
+ 
         _db.Decks.Add(createNewDeck);
         _db.SaveChanges();
 

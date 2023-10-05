@@ -8,7 +8,7 @@ const fileUploadApi = createApi({
     endpoints: (builder) => ({
         uploadFile: builder.mutation({
             query: (file) => ({
-                url: "api/FileUpload",
+                url: "api/Upload",
                 method: "POST",
                 body: file
             })
