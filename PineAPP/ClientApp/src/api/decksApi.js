@@ -48,6 +48,13 @@ const decksApi = createApi({
             }),
             invalidatesTags : ["Decks"],
         }),
+        updateDeckById : builder.mutation({
+            query : ({ deckId, deck }) => ({
+                url: `api/Decks/Update/${deckId}`,
+                method : "PUT",
+                body: deck
+            }),
+        }),
         deleteDeckById : builder.mutation ({
             query : (deckId) => ({
                 url : `api/Decks/Delete/${deckId}`,
@@ -83,5 +90,6 @@ export const { useGetAllDecksQuery,
     useGetDeckByIdQuery,
     useAddDeckMutation,
     useDeleteDeckByIdMutation,
+    useUpdateDeckByIdMutation,
     useAddCardMutation,
     useDeleteCardByIdMutation} = decksApi;
