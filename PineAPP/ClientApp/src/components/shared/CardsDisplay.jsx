@@ -9,7 +9,7 @@ const CardsDisplay = (props) => {
     const [open, setOpen] = useState('');
     const [values, setValue] = useState(props.deck.cards);
 
-    
+
     const toggle = (id) => {
         if (open === id) {
             setOpen();
@@ -40,7 +40,7 @@ const CardsDisplay = (props) => {
 
     const handleDelete = async (id) => {
         await deleteCard(id);
-        
+
         setOpen();
         const response = await props.refetchData();
         setValue(response.cards);

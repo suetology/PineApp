@@ -1,4 +1,4 @@
-﻿﻿using System.Net;
+﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -157,6 +157,46 @@ public class DecksController : ControllerBase
 
         return NotFound();
     }
+    
+    [HttpPut("Update/{deckId}")]
+        public async Task<ActionResult<ApiResponse<Deck>>> UpdateDeckById(int deckId,[FromBody] CreateDeckDTO createDeckDto)
+        {
+
+            try
+            {
+                if (createDeckDto == null)
+                {
+                    return BadRequest("Invalid request");
+                }
+    
+                var existingDeck = await _db.Decks.FindAsync(deckId);
+    
+                if (existingDeck == null)
+                {
+                    return NotFound("Deck not found");
+                }
+            
+                existingDeck.IsPersonal = createDeckDto.IsPersonal;
+                existingDeck.Description = createDeckDto.Description;
+                existingDeck.Name = createDeckDto.Name;
+    
+                _db.Decks.Update(existingDeck);
+                await _db.SaveChangesAsync();
+    
+                return Ok(existingDeck);
+            }
+            catch (Exception e)
+            {
+                var response = new ApiResponse<List<Deck>>(
+                    isSuccess: false,
+                    statusCode: HttpStatusCode.InternalServerError,
+                    result: null,
+                    errorMessage: e.ToString());
+        
+                return BadRequest(response);
+            }
+            
+        }
 
     [HttpPost("Add/Card")]
     public async Task<ActionResult<ApiResponse<Card>>> AddCard([FromBody] CreateCardDTO createCard)
