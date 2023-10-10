@@ -1,14 +1,16 @@
 ﻿import React, {useState} from 'react';
 import {Accordion, AccordionBody, AccordionHeader, AccordionItem, Button, Col, Input} from "reactstrap";
-import {useAddCardMutation, useDeleteCardByIdMutation, useGetDeckByIdQuery} from "../../api/decksApi";
-
+import {useAddCardMutation, useDeleteCardByIdMutation, useUpdateCardByIdMutation} from "../../api/decksApi";
+import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 const CardsDisplay = (props) => {
 
     const [addCard] = useAddCardMutation();
     const [deleteCard] = useDeleteCardByIdMutation();
+    const [updateCard] = useUpdateCardByIdMutation();
     const [open, setOpen] = useState('');
     const [values, setValue] = useState(props.deck.cards);
-
+    const navigate = useNavigate();
 
     const toggle = (id) => {
         if (open === id) {
@@ -36,6 +38,7 @@ const CardsDisplay = (props) => {
         //TODO refetch kartais veikia kartais ne
         const response = await props.refetchData();
         setValue(response.cards);
+        window.location.reload(); //auto refreshas bet yra tas buffering kai spaudi siaip refresha
     }
 
     const handleDelete = async (id) => {
@@ -44,6 +47,16 @@ const CardsDisplay = (props) => {
         setOpen();
         const response = await props.refetchData();
         setValue(response.cards);
+        window.location.reload();
+    }
+
+    const handleUpdateCard = async (id, i) => {
+        await updateCard({cardId: id, Front: values[i].front, Back: values[i].back});
+        
+        setOpen();
+        const response = await props.refetchData();
+        setValue(response.cards);
+        window.location.reload();
     }
 
     const renderAccordionItems = () => {
@@ -62,6 +75,7 @@ const CardsDisplay = (props) => {
                         />
                     </Col>
                     <img onClick={() => handleDelete(card.id)} src="/trash.svg" className="btn" alt="delete" style={{cursor: "pointer"}}/>
+                    <img onClick={() => handleUpdateCard(card.id, i)} style={{cursor: "pointer", height: "12pt"}} className="m-2" src="/check.svg" alt="save"/>
                 </AccordionBody>
             </AccordionItem>
         ));
