@@ -14,6 +14,8 @@ const Study = () => {
     const [isLoading, setLoading] = useState(true);
     const [index, setIndex] = useState(0);
     const [cards, setCards] = useState({});
+    const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [wrongAnswers, setWrongAnswers] = useState(0);
 
     const deckData = useGetDeckByIdQuery(id);
     useEffect(() => {
@@ -24,7 +26,6 @@ const Study = () => {
     }, [deckData]);
 
     if (isLoading) return (<div>Loading...</div>);
-    if (isCompleted) return (<Completion/>);
     
     const handleCardClick = () => {
         setFlipped(!isFlipped);
@@ -49,16 +50,18 @@ const Study = () => {
     };
 
     const handleCorrectClick = () => {
+        setCorrectAnswers(correctAnswers + 1);
         setFlipped(false);
         if (index < cards.length - 1) setIndex(index + 1);
         else setCompleted(true);
     };
 
     const handleWrongClick = () => {
+        setWrongAnswers(wrongAnswers + 1); 
         setFlipped(false);
         if (index < cards.length - 1) setIndex(index + 1);
         else setCompleted(true);
-    }
+    };
     
     let cardFrontContent = isEditing
         ? (
@@ -91,6 +94,8 @@ const Study = () => {
             </div>
         );
 
+    if (isCompleted) return (<Completion correct={correctAnswers} wrong={wrongAnswers}/>);  // counts pass to Completion
+    
     let buttons = isFlipped && (
         <div className="p-1">
             <Button className="m-1 btn-success shadow" onClick={handleCorrectClick}>Correct</Button>
