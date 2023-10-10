@@ -248,6 +248,43 @@ public class DecksController : ControllerBase
             return BadRequest(response);
         }
     }
+
+    [HttpPut("Update/Card/{cardId:int}")]
+    public async Task<ActionResult<ApiResponse<Card>>> UpdateCardById(int cardId, [FromBody] UpdateCardDTO updateCard)
+    {
+        try
+        {
+            if (cardId == 0 || updateCard == null)
+            {
+                return BadRequest("Wrong ID or Card");
+            }
+
+            var existingCard = await _db.Cards.FindAsync(cardId);
+
+            if (existingCard == null)
+            {
+                return NotFound("Does not exist");
+            }
+
+            existingCard.Front = updateCard.Front;
+            existingCard.Back = updateCard.Back;
+
+            _db.Cards.Update(existingCard);
+            await _db.SaveChangesAsync();
+    
+            return Ok(existingCard);
+        }
+        catch(Exception e)
+        {
+            var response = new ApiResponse<Card>(
+                isSuccess: false,
+                statusCode: HttpStatusCode.InternalServerError,
+                result: null,
+                errorMessage: e.ToString());
+
+            return BadRequest(response);
+        }
+    }
     
     [HttpDelete("Delete/Card/{cardId:int}")]
     public async Task<ActionResult<ApiResponse<Card>>> DeleteCardById(int cardId)
