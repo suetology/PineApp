@@ -8,7 +8,6 @@ import Completion from "./shared/Completion";
 const Study = () => {
     const { id } = useParams();
 
-    // State definitions
     const [isFlipped, setFlipped] = useState(false);
     const [isEditing, setEditing] = useState(false);
     const [isCompleted, setCompleted] = useState(false);
@@ -16,7 +15,6 @@ const Study = () => {
     const [index, setIndex] = useState(0);
     const [cards, setCards] = useState({});
 
-    // Fetching deck data
     const deckData = useGetDeckByIdQuery(id);
     useEffect(() => {
         if (!deckData.isLoading && deckData.isSuccess) {
@@ -25,11 +23,9 @@ const Study = () => {
         }
     }, [deckData]);
 
-    // Loading and completion views
     if (isLoading) return (<div>Loading...</div>);
     if (isCompleted) return (<Completion/>);
-
-    // Handlers
+    
     const handleCardClick = () => {
         setFlipped(!isFlipped);
     };
@@ -63,8 +59,7 @@ const Study = () => {
         if (index < cards.length - 1) setIndex(index + 1);
         else setCompleted(true);
     }
-
-    // JSX content
+    
     let cardFrontContent = isEditing
         ? (
             <div className="card-face card-front">
@@ -108,7 +103,7 @@ const Study = () => {
             <Col id="card-container" md={8} sm={10}>
                 <div
                     id="card"
-                    className={`h-100 border rounded shadow p-4 text-center ${isFlipped ? 'flipped' : ''}`}
+                    className={`h-100 ${isFlipped ? 'flipped' : ''}`}
                     onClick={handleCardClick}
                 >
                     {cardFrontContent}
