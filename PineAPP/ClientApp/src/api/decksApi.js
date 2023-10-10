@@ -73,6 +73,16 @@ const decksApi = createApi({
                 }
             }),
         }),
+        updateCardById : builder.mutation({
+            query : ({cardId, Front, Back}) => ({
+                url : `api/Decks/Update/Card/${cardId}`,
+                method : "PUT",
+                body : {
+                    Front,
+                    Back
+                }
+            })
+        }),
         deleteCardById : builder.mutation ({
             query : (cardId) => ({
                 url : `api/Decks/Delete/Card/${cardId}`,
@@ -92,4 +102,5 @@ export const { useGetAllDecksQuery,
     useDeleteDeckByIdMutation,
     useUpdateDeckByIdMutation,
     useAddCardMutation,
-    useDeleteCardByIdMutation} = decksApi;
+    useDeleteCardByIdMutation,
+    useUpdateCardByIdMutation} = decksApi;
