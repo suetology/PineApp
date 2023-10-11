@@ -40,6 +40,9 @@ const Create = () => {
             Description: deck.description};
 
         updateDeck({deckId: deck.id, deck: deckDTO});
+        
+        //temp fix
+        window.location.reload();
     }
 
     const deckData = useGetDeckByIdQuery(id);

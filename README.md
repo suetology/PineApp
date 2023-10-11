@@ -29,6 +29,23 @@ Visit the hosted URL to access PineApp. Create decks, add flashcards, and start 
 - **Frontend Issues**: If the SPA doesn't load or encounters issues, ensure Node.js dependencies are correctly installed with `npm install`. Check the browser's console for specific errors.
 - **API Issues**: If the API isn't responding as expected, check the server logs for potential errors or exceptions.
 
+## Requirements
+
+- Creating and using your own 
+  - class [x]
+  - struct [x]
+  - record
+  - enum
+- Property usage in struct and class; [x]
+- Named and optional argument usage;
+- Extension method usage; [x]
+- Iterating through collection the right way; [x]
+- Reading from a file using a stream; [x]
+- Create and use at least 1 generic type; [x]
+- Boxing and unboxing;
+- LINQ to Objects usage (methods or queries); [x] jei skaitosi DecksController
+- Implement at least one of the standard .NET interfaces (IEnumerable, IComparable, IComparer, IEquatable, IEnumerator, etc.) [x]
+
 ## Contributing
 Pull requests are welcome. Please ensure that any changes are documented and tested before submitting.
 
