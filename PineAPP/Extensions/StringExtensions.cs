@@ -4,12 +4,14 @@ namespace PineAPP.Extensions;
 
 public static class StringExtensions
 {
-    public static bool ContainsAnyOfChars(this string str, List<char> charsToCheck)
+    public static bool ContainsAnyOfChars(this string str, IEnumerable<char> charsToCheck)
     {
-        if (str.IsNullOrEmpty() || charsToCheck == null || !charsToCheck.Any())
+        if (charsToCheck == null || str.IsNullOrEmpty())
             return false;
+        
+        var toCheck = charsToCheck.ToList();
 
-        foreach (var c in charsToCheck)
+        foreach (var c in toCheck)
             if (str.Contains(c))
                 return true;
 

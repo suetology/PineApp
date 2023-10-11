@@ -195,11 +195,11 @@ public class DecksController : ControllerBase
                 {
                     return NotFound("Deck not found");
                 }
-            
+                
                 existingDeck.IsPersonal = createDeckDto.IsPersonal;
                 existingDeck.Description = createDeckDto.Description;
                 existingDeck.Name = createDeckDto.Name;
-
+                
                 if (DeckBuilder.ContainsForbiddenCharacters(existingDeck.Name))
                 {
                     var response = new ApiResponse<List<Deck>>(
@@ -210,7 +210,7 @@ public class DecksController : ControllerBase
                     return BadRequest(response);
                 }
 
-                if (Enumerable.Any(_db.Decks, d => d.Equals(existingDeck)))
+                if (Enumerable.Count(_db.Decks, d => d.Equals(existingDeck)) > 1)
                 {
                     var response = new ApiResponse<List<Deck>>(
                         statusCode: HttpStatusCode.Conflict,
