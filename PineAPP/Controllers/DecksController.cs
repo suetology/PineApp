@@ -179,64 +179,53 @@ public class DecksController : ControllerBase
     }
     
     [HttpPut("Update/{deckId}")]
-        public async Task<ActionResult<ApiResponse<Deck>>> UpdateDeckById(int deckId,[FromBody] CreateDeckDTO createDeckDto)
+    public async Task<ActionResult<ApiResponse<Deck>>> UpdateDeckById(int deckId,[FromBody] CreateDeckDTO createDeckDto)
+    {
+        try
         {
-
-            try
+            if (createDeckDto == null)
             {
-                if (createDeckDto == null)
-                {
-                    return BadRequest("Invalid request");
-                }
-    
-                var existingDeck = await _db.Decks.FindAsync(deckId);
-    
-                if (existingDeck == null)
-                {
-                    return NotFound("Deck not found");
-                }
-                
-                existingDeck.IsPersonal = createDeckDto.IsPersonal;
-                existingDeck.Description = createDeckDto.Description;
-                existingDeck.Name = createDeckDto.Name;
-                
-                if (DeckBuilder.ContainsForbiddenCharacters(existingDeck.Name))
-                {
-                    var response = new ApiResponse<List<Deck>>(
-                        statusCode: HttpStatusCode.BadRequest,
-                        isSuccess: false,
-                        errorMessage: "Deck name contains forbidden characters"
-                    );
-                    return BadRequest(response);
-                }
-
-                if (Enumerable.Count(_db.Decks, d => d.Equals(existingDeck)) > 1)
-                {
-                    var response = new ApiResponse<List<Deck>>(
-                        statusCode: HttpStatusCode.Conflict,
-                        isSuccess: false,
-                        errorMessage: "Deck with such name already exists"
-                    );
-                    return Conflict(response);
-                }
-                    
-                _db.Decks.Update(existingDeck);
-                await _db.SaveChangesAsync();
-    
-                return Ok(existingDeck);
+                return BadRequest("Invalid request");
             }
-            catch (Exception e)
+    
+            var existingDeck = await _db.Decks.FindAsync(deckId);
+    
+            if (existingDeck == null)
+            {
+                return NotFound("Deck not found");
+            }
+                
+            existingDeck.IsPersonal = createDeckDto.IsPersonal;
+            existingDeck.Description = createDeckDto.Description;
+            existingDeck.Name = createDeckDto.Name;
+                
+            if (DeckBuilder.ContainsForbiddenCharacters(existingDeck.Name))
             {
                 var response = new ApiResponse<List<Deck>>(
+                    statusCode: HttpStatusCode.BadRequest,
                     isSuccess: false,
-                    statusCode: HttpStatusCode.InternalServerError,
-                    result: null,
-                    errorMessage: e.ToString());
-        
+                    errorMessage: "Deck name contains forbidden characters"
+                );
                 return BadRequest(response);
             }
-            
+                    
+            _db.Decks.Update(existingDeck);
+            await _db.SaveChangesAsync();
+    
+            return Ok(existingDeck);
         }
+        catch (Exception e)
+        {
+            var response = new ApiResponse<List<Deck>>(
+                isSuccess: false,
+                statusCode: HttpStatusCode.InternalServerError,
+                result: null,
+                errorMessage: e.ToString());
+        
+            return BadRequest(response);
+        }
+            
+    }
 
     [HttpPost("Add/Card")]
     public async Task<ActionResult<ApiResponse<Card>>> AddCard([FromBody] CreateCardDTO createCard)
