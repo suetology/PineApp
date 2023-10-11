@@ -91,6 +91,26 @@ public class DecksController : ControllerBase
             CreatorId = createDeckDto.CreatorId,
         };
 
+        if (DeckBuilder.ContainsForbiddenCharacters(createNewDeck.Name))
+        {
+            response = new ApiResponse<List<Deck>>(
+                statusCode: HttpStatusCode.BadRequest,
+                isSuccess: false,
+                errorMessage: "Deck name contains forbidden characters"
+            );
+            return BadRequest(response);
+        }
+        
+        if (Enumerable.Any(_db.Decks, d => d.Equals(createNewDeck)))
+        {
+            response = new ApiResponse<List<Deck>>(
+                statusCode: HttpStatusCode.Conflict,
+                isSuccess: false,
+                errorMessage: "Deck with such name already exists"
+            );
+            return Conflict(response);
+        }
+
         _db.Decks.Add(createNewDeck);
         _db.SaveChanges();
 
@@ -179,7 +199,27 @@ public class DecksController : ControllerBase
                 existingDeck.IsPersonal = createDeckDto.IsPersonal;
                 existingDeck.Description = createDeckDto.Description;
                 existingDeck.Name = createDeckDto.Name;
-    
+
+                if (DeckBuilder.ContainsForbiddenCharacters(existingDeck.Name))
+                {
+                    var response = new ApiResponse<List<Deck>>(
+                        statusCode: HttpStatusCode.BadRequest,
+                        isSuccess: false,
+                        errorMessage: "Deck name contains forbidden characters"
+                    );
+                    return BadRequest(response);
+                }
+
+                if (Enumerable.Any(_db.Decks, d => d.Equals(existingDeck)))
+                {
+                    var response = new ApiResponse<List<Deck>>(
+                        statusCode: HttpStatusCode.Conflict,
+                        isSuccess: false,
+                        errorMessage: "Deck with such name already exists"
+                    );
+                    return Conflict(response);
+                }
+                    
                 _db.Decks.Update(existingDeck);
                 await _db.SaveChangesAsync();
     

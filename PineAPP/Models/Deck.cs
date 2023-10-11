@@ -2,7 +2,7 @@
 
 namespace PineAPP.Models;
 
-public class Deck
+public class Deck : IEquatable<Deck>
 {
     [Key]
     public int Id { get; set; }
@@ -23,4 +23,12 @@ public class Deck
     public List<Card> Cards { get; set; }
 
     public int Test { get; set; }
+
+    public bool Equals(Deck other)
+    {
+        if (other == null)
+            return false;
+        
+        return Name == other.Name; 
+    }
 }

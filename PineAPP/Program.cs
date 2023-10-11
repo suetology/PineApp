@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PineAPP.Controllers;
 using PineAPP.Data;
 
 var builder = WebApplication.CreateBuilder(args);
