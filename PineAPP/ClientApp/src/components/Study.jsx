@@ -26,7 +26,17 @@ const Study = () => {
     }, [deckData]);
 
     if (isLoading) return (<div>Loading...</div>);
-    
+
+    const cardProgress = (
+        <div className="card-progress-container">
+            <div className="card-progress">
+                {`${index + 1}/${cards.length}`}
+            </div>
+            <div className="deck-name">
+                {deckData.data.result.name}
+            </div>
+        </div>
+    );
     const handleCardClick = () => {
         setFlipped(!isFlipped);
     };
@@ -105,6 +115,10 @@ const Study = () => {
 
     return (
         <Row className="h-75 justify-content-center align-items-center pt-2">
+            {/* Progress Tracker */}
+            <Col md={8} sm={10} className="d-flex justify-content-center">
+                {cardProgress}
+            </Col>
             <Col id="card-container" md={8} sm={10}>
                 <div
                     id="card"
@@ -114,13 +128,11 @@ const Study = () => {
                     {cardFrontContent}
                     {cardBackContent}
                 </div>
-
             </Col>
-            <div className="d-flex justify-content-center align-items-center">
+            <Col md={8} sm={10} className="d-flex justify-content-center">
                 {buttons}
-            </div>
+            </Col>
         </Row>
     );
 }
-
 export default Study;
