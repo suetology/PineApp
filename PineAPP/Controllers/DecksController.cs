@@ -342,11 +342,10 @@ public class DecksController : ControllerBase
         var totalCardsInDeck = await _db.Cards.Where(c => c.DeckId == card.DeckId).CountAsync();
         var currentCardIndex = await _db.Cards.Where(c => c.DeckId == card.DeckId && c.Id <= cardId).CountAsync();
 
-        // add these to your response model or use ViewBag (if using Razor views)
         card.TotalCardsInDeck = totalCardsInDeck;
         card.CurrentCardIndex = currentCardIndex;
 
-        return Ok(card); // Adjust this based on your ApiResponse structure
+        return Ok(card);
     }
 }
 
