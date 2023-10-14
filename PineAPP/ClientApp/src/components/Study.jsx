@@ -62,15 +62,19 @@ const Study = () => {
     const handleCorrectClick = () => {
         setCorrectAnswers(correctAnswers + 1);
         setFlipped(false);
-        if (index < cards.length - 1) setIndex(index + 1);
-        else setCompleted(true);
+        setTimeout(() => {
+            if (index < cards.length - 1) setIndex(index + 1);
+            else setCompleted(true);
+        }, 100);
     };
 
     const handleWrongClick = () => {
-        setWrongAnswers(wrongAnswers + 1); 
+        setWrongAnswers(wrongAnswers + 1);
         setFlipped(false);
-        if (index < cards.length - 1) setIndex(index + 1);
-        else setCompleted(true);
+        setTimeout(() => {
+            if (index < cards.length - 1) setIndex(index + 1);
+            else setCompleted(true);
+        }, 100);
     };
     
     let cardFrontContent = isEditing
