@@ -13,7 +13,7 @@ public class User
     
     [Required]
     [MaxLength(32)]
-    public string Name { get; set; }
+    public string UserName { get; set; }
     
     [Required]
     [MaxLength(255)]
