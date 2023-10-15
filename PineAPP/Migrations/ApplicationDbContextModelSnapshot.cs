@@ -34,6 +34,9 @@ namespace PineAPP.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("CurrentCardIndex")
+                        .HasColumnType("int");
+
                     b.Property<int>("DeckId")
                         .HasColumnType("int");
 
@@ -46,6 +49,9 @@ namespace PineAPP.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("TotalCardsInDeck")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DeckId");
@@ -57,49 +63,61 @@ namespace PineAPP.Migrations
                         {
                             Id = 1,
                             Back = "4",
+                            CurrentCardIndex = 0,
                             DeckId = 1,
                             Examples = "",
-                            Front = "2 + 2 = ?"
+                            Front = "2 + 2 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 2,
                             Back = "3",
+                            CurrentCardIndex = 0,
                             DeckId = 1,
                             Examples = "",
-                            Front = "5 - 2 = ?"
+                            Front = "5 - 2 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 3,
                             Back = "12",
+                            CurrentCardIndex = 0,
                             DeckId = 1,
                             Examples = "",
-                            Front = "4 * 3 = ?"
+                            Front = "4 * 3 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 4,
                             Back = "4",
+                            CurrentCardIndex = 0,
                             DeckId = 2,
                             Examples = "",
-                            Front = "2 + 2 = ?"
+                            Front = "2 + 2 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 5,
                             Back = "3",
+                            CurrentCardIndex = 0,
                             DeckId = 2,
                             Examples = "",
-                            Front = "5 - 2 = ?"
+                            Front = "5 - 2 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 6,
                             Back = "12",
+                            CurrentCardIndex = 0,
                             DeckId = 2,
                             Examples = "",
-                            Front = "4 * 3 = ?"
+                            Front = "4 * 3 = ?",
+                            TotalCardsInDeck = 0
                         });
                 });
 

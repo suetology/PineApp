@@ -14,6 +14,8 @@ const Study = () => {
     const [isLoading, setLoading] = useState(true);
     const [index, setIndex] = useState(0);
     const [cards, setCards] = useState({});
+    const [correctAnswers, setCorrectAnswers] = useState(0);
+    const [wrongAnswers, setWrongAnswers] = useState(0);
 
     const deckData = useGetDeckByIdQuery(id);
     useEffect(() => {
@@ -24,8 +26,17 @@ const Study = () => {
     }, [deckData]);
 
     if (isLoading) return (<div>Loading...</div>);
-    if (isCompleted) return (<Completion/>);
-    
+
+    const cardProgress = (
+        <div className="card-progress-container">
+            <div className="card-progress">
+                {`${index + 1}/${cards.length}`}
+            </div>
+            <div className="deck-name">
+                {deckData.data.result.name}
+            </div>
+        </div>
+    );
     const handleCardClick = () => {
         setFlipped(!isFlipped);
     };
@@ -49,16 +60,22 @@ const Study = () => {
     };
 
     const handleCorrectClick = () => {
+        setCorrectAnswers(correctAnswers + 1);
         setFlipped(false);
-        if (index < cards.length - 1) setIndex(index + 1);
-        else setCompleted(true);
+        setTimeout(() => {
+            if (index < cards.length - 1) setIndex(index + 1);
+            else setCompleted(true);
+        }, 100);
     };
 
     const handleWrongClick = () => {
+        setWrongAnswers(wrongAnswers + 1);
         setFlipped(false);
-        if (index < cards.length - 1) setIndex(index + 1);
-        else setCompleted(true);
-    }
+        setTimeout(() => {
+            if (index < cards.length - 1) setIndex(index + 1);
+            else setCompleted(true);
+        }, 100);
+    };
     
     let cardFrontContent = isEditing
         ? (
@@ -91,6 +108,8 @@ const Study = () => {
             </div>
         );
 
+    if (isCompleted) return (<Completion correct={correctAnswers} wrong={wrongAnswers}/>);  // counts pass to Completion
+    
     let buttons = isFlipped && (
         <div className="p-1">
             <Button className="m-1 btn-success shadow" onClick={handleCorrectClick}>Correct</Button>
@@ -100,6 +119,10 @@ const Study = () => {
 
     return (
         <Row className="h-75 justify-content-center align-items-center pt-2">
+            {/* Progress Tracker */}
+            <Col md={8} sm={10} className="d-flex justify-content-center">
+                {cardProgress}
+            </Col>
             <Col id="card-container" md={8} sm={10}>
                 <div
                     id="card"
@@ -109,13 +132,11 @@ const Study = () => {
                     {cardFrontContent}
                     {cardBackContent}
                 </div>
-
             </Col>
-            <div className="d-flex justify-content-center align-items-center">
+            <Col md={8} sm={10} className="d-flex justify-content-center">
                 {buttons}
-            </div>
+            </Col>
         </Row>
     );
 }
-
 export default Study;
