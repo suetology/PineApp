@@ -156,11 +156,11 @@ namespace PineAPP.Migrations
 
             modelBuilder.Entity("PineAPP.Models.User", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -177,21 +177,21 @@ namespace PineAPP.Migrations
                         .HasMaxLength(32)
                         .HasColumnType("nvarchar(32)");
 
-                    b.HasKey("Id");
+                    b.HasKey("UserId");
 
                     b.ToTable("Users");
 
                     b.HasData(
                         new
                         {
-                            Id = 1,
+                            UserId = 1,
                             Email = "vardenis.pavardenis@gmail.com",
                             Password = "admin",
                             UserName = "admin"
                         },
                         new
                         {
-                            Id = 2,
+                            UserId = 2,
                             Email = "idk@gmail.com",
                             Password = "testavicius",
                             UserName = "testas"

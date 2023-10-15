@@ -20,14 +20,14 @@ public class ApplicationDbContext : DbContext
         modelBuilder.Entity<User>().HasData(
             new User()
             {
-                Id = 1,
+                UserId = 1,
                 Email = "vardenis.pavardenis@gmail.com",
                 UserName = "admin",
                 Password = "admin"
             },
             new User()
             {
-                Id = 2,
+                UserId = 2,
                 Email = "idk@gmail.com",
                 UserName = "testas",
                 Password = "testavicius"
