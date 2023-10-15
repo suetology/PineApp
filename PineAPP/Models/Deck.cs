@@ -31,4 +31,8 @@ public class Deck : IEquatable<Deck>
         
         return Name == other.Name; 
     } // comment
+    
+    public int CorrectCards { get; set; }
+    
+    public int WrongCards { get; set; }
 }

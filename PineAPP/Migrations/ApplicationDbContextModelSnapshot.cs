@@ -129,6 +129,9 @@ namespace PineAPP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("CorrectCards")
+                        .HasColumnType("int");
+
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
 
@@ -147,6 +150,9 @@ namespace PineAPP.Migrations
                     b.Property<int>("Test")
                         .HasColumnType("int");
 
+                    b.Property<int>("WrongCards")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Decks");
@@ -155,20 +161,24 @@ namespace PineAPP.Migrations
                         new
                         {
                             Id = 1,
+                            CorrectCards = 0,
                             CreatorId = 1,
                             Description = "A few cards to test your basic math skills",
                             IsPersonal = false,
                             Name = "Simple Math (Community)",
-                            Test = 0
+                            Test = 0,
+                            WrongCards = 0
                         },
                         new
                         {
                             Id = 2,
+                            CorrectCards = 0,
                             CreatorId = 1,
                             Description = "A few cards to test your basic math skills",
                             IsPersonal = true,
                             Name = "Simple Math (Personal)",
-                            Test = 0
+                            Test = 0,
+                            WrongCards = 0
                         });
                 });
 

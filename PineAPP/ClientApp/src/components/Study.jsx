@@ -1,21 +1,27 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState, createContext } from 'react';
 import { Button, Col, Row, Input } from "reactstrap";
 import { useParams } from 'react-router-dom';
 import { useGetDeckByIdQuery } from '../api/decksApi';
 import './css/Study.css';
 import Completion from "./shared/Completion";
+import { incrementCorrectAnswers, incrementWrongAnswers } from '../redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Study = () => {
-    const { id } = useParams();
 
+
+    const { id } = useParams();
     const [isFlipped, setFlipped] = useState(false);
     const [isEditing, setEditing] = useState(false);
     const [isCompleted, setCompleted] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [index, setIndex] = useState(0);
     const [cards, setCards] = useState({});
-    const [correctAnswers, setCorrectAnswers] = useState(0);
-    const [wrongAnswers, setWrongAnswers] = useState(0);
+    
+    const dispatch = useDispatch();
+
+    const correctAnswers = useSelector(state => state.answers.correctAnswers);
+    const wrongAnswers = useSelector(state => state.answers.wrongAnswers);
 
     const deckData = useGetDeckByIdQuery(id);
     useEffect(() => {
@@ -60,7 +66,7 @@ const Study = () => {
     };
 
     const handleCorrectClick = () => {
-        setCorrectAnswers(correctAnswers + 1);
+        dispatch(incrementCorrectAnswers());
         setFlipped(false);
         setTimeout(() => {
             if (index < cards.length - 1) setIndex(index + 1);
@@ -69,7 +75,7 @@ const Study = () => {
     };
 
     const handleWrongClick = () => {
-        setWrongAnswers(wrongAnswers + 1);
+        dispatch(incrementWrongAnswers());
         setFlipped(false);
         setTimeout(() => {
             if (index < cards.length - 1) setIndex(index + 1);
@@ -129,8 +135,7 @@ const Study = () => {
                     className={`h-100 ${isFlipped ? 'flipped' : ''}`}
                     onClick={handleCardClick}
                 >
-                    {cardFrontContent}
-                    {cardBackContent}
+                {isFlipped ? cardBackContent : cardFrontContent }
                 </div>
             </Col>
             <Col md={8} sm={10} className="d-flex justify-content-center">

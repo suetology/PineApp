@@ -18,7 +18,7 @@ public class Card
 
     public int DeckId { get; set; }
     
-    public int CurrentCardIndex { get; set; }
     public int TotalCardsInDeck { get; set; }
-
+    
+    public int CurrentCardIndex { get; set; }
 }

@@ -370,16 +370,12 @@ public class DecksController : ControllerBase
     
         var totalCardsInDeck = await _db.Cards.Where(c => c.DeckId == card.DeckId).CountAsync();
         var currentCardIndex = await _db.Cards.Where(c => c.DeckId == card.DeckId && c.Id <= cardId).CountAsync();
-
+        
         card.TotalCardsInDeck = totalCardsInDeck;
         card.CurrentCardIndex = currentCardIndex;
-
+        
         return Ok(card);
     }
 }
 
-//TO DO
 
-//Make it so when you are on the /create endpoint it redirects you to the new deck you are creating
-//Implement Delete functionality
-//Implement Add Cards functionality

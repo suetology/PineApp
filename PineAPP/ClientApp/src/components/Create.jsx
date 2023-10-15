@@ -1,17 +1,21 @@
-﻿import React, {useEffect, useState} from 'react';
+﻿import React, {useEffect, useContext, useState} from 'react';
 import {Button, Col, Container, Input, Row} from "reactstrap";
 import CardsDisplay from "./shared/CardsDisplay";
 import {useParams} from 'react-router-dom';
 import {useGetDeckByIdQuery, useDeleteDeckByIdMutation, useUpdateDeckByIdMutation} from '../api/decksApi'
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 const Create = () => {
     const { id } = useParams();
-
     const navigate = useNavigate();
     const [deleteDeck] = useDeleteDeckByIdMutation();
     const [updateDeck] = useUpdateDeckByIdMutation();
     const [isEditing, setEditing] = useState(false);
     const [deck, setDeck] = useState(null);
+    
+    const correctAnswers = useSelector(state => state.answers.correctAnswers);
+    const wrongAnswers = useSelector(state => state.answers.wrongAnswers);
 
     const handleDelete = async(deckId) => {
         try{
@@ -102,15 +106,11 @@ const Create = () => {
                     <Container className="border rounded border-dark bg-light p-2 mb-2">
                         <Row>
                             <Col className="text-center">
-                                <h5 >3</h5>
+                                <h5 >{correctAnswers}</h5>
                                 <p>Correct</p>
                             </Col>
                             <Col className="text-center">
-                                <h5>3</h5>
-                                <p>Not Studied</p>
-                            </Col>
-                            <Col className="text-center">
-                                <h5>3</h5>
+                                <h5>{wrongAnswers}</h5>
                                 <p>Wrong</p>
                             </Col>
                         </Row>
