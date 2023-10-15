@@ -198,6 +198,8 @@ public class DecksController : ControllerBase
             existingDeck.IsPersonal = createDeckDto.IsPersonal;
             existingDeck.Description = createDeckDto.Description;
             existingDeck.Name = createDeckDto.Name;
+            existingDeck.Correct = createDeckDto.Correct;
+            existingDeck.Wrong = createDeckDto.Wrong;
                 
             if (DeckBuilder.ContainsForbiddenCharacters(existingDeck.Name))
             {

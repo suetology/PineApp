@@ -17,5 +17,9 @@ public class CreateDeckDTO
     [Required]
     public int CreatorId { get; set; }
     
+    public int Correct { get; set; }
+
+    public int Wrong { get; set; }
+    
     //public List<Card> Cards { get; set; }
 }
