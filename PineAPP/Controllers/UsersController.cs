@@ -30,7 +30,7 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
-    [HttpGet("UserById/{userId:int}")]
+    [HttpGet("GetUserById/{userId:int}")]
     public async Task<ActionResult<ApiResponse<User>>> GetUserById(int userId)
     {
         var user = await _db.Users
