@@ -30,5 +30,5 @@ public class Deck : IEquatable<Deck>
             return false;
         
         return Name == other.Name; 
-    }
+    } // comment
 }
