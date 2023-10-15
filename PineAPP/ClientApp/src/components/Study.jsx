@@ -114,7 +114,7 @@ const Study = () => {
             </div>
         );
 
-    if (isCompleted) return (<Completion correct={correctAnswers} wrong={wrongAnswers}/>);  // counts pass to Completion
+    if (isCompleted) return (<Completion correct={correctAnswers} wrong={wrongAnswers} deck={deckData.data.result}/>);  // counts pass to Completion
     
     let buttons = isFlipped && (
         <div className="p-1">

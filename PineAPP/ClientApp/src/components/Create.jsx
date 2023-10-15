@@ -41,7 +41,9 @@ const Create = () => {
             Name: deck.name,
             IsPersonal: deck.isPersonal,
             CreatorId: deck.creatorId,
-            Description: deck.description};
+            Description: deck.description,
+            Correct: deck.correct,
+            Wrong: deck.wrong};
 
         updateDeck({deckId: deck.id, deck: deckDTO});
         
@@ -106,11 +108,11 @@ const Create = () => {
                     <Container className="border rounded border-dark bg-light p-2 mb-2">
                         <Row>
                             <Col className="text-center">
-                                <h5 >{correctAnswers}</h5>
+                                <h5 >{deck.correct}</h5>
                                 <p>Correct</p>
                             </Col>
                             <Col className="text-center">
-                                <h5>{wrongAnswers}</h5>
+                                <h5>{deck.wrong}</h5>
                                 <p>Wrong</p>
                             </Col>
                         </Row>

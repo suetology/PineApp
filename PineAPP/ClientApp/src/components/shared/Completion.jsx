@@ -1,9 +1,24 @@
-﻿import React, {useState} from 'react';
+﻿import React, {useEffect, useState} from 'react';
 import {Button, Col, Container, Row} from "reactstrap";
 import {Link} from "react-router-dom";
 import Browse from "../Browse";
+import {useUpdateDeckByIdMutation} from "../../api/decksApi";
 
-const Completion = ({ correct, wrong }) => { 
+const Completion = ({ correct, wrong, deck }) => {
+
+    const [updateDeck] = useUpdateDeckByIdMutation();
+    
+    useEffect(() => {
+        const deckDTO = {
+            Name: deck.name,
+            IsPersonal: deck.isPersonal,
+            CreatorId: deck.creatorId,
+            Description: deck.description,
+            Correct: correct,
+            Wrong: wrong};
+
+        updateDeck({deckId: deck.id, deck: deckDTO});
+    }, []);
 
     return (
         <Container>
