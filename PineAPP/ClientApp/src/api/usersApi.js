@@ -15,19 +15,19 @@ const usersApi = createApi({
             providesTags: ["Users"],
         }),
         getUserById: builder.query({
-            query: () => ({
-                url: "api/Users/GetUserById/",
+            query: (userId) => ({
+                url: `api/Users/GetUserById/${userId}`,
                 method: "GET",
                 params: {}
             }),
         }),
-        getAllDecks: builder.query({
-            query: ({Email, Username, Password}) => ({
+        addUser: builder.query({
+            query: ({Email, UserName, Password}) => ({
                 url: "api/Users/Add",
                 method: "POST",
                 body: {
                     Email,
-                    Username,
+                    UserName,
                     Password,
                 }
             }),
@@ -41,7 +41,7 @@ export const {
     useGetAllUsersQuery,
     useGetUserByIdQuery,
     userAddUserMutation,
-} = usersApi
+} = usersApi;
 
 
 
