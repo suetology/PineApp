@@ -6,11 +6,20 @@ import {
     useGetPersonalDecksQuery
 } from "../api/decksApi";
 import { useEffect } from 'react';
+import {useLocation} from "react-router-dom";
 
 
 const Browse = () => {
-    //temp
-    const userId = 1;
+    // temp (maybe)
+    // Retrieve UserData from Login or Register
+    const location = useLocation();
+    const userData = location.state;
+    let userId;
+    try {
+        userId = userData.userId;
+    } catch (e) {
+        userId = 1;
+    }
     
     const personalData = useGetPersonalDecksQuery(userId);
     const communityData = useGetCommunityDecksQuery();
