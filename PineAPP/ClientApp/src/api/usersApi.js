@@ -21,6 +21,13 @@ const usersApi = createApi({
                 params: {}
             }),
         }),
+        getUserByEmail: builder.query({
+            query: (email) => ({
+                url: `api/Users/GetUserByEmail/${email}`,
+                method: "GET",
+                params: {}
+            }),
+        }),
         addUser: builder.query({
             query: ({Email, UserName, Password}) => ({
                 url: "api/Users/Add",
@@ -40,6 +47,7 @@ export { usersApi };
 export const {
     useGetAllUsersQuery,
     useGetUserByIdQuery,
+    useGetUserByEmailQuery,
     userAddUserMutation,
 } = usersApi;
 

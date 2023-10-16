@@ -41,6 +41,16 @@ public class UsersController : ControllerBase
         return Ok(response);
     }
 
+    [HttpGet("GetUserByEmail/{email}")]
+    public async Task<ActionResult<ApiResponse<User>>> GetUserByEmail(string email)
+    {
+        var user = await _db.Users
+            .Where(user => user.Email == email)
+            .FirstOrDefaultAsync();
+        var response = new ApiResponse<User>(HttpStatusCode.OK, isSuccess: true, user);
+        return Ok(response);
+    }
+
     [HttpPost("Add")]
     public async Task<ActionResult<ApiResponse<User>>> AddUser([FromBody] CreateUserDTO createUserDto)
     {
