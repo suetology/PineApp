@@ -13,4 +13,8 @@ public class CreateCardDTO
 
     public int DeckId {get; set;}
     
+    public int Correct { get; set; }
+
+    public int Wrong { get; set; }
+    
 }

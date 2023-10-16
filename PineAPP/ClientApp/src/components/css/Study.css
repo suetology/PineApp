@@ -1,5 +1,10 @@
-﻿main {
-    height: 90vh;
+﻿body {
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+main {
+    height: 84vh;
 }
 
 .btn-success,
@@ -14,8 +19,7 @@
     align-items: center;
     height: 100%;
     perspective: 1000px;
-    
-    margin-top: 5vh;
+    margin-top: 1vh;
 }
 
 #card {
@@ -23,10 +27,8 @@
     transform-style: preserve-3d;
     transition: transform 0.4s;
     background-color: white;
-
     border-radius: 20px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.09);
-    
     width: 80%;
     height: 80%;
     margin: auto;
@@ -48,16 +50,8 @@
     justify-content: center;
     background-color: white;
     flex-direction: column;
-
     border-radius: 20px;
     border: 1px solid #eaeaea;
-}
-
-.card-content-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center; 
 }
 
 .card-front {
@@ -66,4 +60,28 @@
 
 .card-back {
     transform: rotateY(180deg);
+}
+
+.card-content-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-progress-container {
+    text-align: center;
+    margin-bottom: 5px;
+    margin-top: -10px;
+}
+
+.card-progress {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 3px;
+}
+
+.deck-name {
+    font-weight: bold;
+    color: #555;
 }

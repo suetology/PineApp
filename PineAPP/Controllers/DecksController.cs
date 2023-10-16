@@ -198,6 +198,8 @@ public class DecksController : ControllerBase
             existingDeck.IsPersonal = createDeckDto.IsPersonal;
             existingDeck.Description = createDeckDto.Description;
             existingDeck.Name = createDeckDto.Name;
+            existingDeck.Correct = createDeckDto.Correct;
+            existingDeck.Wrong = createDeckDto.Wrong;
                 
             if (DeckBuilder.ContainsForbiddenCharacters(existingDeck.Name))
             {
@@ -358,10 +360,24 @@ public class DecksController : ControllerBase
 
         return NotFound();
     }
+    
+    [HttpGet("Card/{cardId:int}")]
+    public async Task<ActionResult<ApiResponse<Card>>> GetCardById(int cardId)
+    {
+        var card = await _db.Cards.FindAsync(cardId);
+        if (card == null)
+        {
+            return NotFound("Card not found");
+        }
+    
+        var totalCardsInDeck = await _db.Cards.Where(c => c.DeckId == card.DeckId).CountAsync();
+        var currentCardIndex = await _db.Cards.Where(c => c.DeckId == card.DeckId && c.Id <= cardId).CountAsync();
+        
+        card.TotalCardsInDeck = totalCardsInDeck;
+        card.CurrentCardIndex = currentCardIndex;
+        
+        return Ok(card);
+    }
 }
 
-//TO DO
 
-//Make it so when you are on the /create endpoint it redirects you to the new deck you are creating
-//Implement Delete functionality
-//Implement Add Cards functionality

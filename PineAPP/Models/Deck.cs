@@ -22,7 +22,9 @@ public class Deck : IEquatable<Deck>
 
     public List<Card> Cards { get; set; }
 
-    public int Test { get; set; }
+    public int Correct { get; set; }
+
+    public int Wrong { get; set; }
 
     public bool Equals(Deck other)
     {
