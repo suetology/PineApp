@@ -21,14 +21,14 @@ public class ApplicationDbContext : DbContext
             new User()
             {
                 UserId = 1,
-                Email = "vardenis.pavardenis@gmail.com",
+                Email = "admin@gmail.com",
                 UserName = "admin",
                 Password = "admin"
             },
             new User()
             {
                 UserId = 2,
-                Email = "idk@gmail.com",
+                Email = "vardenis.pavardenis@gmail.com",
                 UserName = "testas",
                 Password = "testavicius"
             }
