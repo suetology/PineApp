@@ -1,21 +1,19 @@
-﻿import {useEffect, useRef, useState} from "react";
-import {useGetUserByEmailQuery} from "../api/usersApi";
-import {Input} from "reactstrap";
+﻿import {useRef, useState} from "react";
 import {useNavigate} from "react-router-dom";
 
 const RegisterPage = () => {
     const navigate = useNavigate();
     
-    const serverUrl = "https://localhost:7074/";
+    const url = "https://localhost:7074/";
     const refEmailInput = useRef(null);
     const refPasswordInput = useRef(null);
 
     const [authMessage, setAuthMessage] = useState('_');
     
     
-    const getUserByEmail = async () => {
+    const getUserByEmail = async (email) => {
         try {
-            const response = await fetch(serverUrl + `api/Users/GetUserByEmail/${refEmailInput.current.value}`);
+            const response = await fetch(url + `api/Users/GetUserByEmail/${email}`);
             const data = await response.json();
             return data.result;
         } catch (e) {
@@ -24,16 +22,16 @@ const RegisterPage = () => {
         }
     }
     
-    const authenticateUser = async () => {
-        const user = await getUserByEmail();
+    const authenticateUser = async (email, password) => {
+        const user = await getUserByEmail(email);
         
         if (user === null){
             setAuthMessage("Incorrect email.");
-        } else if(refPasswordInput.current.value === user.password){
+        } else if(password === user.password){
             setAuthMessage("Login successful.");
             navigate("/browse", {state: user});
         } else {
-            setAuthMessage("Incorrect email or password.");
+            setAuthMessage("Incorrect password.");
         }
     }
     
@@ -57,8 +55,8 @@ const RegisterPage = () => {
                     marginBottom: "10px"
                 }}
             ></input><br/>
-            <button onClick={authenticateUser}>Login</button> <br/> 
-            <h1>{ authMessage }</h1>
+            <button onClick={() => authenticateUser(refEmailInput.current.value, refPasswordInput.current.value)}>Login</button> <br/> 
+            <h6>{ authMessage }</h6>
         </div>
     );
     
