@@ -1,4 +1,4 @@
-﻿import React, {useEffect, useContext, useState} from 'react';
+﻿import React, {useEffect, useState, useReducer} from 'react';
 import {Button, Col, Container, Input, Row} from "reactstrap";
 import CardsDisplay from "./shared/CardsDisplay";
 import {useParams} from 'react-router-dom';
@@ -14,9 +14,6 @@ const Create = () => {
     const [isEditing, setEditing] = useState(false);
     const [deck, setDeck] = useState(null);
     
-    const correctAnswers = useSelector(state => state.answers.correctAnswers);
-    const wrongAnswers = useSelector(state => state.answers.wrongAnswers);
-
     const handleDelete = async(deckId) => {
         try{
             const response = await deleteDeck(deckId);
@@ -29,13 +26,7 @@ const Create = () => {
         }
     }
 
-    const refetchData = async () => {
-        await deckData.refetch();
-        setDeck(deckData.data?.result);
-        return deck;
-    }
-
-    const handleUpdateDeck = () => {
+    const handleUpdateDeck = async () => {
         setEditing(false);
         const deckDTO = {
             Name: deck.name,
@@ -45,10 +36,8 @@ const Create = () => {
             Correct: deck.correct,
             Wrong: deck.wrong};
 
-        updateDeck({deckId: deck.id, deck: deckDTO});
-        
-        //temp fix
-        window.location.reload();
+        const response = await updateDeck({deckId: deck.id, deck: deckDTO});
+        setDeck(prevDeck => ({ ...prevDeck, name: response.data.result.name }));
     }
 
     const deckData = useGetDeckByIdQuery(id);
@@ -123,7 +112,7 @@ const Create = () => {
 
             <Col className="m-5">
                 <p className="mb-2">Cards in deck:</p>
-                <CardsDisplay deck={deck} refetchData={refetchData}/>
+                <CardsDisplay deck={deck}/>
             </Col>
         </div>
     );

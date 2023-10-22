@@ -8,13 +8,9 @@ import {FileUpload} from "./FileUpload";
 const CreateDeck = () => {
 
     const [name, setName] = useState("");
-
     const [description, setDescription] = useState("");
-
     const [creatorId, setCreatorId] = useState(0);
-
     const [isPersonal, setIsPersonal] = useState(false);
-
     const navigate = useNavigate();
 
     const handleNameChange = (e) => {
@@ -30,7 +26,7 @@ const CreateDeck = () => {
     }
 
     const handleIsPersonalChange = (e) => {
-        setIsPersonal(e.target.value == "Personal");
+        setIsPersonal(e.target.value === "Personal");
     }
 
     const [addDeck] = useAddDeckMutation();
