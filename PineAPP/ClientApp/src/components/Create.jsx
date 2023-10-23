@@ -36,8 +36,8 @@ const Create = () => {
             Correct: deck.correct,
             Wrong: deck.wrong};
 
-        const response = await updateDeck({deckId: deck.id, deck: deckDTO});
-        setDeck(prevDeck => ({ ...prevDeck, name: response.data.result.name }));
+        await updateDeck({deckId: deck.id, deck: deckDTO});
+        window.location.reload();
     }
 
     const deckData = useGetDeckByIdQuery(id);
