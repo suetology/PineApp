@@ -3,7 +3,7 @@ import Browse from "./components/Browse";
 import Create from "./components/Create";
 import Study from "./components/Study";
 import CreateDeck from "./components/CreateDeck"
-import LoginPage from "./components/LoginPage.jsx";
+import LoginPage from "./components/LoginComponent.jsx";
 
 const AppRoutes = [
   {

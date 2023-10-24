@@ -1,8 +1,6 @@
 ﻿import {useRef, useState} from "react";
-import {useNavigate} from "react-router-dom";
 
-const RegisterPage = () => {
-    const navigate = useNavigate();
+const LoginComponent = ({ onLogin }) => {
     
     const url = "https://localhost:7074/";
     const refEmailInput = useRef(null);
@@ -17,7 +15,6 @@ const RegisterPage = () => {
             const data = await response.json();
             return data.result;
         } catch (e) {
-            // Fetch called with empty string
             return null;
         }
     }
@@ -29,7 +26,8 @@ const RegisterPage = () => {
             setAuthMessage("Incorrect email.");
         } else if(password === user.password){
             setAuthMessage("Login successful.");
-            navigate("/browse", {state: user});
+            sessionStorage.setItem('token', JSON.stringify(user));
+            onLogin(user);
         } else {
             setAuthMessage("Incorrect password.");
         }
@@ -62,4 +60,4 @@ const RegisterPage = () => {
     
     
 }
-export default RegisterPage;
+export default LoginComponent;

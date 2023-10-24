@@ -5,21 +5,22 @@ import {
     useGetCommunityDecksQuery,
     useGetPersonalDecksQuery
 } from "../api/decksApi";
-import { useEffect } from 'react';
-import {useLocation} from "react-router-dom";
-
+import { useEffect, useState } from 'react';
+import LoginComponent from "./LoginComponent"
 
 const Browse = () => {
-    // temp (maybe)
-    // Retrieve UserData from Login or Register
-    const location = useLocation();
-    const userData = location.state;
-    let userId;
-    try {
-        userId = userData.userId;
-    } catch (e) {
-        userId = 1;
+
+    //Login functionality
+    const [token, setToken] = useState(JSON.parse(sessionStorage.getItem('token')));
+    const [userId, setUserId] = useState(0);
+    const handleLogin = (newToken) => {
+        setToken(newToken);
     }
+    useEffect(() => {
+        if(token) {
+            setUserId(token.userId);
+        }
+    }, [token]);
     
     const personalData = useGetPersonalDecksQuery(userId);
     const communityData = useGetCommunityDecksQuery();
@@ -30,6 +31,10 @@ const Browse = () => {
         personalData.refetch();
         communityData.refetch();
     }, []);
+
+    if(!token) {
+        return <LoginComponent onLogin={handleLogin}></LoginComponent>
+    }
     
     if (personalData.isLoading || communityData.isLoading) 
         return(<div>Loading...</div>);
