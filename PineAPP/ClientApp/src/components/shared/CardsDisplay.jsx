@@ -1,8 +1,7 @@
 ﻿import React, {useState} from 'react';
 import {Accordion, AccordionBody, AccordionHeader, AccordionItem, Button, Col, Input} from "reactstrap";
-import {useAddCardMutation, useDeleteCardByIdMutation, useUpdateCardByIdMutation} from "../../api/decksApi";
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import {useAddCardMutation, useDeleteCardByIdMutation, useUpdateCardByIdMutation} from "../../api/cardsApi";
+
 const CardsDisplay = (props) => {
 
     const [addCard] = useAddCardMutation();
@@ -10,7 +9,6 @@ const CardsDisplay = (props) => {
     const [updateCard] = useUpdateCardByIdMutation();
     const [open, setOpen] = useState('');
     const [values, setValue] = useState(props.deck.cards);
-    const navigate = useNavigate();
     
     const toggle = (id) => {
         if (open === id) {

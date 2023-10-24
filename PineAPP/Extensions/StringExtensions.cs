@@ -11,10 +11,6 @@ public static class StringExtensions
         
         var toCheck = charsToCheck.ToList();
 
-        foreach (var c in toCheck)
-            if (str.Contains(c))
-                return true;
-
-        return false;
+        return toCheck.Any(c => str.Contains(c));
     }
 }

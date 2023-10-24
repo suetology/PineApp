@@ -4,7 +4,6 @@ import CardsDisplay from "./shared/CardsDisplay";
 import {useParams} from 'react-router-dom';
 import {useGetDeckByIdQuery, useDeleteDeckByIdMutation, useUpdateDeckByIdMutation} from '../api/decksApi'
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 
 const Create = () => {
     const { id } = useParams();
@@ -14,6 +13,7 @@ const Create = () => {
     const [isEditing, setEditing] = useState(false);
     const [deck, setDeck] = useState(null);
     
+
     const handleDelete = async(deckId) => {
         try{
             const response = await deleteDeck(deckId);

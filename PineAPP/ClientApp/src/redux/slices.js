@@ -16,6 +16,10 @@ const answersSlice = createSlice({
     }
 })
 
-export const { incrementCorrectAnswers, incrementWrongAnswers } = answersSlice.actions;
 
+export const { 
+    incrementCorrectAnswers, 
+    incrementWrongAnswers,
+    updateCorrectAnswers,
+    updateWrongAnswers} = answersSlice.actions;
 export default answersSlice.reducer;

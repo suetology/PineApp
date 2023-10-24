@@ -6,6 +6,7 @@ import {
     useGetPersonalDecksQuery
 } from "../api/decksApi";
 import { useEffect } from 'react';
+import Loading from "./shared/Loading";
 
 
 const Browse = () => {
@@ -23,7 +24,7 @@ const Browse = () => {
     }, []);
     
     if (personalData.isLoading || communityData.isLoading) 
-        return(<div>Loading...</div>);
+        return(<Loading/>);
     
     const personalDecks = personalData.data.result;
     const communityDecks = communityData.data.result;

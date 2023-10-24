@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using PineAPP.Data;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
@@ -112,7 +111,7 @@ public class DecksController : ControllerBase
         }
 
         _db.Decks.Add(createNewDeck);
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
 
         response = new ApiResponse<List<Deck>>(
         isSuccess: true,
@@ -132,7 +131,7 @@ public class DecksController : ControllerBase
 
         return StatusCode((int)HttpStatusCode.InternalServerError, response);
     }
-}
+    }
 
     [HttpDelete("{deckId:int}")]
     public async Task<ActionResult<ApiResponse<List<Deck>>>> DeleteDeckById(int deckId)
@@ -147,8 +146,8 @@ public class DecksController : ControllerBase
 
             if (ModelState.IsValid)
             {
-                Deck Deck = await _db.Decks.FindAsync(deckId);
-                if (deckId == 0)
+                Deck deck = await _db.Decks.FindAsync(deckId);
+                if (deckId == 0 || deck is null)
                 {
                     return BadRequest(response);
                 }
@@ -159,8 +158,8 @@ public class DecksController : ControllerBase
                 result: null,
                 errorMessage: null);
 
-                _db.Decks.Remove(Deck);
-                _db.SaveChanges();
+                _db.Decks.Remove(deck);
+                await _db.SaveChangesAsync();
                 return Ok(response);
             }
         }
@@ -338,7 +337,7 @@ public class DecksController : ControllerBase
             if (ModelState.IsValid)
             {
                 Card card = await _db.Cards.FindAsync(cardId);
-                if (cardId == 0)
+                if (cardId == 0 || card is null)
                 {
                     return BadRequest(response);
                 }
@@ -350,7 +349,7 @@ public class DecksController : ControllerBase
                     errorMessage: null);
 
                 _db.Cards.Remove(card);
-                _db.SaveChanges();
+                await _db.SaveChangesAsync();
                 return Ok(response);
             }
         }
