@@ -3,8 +3,16 @@ import { Button, Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink 
 import { Link, useNavigate } from 'react-router-dom';
 
 const NavMenu = () => {
-  const navigate = useNavigate();
+    const navigate = useNavigate();
     const [isCollapsed, setCollapsed] = useState(true);
+
+    const handleLogOut = () => {
+      sessionStorage.clear();
+      navigate("/")
+    }
+    const handleLogIn = () => {
+      navigate("/login")
+    }
     
     return (
         <header>
@@ -27,7 +35,10 @@ const NavMenu = () => {
               </ul>
               <ul className="navbar-nav ms-auto">
                 <NavItem>
-                  <Button onClick={() => (sessionStorage.getItem('token') ? true : navigate("/login"))}>Log In</Button>
+                  <Button onClick={() => (sessionStorage.getItem('token') ? true : handleLogIn() )}>Log In</Button>
+                </NavItem>
+                <NavItem>
+                  <Button onClick={() => (sessionStorage.getItem('token') ? handleLogOut() : true )}>Log Out</Button>
                 </NavItem>
               </ul>
             </Collapse>
