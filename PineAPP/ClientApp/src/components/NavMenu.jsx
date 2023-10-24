@@ -34,7 +34,7 @@ const NavMenu = () => {
                 </NavItem>
               </ul>
               <ul className="navbar-nav ms-auto">
-                <NavItem>
+                <NavItem style={{marginRight: 10}}>
                   <Button onClick={() => (sessionStorage.getItem('token') ? true : handleLogIn() )}>Log In</Button>
                 </NavItem>
                 <NavItem>
