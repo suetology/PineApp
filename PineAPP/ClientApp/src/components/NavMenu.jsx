@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import Login from "./shared/Login";
+import { Button, Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Link, useNavigate } from 'react-router-dom';
 
 const NavMenu = () => {
+  const navigate = useNavigate();
     const [isCollapsed, setCollapsed] = useState(true);
     
     return (
@@ -27,7 +27,7 @@ const NavMenu = () => {
               </ul>
               <ul className="navbar-nav ms-auto">
                 <NavItem>
-                  <Login>Sign in</Login>
+                  <Button onClick={() => (sessionStorage.getItem('token') ? true : navigate("/login"))}>Log In</Button>
                 </NavItem>
               </ul>
             </Collapse>

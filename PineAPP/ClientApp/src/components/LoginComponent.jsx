@@ -1,14 +1,27 @@
-﻿import {useRef, useState} from "react";
+﻿import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Modal, ModalHeader, ModalBody, ModalFooter, NavLink, Input, Label, Col, Container } from 'reactstrap';
 
 const LoginComponent = ({ onLogin }) => {
-    
+
     const url = "https://localhost:7074/";
     const refEmailInput = useRef(null);
     const refPasswordInput = useRef(null);
 
-    const [authMessage, setAuthMessage] = useState('_');
-    
-    
+    const navigate = useNavigate();
+
+    const [authMessage, setAuthMessage] = useState('');
+    const [authMessageColor, setAuthMessageColor] = useState("Red");
+
+    // Navigate to "/browse if already logged in"
+    useEffect(() => {
+        if (
+            sessionStorage.getItem('token')) {
+            navigate("/browse");
+        }
+    }, []);
+
+
     const getUserByEmail = async (email) => {
         try {
             const response = await fetch(url + `api/Users/GetUserByEmail/${email}`);
@@ -18,46 +31,62 @@ const LoginComponent = ({ onLogin }) => {
             return null;
         }
     }
-    
+
     const authenticateUser = async (email, password) => {
+        console.log((new URL(window.location).pathname))
         const user = await getUserByEmail(email);
-        
-        if (user === null){
+
+        if (user === null) {
             setAuthMessage("Incorrect email.");
-        } else if(password === user.password){
+            setAuthMessageColor("red");
+        } else if (password === user.password) {
             setAuthMessage("Login successful.");
+            setAuthMessageColor("green");
             sessionStorage.setItem('token', JSON.stringify(user));
-            onLogin(user);
+            try {
+                onLogin(user);
+            } catch (e) {
+                if ((new URL(window.location).pathname) == "/login") {
+                    console.log("islogis");
+                    navigate("/browse");
+                }
+            }
+
+
         } else {
             setAuthMessage("Incorrect password.");
         }
     }
-    
-    return (
-        <div id="Login">
-            <p>Login:</p>
-            <input
-                ref={refEmailInput}
-                type="text"
-                placeholder={"Email:"}
-                style={{
-                marginBottom: "10px"
-            }}
-            ></input><br/>
 
-            <input
-                ref={refPasswordInput}
-                type="password"
-                placeholder={"Password:"}
-                style={{
-                    marginBottom: "10px"
-                }}
-            ></input><br/>
-            <button onClick={() => authenticateUser(refEmailInput.current.value, refPasswordInput.current.value)}>Login</button> <br/> 
-            <h6>{ authMessage }</h6>
-        </div>
+    return (
+        <Container fluid>
+            <Col md="3">
+                <div id="Login">
+                    <h5>Login:</h5>
+                    <Input
+                        innerRef={refEmailInput}
+                        type="text"
+                        placeholder={"Email:"}
+                        style={{
+                            marginBottom: "10px"
+                        }}
+                    ></Input>
+
+                    <Input
+                        innerRef={refPasswordInput}
+                        type="password"
+                        placeholder={"Password:"}
+                        style={{
+                            marginBottom: "10px"
+                        }}
+                    ></Input>
+                    <Button onClick={() => authenticateUser(refEmailInput.current.value, refPasswordInput.current.value)}>Login</Button> <br />
+                    <h6 style={{ color: authMessageColor }}>{authMessage}</h6>
+                </div>
+            </Col>
+        </Container>
     );
-    
-    
+
+
 }
 export default LoginComponent;
