@@ -1,4 +1,4 @@
-﻿import React from 'react';
+﻿import React, {useEffect, useState} from 'react';
 import {Container} from "reactstrap";
 import DeckDisplay from "./shared/DeckDisplay";
 import {useGetCommunityDecksQuery, useGetPersonalDecksQuery} from "../api/decksApi";
@@ -10,18 +10,29 @@ import {setDecks} from "../redux/decksSlice";
 const Browse = () => {
     //temp
     const userId = 1;
-
+    const [wasLoaded, setWasLoaded] = useState(false);
     const dispatch = useDispatch();
-    // const personalDecks = useSelector(selectPersonalDecks);
-    // const communityDecks = useSelector(selectCommunityDecks);
 
-    const decks = useSelector( state => state.decks);
+    const decks = useSelector((state) => state.decks);
 
+    console.log(decks);
 
     const personalData = useGetPersonalDecksQuery(userId);
     const communityData = useGetCommunityDecksQuery();
 
-    if (!personalData.isLoading && !communityData.isLoading) {
+    useEffect(() => {
+        personalData.refetch();
+        communityData.refetch();
+        ///nu dara kart pabandyt su refetch
+        console.log(personalData.isLoading);
+        
+    }, []);
+    
+    if (personalData.isLoading || communityData.isLoading){
+        return(<Loading/>);
+    }
+
+    if (!personalData.isLoading && !communityData.isLoading && !wasLoaded) {
         const personalDecksData = personalData.data.result.reduce((acc, deck) => {
             acc[deck.id] = deck;
             return acc;
@@ -32,24 +43,20 @@ const Browse = () => {
             return acc;
         }, {});
 
-        //dispatch(setDecks({ ...personalDecksData, ...communityDecksData }));
-        console.log(setDecks({ ...personalDecksData, ...communityDecksData }));
+        setWasLoaded(true);
+
+        dispatch(setDecks({ ...personalDecksData, ...communityDecksData }));
     }
-    
-    
-    if (personalData.isLoading || communityData.isLoading) 
-        return(<Loading/>);
-    
     
     return(
         <Container className="m-5">
             <div>
                 <h5 className="mb-4">Personal decks</h5>
-                <DeckDisplay decks={{}}/>
+                <DeckDisplay decks={personalData.data.result}/>
             </div>
             <div>
                 <h5 className="mb-4">Community decks</h5>
-                <DeckDisplay decks={{}}/>
+                <DeckDisplay decks={communityData.data.result}/>
             </div>
         </Container>
         
