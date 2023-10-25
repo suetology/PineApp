@@ -37,7 +37,7 @@ const decksApi = createApi({
         }),
         addDeck : builder.mutation({
             query : ({Name, IsPersonal, CreatorId, Description}) => ({
-                url: "api/Decks/Add",
+                url: "api/Decks/",
                 method : "POST",
                 body: {
                     Name,
@@ -50,21 +50,21 @@ const decksApi = createApi({
         }),
         updateDeckById : builder.mutation({
             query : ({ deckId, deck }) => ({
-                url: `api/Decks/Update/${deckId}`,
+                url: `api/Decks/${deckId}`,
                 method : "PUT",
                 body: deck
             }),
         }),
         deleteDeckById : builder.mutation ({
             query : (deckId) => ({
-                url : `api/Decks/Delete/${deckId}`,
+                url : `api/Decks/${deckId}`,
                 method : "DELETE",
                 params : {}
             })
         }),
         addCard : builder.mutation({
             query : ({Front, Back, DeckId}) => ({
-                url: "api/Decks/Add/Card",
+                url: "api/Decks/Card",
                 method : "POST",
                 body: {
                     Front,
@@ -75,7 +75,7 @@ const decksApi = createApi({
         }),
         updateCardById : builder.mutation({
             query : ({cardId, Front, Back}) => ({
-                url : `api/Decks/Update/Card/${cardId}`,
+                url : `api/Decks/Card/${cardId}`,
                 method : "PUT",
                 body : {
                     Front,
@@ -85,7 +85,7 @@ const decksApi = createApi({
         }),
         deleteCardById : builder.mutation ({
             query : (cardId) => ({
-                url : `api/Decks/Delete/Card/${cardId}`,
+                url : `api/Decks/Card/${cardId}`,
                 method : "DELETE",
                 params : {}
             })

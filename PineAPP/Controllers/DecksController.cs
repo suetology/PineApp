@@ -63,7 +63,7 @@ public class DecksController : ControllerBase
         return Ok(response);
     } 
     
-    [HttpPost("Add")]
+    [HttpPost]
     public async Task<ActionResult<ApiResponse<List<Deck>>>> AddDeck([FromBody] CreateDeckDTO createDeckDto)
     {
     try
@@ -134,7 +134,7 @@ public class DecksController : ControllerBase
     }
 }
 
-    [HttpDelete("Delete/{deckId:int}")]
+    [HttpDelete("{deckId:int}")]
     public async Task<ActionResult<ApiResponse<List<Deck>>>> DeleteDeckById(int deckId)
     {
         try
@@ -178,7 +178,7 @@ public class DecksController : ControllerBase
         return NotFound();
     }
     
-    [HttpPut("Update/{deckId}")]
+    [HttpPut("{deckId}")]
     public async Task<ActionResult<ApiResponse<Deck>>> UpdateDeckById(int deckId,[FromBody] CreateDeckDTO createDeckDto)
     {
         try
@@ -198,10 +198,19 @@ public class DecksController : ControllerBase
             existingDeck.IsPersonal = createDeckDto.IsPersonal;
             existingDeck.Description = createDeckDto.Description;
             existingDeck.Name = createDeckDto.Name;
+            existingDeck.Correct = createDeckDto.Correct;
+            existingDeck.Wrong = createDeckDto.Wrong;
+            
+            var response = new ApiResponse<Deck>(
+                statusCode: HttpStatusCode.OK,
+                isSuccess: true,
+                errorMessage: null,
+                result: existingDeck
+            );
                 
             if (DeckBuilder.ContainsForbiddenCharacters(existingDeck.Name))
             {
-                var response = new ApiResponse<List<Deck>>(
+                response = new ApiResponse<Deck>(
                     statusCode: HttpStatusCode.BadRequest,
                     isSuccess: false,
                     errorMessage: "Deck name contains forbidden characters"
@@ -212,11 +221,11 @@ public class DecksController : ControllerBase
             _db.Decks.Update(existingDeck);
             await _db.SaveChangesAsync();
     
-            return Ok(existingDeck);
+            return Ok(response);
         }
         catch (Exception e)
         {
-            var response = new ApiResponse<List<Deck>>(
+            var response = new ApiResponse<Deck>(
                 isSuccess: false,
                 statusCode: HttpStatusCode.InternalServerError,
                 result: null,
@@ -227,7 +236,7 @@ public class DecksController : ControllerBase
             
     }
 
-    [HttpPost("Add/Card")]
+    [HttpPost("Card")]
     public async Task<ActionResult<ApiResponse<Card>>> AddCard([FromBody] CreateCardDTO createCard)
     {
         var response = new ApiResponse<Card>(
@@ -255,12 +264,12 @@ public class DecksController : ControllerBase
             };
 
             _db.Cards.Add(card);
-            _db.SaveChanges();
+            await _db.SaveChangesAsync();
 
             response = new ApiResponse<Card>(
             isSuccess: true,
             statusCode: HttpStatusCode.Created,
-            result: null,
+            result: card,
             errorMessage: null);
 
             //return CreatedAtRoute("GetCard", new { deckId = card.DeckId }, response);       
@@ -278,7 +287,7 @@ public class DecksController : ControllerBase
         }
     }
 
-    [HttpPut("Update/Card/{cardId:int}")]
+    [HttpPut("Card/{cardId:int}")]
     public async Task<ActionResult<ApiResponse<Card>>> UpdateCardById(int cardId, [FromBody] UpdateCardDTO updateCard)
     {
         try
@@ -315,7 +324,7 @@ public class DecksController : ControllerBase
         }
     }
     
-    [HttpDelete("Delete/Card/{cardId:int}")]
+    [HttpDelete("Card/{cardId:int}")]
     public async Task<ActionResult<ApiResponse<Card>>> DeleteCardById(int cardId)
     {
         try
@@ -358,10 +367,24 @@ public class DecksController : ControllerBase
 
         return NotFound();
     }
+    
+    [HttpGet("Card/{cardId:int}")]
+    public async Task<ActionResult<ApiResponse<Card>>> GetCardById(int cardId)
+    {
+        var card = await _db.Cards.FindAsync(cardId);
+        if (card == null)
+        {
+            return NotFound("Card not found");
+        }
+    
+        var totalCardsInDeck = await _db.Cards.Where(c => c.DeckId == card.DeckId).CountAsync();
+        var currentCardIndex = await _db.Cards.Where(c => c.DeckId == card.DeckId && c.Id <= cardId).CountAsync();
+        
+        card.TotalCardsInDeck = totalCardsInDeck;
+        card.CurrentCardIndex = currentCardIndex;
+        
+        return Ok(card);
+    }
 }
 
-//TO DO
 
-//Make it so when you are on the /create endpoint it redirects you to the new deck you are creating
-//Implement Delete functionality
-//Implement Add Cards functionality

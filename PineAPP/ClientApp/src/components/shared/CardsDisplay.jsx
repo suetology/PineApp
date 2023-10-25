@@ -11,7 +11,7 @@ const CardsDisplay = (props) => {
     const [open, setOpen] = useState('');
     const [values, setValue] = useState(props.deck.cards);
     const navigate = useNavigate();
-
+    
     const toggle = (id) => {
         if (open === id) {
             setOpen();
@@ -33,30 +33,21 @@ const CardsDisplay = (props) => {
     }
 
     const handleNewCard = async () => {
-        await addCard({ Back: "Back side", Front: "Front side", DeckId: props.deck.id });
-
-        //TODO refetch kartais veikia kartais ne
-        const response = await props.refetchData();
-        setValue(response.cards);
-        window.location.reload(); //auto refreshas bet yra tas buffering kai spaudi siaip refresha
+        const newCard = await addCard({ Back: "Back side", Front: "Front side", DeckId: props.deck.id });
+        setValue(values => [...values, newCard.data.result]);
     }
 
     const handleDelete = async (id) => {
         await deleteCard(id);
 
         setOpen();
-        const response = await props.refetchData();
-        setValue(response.cards);
-        window.location.reload();
+        const updatedValues = values.filter((card) => card.id !== id);
+        setValue(updatedValues);
     }
 
     const handleUpdateCard = async (id, i) => {
         await updateCard({cardId: id, Front: values[i].front, Back: values[i].back});
-        
         setOpen();
-        const response = await props.refetchData();
-        setValue(response.cards);
-        window.location.reload();
     }
 
     const renderAccordionItems = () => {

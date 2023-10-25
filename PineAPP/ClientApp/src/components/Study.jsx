@@ -1,19 +1,27 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState, createContext } from 'react';
 import { Button, Col, Row, Input } from "reactstrap";
 import { useParams } from 'react-router-dom';
 import { useGetDeckByIdQuery } from '../api/decksApi';
 import './css/Study.css';
 import Completion from "./shared/Completion";
+import { incrementCorrectAnswers, incrementWrongAnswers } from '../redux/slices';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Study = () => {
-    const { id } = useParams();
 
+
+    const { id } = useParams();
     const [isFlipped, setFlipped] = useState(false);
     const [isEditing, setEditing] = useState(false);
     const [isCompleted, setCompleted] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [index, setIndex] = useState(0);
     const [cards, setCards] = useState({});
+    
+    const dispatch = useDispatch();
+
+    const correctAnswers = useSelector(state => state.answers.correctAnswers);
+    const wrongAnswers = useSelector(state => state.answers.wrongAnswers);
 
     const deckData = useGetDeckByIdQuery(id);
     useEffect(() => {
@@ -24,8 +32,17 @@ const Study = () => {
     }, [deckData]);
 
     if (isLoading) return (<div>Loading...</div>);
-    if (isCompleted) return (<Completion/>);
-    
+
+    const cardProgress = (
+        <div className="card-progress-container">
+            <div className="card-progress">
+                {`${index + 1}/${cards.length}`}
+            </div>
+            <div className="deck-name">
+                {deckData.data.result.name}
+            </div>
+        </div>
+    );
     const handleCardClick = () => {
         setFlipped(!isFlipped);
     };
@@ -49,16 +66,22 @@ const Study = () => {
     };
 
     const handleCorrectClick = () => {
+        dispatch(incrementCorrectAnswers());
         setFlipped(false);
-        if (index < cards.length - 1) setIndex(index + 1);
-        else setCompleted(true);
+        setTimeout(() => {
+            if (index < cards.length - 1) setIndex(index + 1);
+            else setCompleted(true);
+        }, 100);
     };
 
     const handleWrongClick = () => {
+        dispatch(incrementWrongAnswers());
         setFlipped(false);
-        if (index < cards.length - 1) setIndex(index + 1);
-        else setCompleted(true);
-    }
+        setTimeout(() => {
+            if (index < cards.length - 1) setIndex(index + 1);
+            else setCompleted(true);
+        }, 100);
+    };
     
     let cardFrontContent = isEditing
         ? (
@@ -91,6 +114,8 @@ const Study = () => {
             </div>
         );
 
+    if (isCompleted) return (<Completion correct={correctAnswers} wrong={wrongAnswers} deck={deckData.data.result}/>);  // counts pass to Completion
+    
     let buttons = isFlipped && (
         <div className="p-1">
             <Button className="m-1 btn-success shadow" onClick={handleCorrectClick}>Correct</Button>
@@ -100,22 +125,23 @@ const Study = () => {
 
     return (
         <Row className="h-75 justify-content-center align-items-center pt-2">
+            {/* Progress Tracker */}
+            <Col md={8} sm={10} className="d-flex justify-content-center">
+                {cardProgress}
+            </Col>
             <Col id="card-container" md={8} sm={10}>
                 <div
                     id="card"
                     className={`h-100 ${isFlipped ? 'flipped' : ''}`}
                     onClick={handleCardClick}
                 >
-                    {cardFrontContent}
-                    {cardBackContent}
+                {isFlipped ? cardBackContent : cardFrontContent }
                 </div>
-
             </Col>
-            <div className="d-flex justify-content-center align-items-center">
+            <Col md={8} sm={10} className="d-flex justify-content-center">
                 {buttons}
-            </div>
+            </Col>
         </Row>
     );
 }
-
 export default Study;

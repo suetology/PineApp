@@ -1,18 +1,19 @@
-﻿import React, {useEffect, useState} from 'react';
+﻿import React, {useEffect, useState, useReducer} from 'react';
 import {Button, Col, Container, Input, Row} from "reactstrap";
 import CardsDisplay from "./shared/CardsDisplay";
 import {useParams} from 'react-router-dom';
 import {useGetDeckByIdQuery, useDeleteDeckByIdMutation, useUpdateDeckByIdMutation} from '../api/decksApi'
 import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+
 const Create = () => {
     const { id } = useParams();
-
     const navigate = useNavigate();
     const [deleteDeck] = useDeleteDeckByIdMutation();
     const [updateDeck] = useUpdateDeckByIdMutation();
     const [isEditing, setEditing] = useState(false);
     const [deck, setDeck] = useState(null);
-
+    
     const handleDelete = async(deckId) => {
         try{
             const response = await deleteDeck(deckId);
@@ -25,23 +26,17 @@ const Create = () => {
         }
     }
 
-    const refetchData = async () => {
-        await deckData.refetch();
-        setDeck(deckData.data?.result);
-        return deck;
-    }
-
-    const handleUpdateDeck = () => {
+    const handleUpdateDeck = async () => {
         setEditing(false);
         const deckDTO = {
             Name: deck.name,
             IsPersonal: deck.isPersonal,
             CreatorId: deck.creatorId,
-            Description: deck.description};
+            Description: deck.description,
+            Correct: deck.correct,
+            Wrong: deck.wrong};
 
-        updateDeck({deckId: deck.id, deck: deckDTO});
-        
-        //temp fix
+        await updateDeck({deckId: deck.id, deck: deckDTO});
         window.location.reload();
     }
 
@@ -102,15 +97,11 @@ const Create = () => {
                     <Container className="border rounded border-dark bg-light p-2 mb-2">
                         <Row>
                             <Col className="text-center">
-                                <h5 >3</h5>
+                                <h5 >{deck.correct}</h5>
                                 <p>Correct</p>
                             </Col>
                             <Col className="text-center">
-                                <h5>3</h5>
-                                <p>Not Studied</p>
-                            </Col>
-                            <Col className="text-center">
-                                <h5>3</h5>
+                                <h5>{deck.wrong}</h5>
                                 <p>Wrong</p>
                             </Col>
                         </Row>
@@ -121,7 +112,7 @@ const Create = () => {
 
             <Col className="m-5">
                 <p className="mb-2">Cards in deck:</p>
-                <CardsDisplay deck={deck} refetchData={refetchData}/>
+                <CardsDisplay deck={deck}/>
             </Col>
         </div>
     );

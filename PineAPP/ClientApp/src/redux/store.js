@@ -2,9 +2,11 @@
 import { decksApi } from "../api/decksApi";
 import { fileUploadApi } from "../api/fileUploadApi";
 import { usersApi } from "../api/usersApi";
+import answersReducer from "./slices"
 
 export const store = configureStore({
     reducer: {
+        answers: answersReducer,
         [decksApi.reducerPath]: decksApi.reducer,
         [fileUploadApi.reducerPath]: fileUploadApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer

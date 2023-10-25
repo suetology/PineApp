@@ -34,6 +34,9 @@ namespace PineAPP.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("CurrentCardIndex")
+                        .HasColumnType("int");
+
                     b.Property<int>("DeckId")
                         .HasColumnType("int");
 
@@ -46,6 +49,9 @@ namespace PineAPP.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
+                    b.Property<int>("TotalCardsInDeck")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("DeckId");
@@ -57,49 +63,61 @@ namespace PineAPP.Migrations
                         {
                             Id = 1,
                             Back = "4",
+                            CurrentCardIndex = 0,
                             DeckId = 1,
                             Examples = "",
-                            Front = "2 + 2 = ?"
+                            Front = "2 + 2 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 2,
                             Back = "3",
+                            CurrentCardIndex = 0,
                             DeckId = 1,
                             Examples = "",
-                            Front = "5 - 2 = ?"
+                            Front = "5 - 2 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 3,
                             Back = "12",
+                            CurrentCardIndex = 0,
                             DeckId = 1,
                             Examples = "",
-                            Front = "4 * 3 = ?"
+                            Front = "4 * 3 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 4,
                             Back = "4",
+                            CurrentCardIndex = 0,
                             DeckId = 2,
                             Examples = "",
-                            Front = "2 + 2 = ?"
+                            Front = "2 + 2 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 5,
                             Back = "3",
+                            CurrentCardIndex = 0,
                             DeckId = 2,
                             Examples = "",
-                            Front = "5 - 2 = ?"
+                            Front = "5 - 2 = ?",
+                            TotalCardsInDeck = 0
                         },
                         new
                         {
                             Id = 6,
                             Back = "12",
+                            CurrentCardIndex = 0,
                             DeckId = 2,
                             Examples = "",
-                            Front = "4 * 3 = ?"
+                            Front = "4 * 3 = ?",
+                            TotalCardsInDeck = 0
                         });
                 });
 
@@ -110,6 +128,9 @@ namespace PineAPP.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Correct")
+                        .HasColumnType("int");
 
                     b.Property<int>("CreatorId")
                         .HasColumnType("int");
@@ -126,7 +147,7 @@ namespace PineAPP.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Test")
+                    b.Property<int>("Wrong")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -137,20 +158,22 @@ namespace PineAPP.Migrations
                         new
                         {
                             Id = 1,
+                            Correct = 0,
                             CreatorId = 1,
                             Description = "A few cards to test your basic math skills",
                             IsPersonal = false,
                             Name = "Simple Math (Community)",
-                            Test = 0
+                            Wrong = 0
                         },
                         new
                         {
                             Id = 2,
+                            Correct = 0,
                             CreatorId = 1,
                             Description = "A few cards to test your basic math skills",
                             IsPersonal = true,
                             Name = "Simple Math (Personal)",
-                            Test = 0
+                            Wrong = 0
                         });
                 });
 
