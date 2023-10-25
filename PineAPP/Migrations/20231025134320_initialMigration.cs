@@ -30,6 +30,21 @@ namespace PineAPP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Email = table.Column<string>(type: "nvarchar(320)", maxLength: 320, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(32)", maxLength: 32, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Cards",
                 columns: table => new
                 {
@@ -61,6 +76,15 @@ namespace PineAPP.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "UserId", "Email", "Password", "UserName" },
+                values: new object[,]
+                {
+                    { 1, "admin@gmail.com", "admin", "admin" },
+                    { 2, "vardenis.pavardenis@gmail.com", "testavicius", "testas" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "Cards",
                 columns: new[] { "Id", "Back", "DeckId", "Examples", "Front" },
                 values: new object[,]
@@ -84,6 +108,9 @@ namespace PineAPP.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Cards");
+
+            migrationBuilder.DropTable(
+                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Decks");

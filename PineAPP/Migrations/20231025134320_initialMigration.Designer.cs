@@ -11,8 +11,8 @@ using PineAPP.Data;
 namespace PineAPP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231016210422_AddedLowerLimitsToUser")]
-    partial class AddedLowerLimitsToUser
+    [Migration("20231025134320_initialMigration")]
+    partial class initialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
