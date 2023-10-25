@@ -4,6 +4,7 @@ import CardsDisplay from "./shared/CardsDisplay";
 import {useParams} from 'react-router-dom';
 import {useGetDeckByIdQuery, useDeleteDeckByIdMutation, useUpdateDeckByIdMutation} from '../api/decksApi'
 import { useNavigate } from 'react-router-dom';
+import {useDispatch, useSelector} from "react-redux";
 
 const Create = () => {
     const { id } = useParams();
@@ -11,8 +12,11 @@ const Create = () => {
     const [deleteDeck] = useDeleteDeckByIdMutation();
     const [updateDeck] = useUpdateDeckByIdMutation();
     const [isEditing, setEditing] = useState(false);
-    const [deck, setDeck] = useState(null);
-    
+    //const [deck, setDeck] = useState(null);
+
+    const dispatch = useDispatch();
+    const decks = useSelector((state) => state.decks);
+    const [deck, setDeck] = useState(decks[id]);
 
     const handleDelete = async(deckId) => {
         try{
@@ -37,7 +41,6 @@ const Create = () => {
             Wrong: deck.wrong};
 
         await updateDeck({deckId: deck.id, deck: deckDTO});
-        window.location.reload();
     }
 
     const deckData = useGetDeckByIdQuery(id);
@@ -46,9 +49,9 @@ const Create = () => {
         return(<div>Loading...</div>);
 
     const deckResult = deckData.data?.result;
+    dispatch(setDeck(deckResult));
 
     if (!deck) {
-        setDeck(deckResult);
         return(<div>Loading...</div>);
     }
 
