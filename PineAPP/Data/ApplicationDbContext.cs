@@ -10,10 +10,29 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<Deck> Decks { get; set; }
     public DbSet<Card> Cards { get; set; }
+    
+    public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>().HasData(
+            new User()
+            {
+                UserId = 1,
+                Email = "admin@gmail.com",
+                UserName = "admin",
+                Password = "admin"
+            },
+            new User()
+            {
+                UserId = 2,
+                Email = "vardenis.pavardenis@gmail.com",
+                UserName = "testas",
+                Password = "testavicius"
+            }
+        );
 
         modelBuilder.Entity<Deck>().HasData(
             new Deck
