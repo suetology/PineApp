@@ -6,6 +6,7 @@ import {useGetDeckByIdQuery, useDeleteDeckByIdMutation, useUpdateDeckByIdMutatio
 import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {setDecks} from "../redux/decksSlice";
+import {fetchApiData} from "../redux/apiSlice";
 
 const Create = () => {
     const { id } = useParams();
@@ -14,14 +15,15 @@ const Create = () => {
     const [updateDeck] = useUpdateDeckByIdMutation();
     const [isEditing, setEditing] = useState(false);
     const [wasLoaded, setWasLoaded] = useState(false);
-    //const [deck, setDeck] = useState(null);
 
     const dispatch = useDispatch();
+    const deckData = useSelector((state) => state.api.data);
     const decks = useSelector((state) => state.decks);
-    const [deck, setDeck] = useState(decks[id]);
+    const [deck, setDeck] = useState(null);
     
     console.log(decks);
-    console.log("decks");
+    console.log("state decks");
+    
 
     const handleDelete = async(deckId) => {
         try{
@@ -50,42 +52,36 @@ const Create = () => {
         dispatch(setDecks({[id]: deck}));
     }
 
-    const deckData = useGetDeckByIdQuery(id);
-
     useEffect(() => {
-        deckData.refetch();
-        console.log("re");
-        
+        dispatch(fetchApiData(`api/Decks/${id}`))
     }, []);
+    
+    if (!deckData)
+        return(<div>Loading...</div>);
 
-    if (!deckData.isLoading && !wasLoaded){
-        console.log("upda");
-        const deckResult = deckData.data?.result;
+    console.log("res");
+    console.log(deckData);
+
+
+    if (!wasLoaded){
+        dispatch(setDecks({[deckData.result.id]: deckData.result}));
         setWasLoaded(true);
-        
-        dispatch(setDecks({[deckResult.id]: deckResult}));
+    }
+
+    
+    if (!deck) {
+        setDeck(decks[id]);
+        return(<div>Loading...</div>);
     }
     
-    if (deckData.isLoading)
-        return(<div>Loading...</div>);
-
-    
-    if (!deck)
-        return(<div>Loading...</div>);
-    
-
-
-
-    if (!deckData.data?.result) {
-        return <div>Deck not found</div>;
-    }
+    console.log(decks);
 
     const name =
         isEditing
             ? <div>
                 <Input type="text"
                        value={deck.name}
-                       onChange={(e) => dispatch(setDecks({[id]: {...deck, name: e.target.value}}))}/>
+                       onChange={(e) => setDeck({...deck, name: e.target.value})}/>
             </div>
             : <p className="h3"
                  style={{cursor: 'pointer'}}
@@ -98,7 +94,7 @@ const Create = () => {
             ? <div>
                 <Input type="textarea"
                        value={deck.description}
-                       onChange={(e) => dispatch(setDecks({[id]: {...deck, description: e.target.value}}))}/>
+                       onChange={(e) => setDeck({...deck, description: e.target.value})}/>
             </div>
             : <p className="border border-dark bg-light p-2 pr-5 pb-5"
                  style={{cursor: 'pointer'}}

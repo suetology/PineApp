@@ -1,14 +1,21 @@
 ﻿import React, {useState} from 'react';
 import {Accordion, AccordionBody, AccordionHeader, AccordionItem, Button, Col, Input} from "reactstrap";
 import {useAddCardMutation, useDeleteCardByIdMutation, useUpdateCardByIdMutation} from "../../api/cardsApi";
+import {useParams} from "react-router-dom";
+import {setDecks} from "../../redux/decksSlice";
+import {useDispatch, useSelector} from "react-redux";
+
 
 const CardsDisplay = (props) => {
-
+    
+    const { id } = useParams();
+    const decks = useSelector((state) => state.decks);
+    const dispatch = useDispatch();
     const [addCard] = useAddCardMutation();
     const [deleteCard] = useDeleteCardByIdMutation();
     const [updateCard] = useUpdateCardByIdMutation();
     const [open, setOpen] = useState('');
-    const [values, setValue] = useState(props.deck.cards);
+    const [values, setValue] = useState(decks[id].cards);
     
     const toggle = (id) => {
         if (open === id) {
@@ -17,6 +24,7 @@ const CardsDisplay = (props) => {
             setOpen(id);
         }
     };
+
 
     const handleFrontInputChange = (e, i) => {
         const updatedValues = [...values];
@@ -31,8 +39,10 @@ const CardsDisplay = (props) => {
     }
 
     const handleNewCard = async () => {
-        const newCard = await addCard({ Back: "Back side", Front: "Front side", DeckId: props.deck.id });
-        setValue(values => [...values, newCard.data.result]);
+        const newCard = await addCard({ Back: "Back side", Front: "Front side", DeckId: id });
+        const updatedValues = [...values, newCard.data.result]
+        setValue(updatedValues);
+        dispatch(setDecks({[id]: {...decks[id], cards: updatedValues}}));
     }
 
     const handleDelete = async (id) => {
