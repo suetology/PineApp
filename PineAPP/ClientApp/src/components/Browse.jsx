@@ -1,48 +1,56 @@
-﻿import React from 'react';
+﻿import React, {useEffect, useState} from 'react';
 import {Container} from "reactstrap";
 import DeckDisplay from "./shared/DeckDisplay";
-import {
-    useGetCommunityDecksQuery,
-    useGetPersonalDecksQuery
-} from "../api/decksApi";
-import { useEffect, useState } from 'react';
-import LoginComponent from "./LoginComponent"
+import {useGetAllDecksByIdQuery, useGetCommunityDecksQuery, useGetPersonalDecksQuery} from "../api/decksApi";
 import Loading from "./shared/Loading";
+import {useDispatch, useSelector} from "react-redux";
+import {setDecks} from "../redux/decksSlice";
+import LoginComponent from "./LoginComponent"
 
 const Browse = () => {
-
-    //Login functionality
+    
+    const dispatch = useDispatch();
+    const decks = useSelector((state) => state.decks);
     const [token, setToken] = useState(JSON.parse(sessionStorage.getItem('token')));
     const [userId, setUserId] = useState(0);
+
+    const deckData = useGetAllDecksByIdQuery(userId)
+
+    useEffect(() => {
+        deckData.refetch();
+    }, [userId]);
+    
     const handleLogin = (newToken) => {
         setToken(newToken);
     }
+    
     useEffect(() => {
         if(token) {
             setUserId(token.userId);
         }
     }, [token]);
-    
-    const personalData = useGetPersonalDecksQuery(userId);
-    const communityData = useGetCommunityDecksQuery();
-
-    useEffect(() => {
-        // Trigger data fetching when the component mounts
-        // Component being when we navigate back to /browse
-        personalData.refetch();
-        communityData.refetch();
-    }, []);
 
     if(!token) {
         return <LoginComponent onLogin={handleLogin}></LoginComponent>
     }
-    
-    if (personalData.isLoading || communityData.isLoading) 
-        return(<Loading/>);
-    
-    const personalDecks = personalData.data.result;
-    const communityDecks = communityData.data.result;
 
+    if (deckData.isLoading) {
+        return <Loading />;
+    }
+    
+    if (!decks) {
+        const formatted = deckData.data.result.reduce((acc, deck) => {
+            acc[deck.id] = deck;
+            return acc;
+        }, {});
+        dispatch(setDecks(formatted));
+        return <Loading/>
+    }
+    
+    const communityDecks = Object.values(decks).filter(deck => !deck.isPersonal);
+    const personalDecks = Object.values(decks).filter(deck => deck.isPersonal);
+
+    
     return(
         <Container className="m-5">
             <div>
