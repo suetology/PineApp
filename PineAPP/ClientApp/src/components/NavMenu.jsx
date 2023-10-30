@@ -1,18 +1,11 @@
 import React, { useState } from 'react';
-import { Button, Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Button, Collapse, Label, Nav, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Link } from 'react-router-dom';
+import LoginStatusNavbar from './shared/LoginStatusNavbar';
 
 const NavMenu = () => {
-    const navigate = useNavigate();
     const [isCollapsed, setCollapsed] = useState(true);
 
-    const handleLogOut = () => {
-      sessionStorage.clear();
-      navigate("/")
-    }
-    const handleLogIn = () => {
-      navigate("/login")
-    }
     
     return (
         <header>
@@ -32,14 +25,9 @@ const NavMenu = () => {
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/create">Create</NavLink>
                 </NavItem>
-              </ul>
+              </ul >
               <ul className="navbar-nav ms-auto">
-                <NavItem style={{marginRight: 10}}>
-                  <Button onClick={() => (sessionStorage.getItem('token') ? true : handleLogIn() )}>Log In</Button>
-                </NavItem>
-                <NavItem>
-                  <Button onClick={() => (sessionStorage.getItem('token') ? handleLogOut() : true )}>Log Out</Button>
-                </NavItem>
+                <LoginStatusNavbar></LoginStatusNavbar>
               </ul>
             </Collapse>
           </Navbar>
