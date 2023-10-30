@@ -18,7 +18,8 @@ const Browse = () => {
 
     useEffect(() => {
         deckData.refetch();
-    }, []);
+    }, [userId]);
+    
     const handleLogin = (newToken) => {
         setToken(newToken);
     }

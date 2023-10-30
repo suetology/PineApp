@@ -8,7 +8,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setDecks} from "../redux/decksSlice";
 
 const Create = () => {
-    const userId = 1; //temp
+    const [userId, setUserId] = useState(JSON.parse(sessionStorage.getItem('token')).userId); //temp
     const { id } = useParams();
     const navigate = useNavigate();
     const [deleteDeck] = useDeleteDeckByIdMutation();
@@ -21,7 +21,7 @@ const Create = () => {
     const [deck, setDeck] = useState(null);
     
     const deckData = useGetAllDecksByIdQuery(userId);
-
+    
     const handleDelete = async(deckId) => {
         try{
             const response = await deleteDeck(deckId);
