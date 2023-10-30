@@ -8,8 +8,16 @@ import {
 import { useEffect, useState } from 'react';
 import LoginComponent from "./LoginComponent"
 import Loading from "./shared/Loading";
+const url = "https://localhost:7074/";
 
 const Browse = () => {
+
+    
+    const [loadingSearch, setLoadingSearch] = useState(false);
+    const [searchError, setSearchError] = useState(null);
+
+    const [searchKeyword, setSearchKeyword] = useState('');
+    const [searchResults, setSearchResults] = useState([]);
 
     //Login functionality
     const [token, setToken] = useState(JSON.parse(sessionStorage.getItem('token')));
@@ -22,40 +30,100 @@ const Browse = () => {
             setUserId(token.userId);
         }
     }, [token]);
-    
+
     const personalData = useGetPersonalDecksQuery(userId);
     const communityData = useGetCommunityDecksQuery();
-
+    
     useEffect(() => {
-        // Trigger data fetching when the component mounts
-        // Component being when we navigate back to /browse
-        personalData.refetch();
-        communityData.refetch();
-    }, []);
-
+        // Trigger data fetching when the component mounts or when searchKeyword changes
+        if (searchKeyword) {
+            fetchSearchResults();
+        }
+    }, [searchKeyword]);
+    
     if(!token) {
         return <LoginComponent onLogin={handleLogin}></LoginComponent>
     }
-    
-    if (personalData.isLoading || communityData.isLoading) 
+
+    if (personalData.isLoading || communityData.isLoading)
         return(<Loading/>);
     
     const personalDecks = personalData.data.result;
     const communityDecks = communityData.data.result;
 
-    return(
-        <Container className="m-5">
-            <div>
-                <h5 className="mb-4">Personal decks</h5>
-                <DeckDisplay decks={personalDecks}/>
-            </div>
-            <div>
-                <h5 className="mb-4">Community decks</h5>
-                <DeckDisplay decks={communityDecks}/>
-            </div>
-        </Container>
-        
-    );  
+    const personalDecksFiltered = personalDecks.filter(deck => deck.name.includes(searchKeyword));
+    const communityDecksFiltered = communityDecks.filter(deck => deck.name.includes(searchKeyword));
+
+    let decksToDisplay = [];
+    if (searchResults.length > 0) {
+        decksToDisplay = searchResults;
+    } else {
+        decksToDisplay = personalDecksFiltered.concat(communityDecksFiltered);
+    }
+    
+    const fetchSearchResults = async () => {
+        try {
+            setLoadingSearch(true);
+            const response = await fetch(url + `api/Decks/Search/${searchKeyword}`);
+
+            if (response.ok) {
+                const data = await response.json();
+                setSearchResults(data.result);
+                setSearchError(null);
+            } else {
+                if (response.status === 404) {
+                    setSearchResults([]); // Clear search results when no results found
+                    setSearchError('No results found.');
+                } else {
+                    setSearchError('An error occurred while searching.');
+                }
+            }
+        } catch (error) {
+            console.error('Search error:', error);
+            setSearchResults([]); // Clear search results on error
+            setSearchError('An error occurred while searching.');
+        } finally {
+            setLoadingSearch(false);
+        }
+    };
+    
+    return (
+        <div>
+            <input
+                type="text"
+                placeholder="Search decks by keyword"
+                value={searchKeyword}
+                onChange={(e) => setSearchKeyword(e.target.value)}
+            />
+            <button onClick={fetchSearchResults} disabled={loadingSearch}>
+                {loadingSearch ? 'Searching...' : 'Search'}
+            </button>
+
+            {/* Display search results */}
+            {searchError && <p>{searchError}</p>}
+            {loadingSearch && <Loading />}
+            {searchResults.length > 0 && (
+                <div>
+                    {searchResults.map((deck) => (
+                        <div key={deck.id}>
+                            {/* Add other deck information here */}
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            <Container className="m-5">
+                <div>
+                    <h5 className="mb-4">Personal decks</h5>
+                    <DeckDisplay decks={personalDecksFiltered} />
+                </div>
+                <div>
+                    <h5 className="mb-4">Community decks</h5>
+                    <DeckDisplay decks={communityDecksFiltered} />
+                </div>
+            </Container>
+        </div>
+    );
 }
 
 export default Browse;
