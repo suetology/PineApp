@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
 import { Link } from 'react-router-dom';
-import Login from "./shared/Login";
+import LoginStatusNavbar from './shared/LoginStatusNavbar';
 
 const NavMenu = () => {
     const [isCollapsed, setCollapsed] = useState(true);
@@ -24,11 +24,9 @@ const NavMenu = () => {
                 <NavItem>
                   <NavLink tag={Link} className="text-dark" to="/create">Create</NavLink>
                 </NavItem>
-              </ul>
+              </ul >
               <ul className="navbar-nav ms-auto">
-                <NavItem>
-                  <Login>Sign in</Login>
-                </NavItem>
+                <LoginStatusNavbar></LoginStatusNavbar>
               </ul>
             </Collapse>
           </Navbar>

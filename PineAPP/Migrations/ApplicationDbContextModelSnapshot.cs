@@ -129,7 +129,7 @@ namespace PineAPP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("CorrectCards")
+                    b.Property<int>("Correct")
                         .HasColumnType("int");
 
                     b.Property<int>("CreatorId")
@@ -147,10 +147,7 @@ namespace PineAPP.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
 
-                    b.Property<int>("Test")
-                        .HasColumnType("int");
-
-                    b.Property<int>("WrongCards")
+                    b.Property<int>("Wrong")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -161,24 +158,66 @@ namespace PineAPP.Migrations
                         new
                         {
                             Id = 1,
-                            CorrectCards = 0,
+                            Correct = 0,
                             CreatorId = 1,
                             Description = "A few cards to test your basic math skills",
                             IsPersonal = false,
                             Name = "Simple Math (Community)",
-                            Test = 0,
-                            WrongCards = 0
+                            Wrong = 0
                         },
                         new
                         {
                             Id = 2,
-                            CorrectCards = 0,
+                            Correct = 0,
                             CreatorId = 1,
                             Description = "A few cards to test your basic math skills",
                             IsPersonal = true,
                             Name = "Simple Math (Personal)",
-                            Test = 0,
-                            WrongCards = 0
+                            Wrong = 0
+                        });
+                });
+
+            modelBuilder.Entity("PineAPP.Models.User", b =>
+                {
+                    b.Property<int>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserId"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(320)
+                        .HasColumnType("nvarchar(320)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Users");
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = 1,
+                            Email = "admin@gmail.com",
+                            Password = "admin",
+                            UserName = "admin"
+                        },
+                        new
+                        {
+                            UserId = 2,
+                            Email = "vardenis.pavardenis@gmail.com",
+                            Password = "testavicius",
+                            UserName = "testas"
                         });
                 });
 

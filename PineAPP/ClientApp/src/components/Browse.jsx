@@ -5,15 +5,33 @@ import {useGetAllDecksByIdQuery, useGetCommunityDecksQuery, useGetPersonalDecksQ
 import Loading from "./shared/Loading";
 import {useDispatch, useSelector} from "react-redux";
 import {setDecks} from "../redux/decksSlice";
+import LoginComponent from "./LoginComponent"
 
 const Browse = () => {
-    //temp
-    const userId = 1;
+    
     const dispatch = useDispatch();
     const decks = useSelector((state) => state.decks);
+    const [token, setToken] = useState(JSON.parse(sessionStorage.getItem('token')));
+    const [userId, setUserId] = useState(0);
 
     const deckData = useGetAllDecksByIdQuery(userId)
 
+    useEffect(() => {
+        deckData.refetch();
+    }, []);
+    const handleLogin = (newToken) => {
+        setToken(newToken);
+    }
+    
+    useEffect(() => {
+        if(token) {
+            setUserId(token.userId);
+        }
+    }, [token]);
+
+    if(!token) {
+        return <LoginComponent onLogin={handleLogin}></LoginComponent>
+    }
 
     if (deckData.isLoading) {
         return <Loading />;

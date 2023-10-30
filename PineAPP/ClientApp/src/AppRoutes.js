@@ -3,6 +3,7 @@ import Browse from "./components/Browse";
 import Create from "./components/Create";
 import Study from "./components/Study";
 import CreateDeck from "./components/CreateDeck"
+import LoginPage from "./components/LoginComponent.jsx";
 
 const AppRoutes = [
   {
@@ -24,6 +25,10 @@ const AppRoutes = [
   {
     path : '/create',
     element : <CreateDeck/>
+  },
+  {
+    path: '/login',
+    element: <LoginPage/>
   }
 ];
 
