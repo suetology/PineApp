@@ -47,14 +47,6 @@ const Study = () => {
         setFlipped(!isFlipped);
     };
 
-    const handleEditClick = () => {
-        setEditing(true);
-    };
-
-    const handleBackClick = () => {
-        if (index !== 0) setIndex(index - 1);
-    };
-
     const handleSave = () => {
         setEditing(false);
     };

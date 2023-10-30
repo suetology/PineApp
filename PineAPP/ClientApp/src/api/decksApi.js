@@ -14,6 +14,14 @@ const decksApi = createApi({
             }),
             providesTags : ["Decks"],
         }),
+        getAllDecksById: builder.query({
+            query: (creatorId) => ({
+                url: `api/Decks/All/${creatorId}`,
+                method: "GET",
+                params: {}
+            }),
+            providesTags : ["Decks"],
+        }),
         getCommunityDecks: builder.query({
             query: () => ({
                 url: "api/Decks/Community",
@@ -68,6 +76,7 @@ const decksApi = createApi({
 export { decksApi };
 export const { useGetAllDecksQuery,
     useGetCommunityDecksQuery,
+    useGetAllDecksByIdQuery,
     useGetPersonalDecksQuery,
     useGetDeckByIdQuery,
     useAddDeckMutation,

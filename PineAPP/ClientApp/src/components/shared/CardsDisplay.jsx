@@ -8,14 +8,14 @@ import {useDispatch, useSelector} from "react-redux";
 
 const CardsDisplay = (props) => {
     
-    const { id } = useParams();
     const decks = useSelector((state) => state.decks);
     const dispatch = useDispatch();
     const [addCard] = useAddCardMutation();
     const [deleteCard] = useDeleteCardByIdMutation();
     const [updateCard] = useUpdateCardByIdMutation();
     const [open, setOpen] = useState('');
-    const [values, setValue] = useState(decks[id].cards);
+    const [values, setValue] = useState(props.deck.cards);
+    const deckId = props.deckId;
     
     const toggle = (id) => {
         if (open === id) {
@@ -37,24 +37,30 @@ const CardsDisplay = (props) => {
         updatedValues[i] = { ...updatedValues[i], back: e.target.value };
         setValue(updatedValues);
     }
-
+    
     const handleNewCard = async () => {
-        const newCard = await addCard({ Back: "Back side", Front: "Front side", DeckId: id });
+        const newCard = await addCard({ Back: "Back side", Front: "Front side", DeckId: deckId });
         const updatedValues = [...values, newCard.data.result]
         setValue(updatedValues);
-        dispatch(setDecks({[id]: {...decks[id], cards: updatedValues}}));
+        dispatch(setDecks({[deckId]: {...decks[deckId], cards: updatedValues}}));
     }
 
-    const handleDelete = async (id) => {
-        await deleteCard(id);
+    const handleDelete = async (cardId) => {
+        await deleteCard(cardId);
 
         setOpen();
-        const updatedValues = values.filter((card) => card.id !== id);
+        const updatedValues = values.filter((card) => card.id !== cardId);
         setValue(updatedValues);
+        dispatch(setDecks({[deckId]: {...decks[deckId], cards: updatedValues}}));
     }
 
-    const handleUpdateCard = async (id, i) => {
-        await updateCard({cardId: id, Front: values[i].front, Back: values[i].back});
+    const handleUpdateCard = async (cardId, i) => {
+        await updateCard({cardId: cardId, Front: values[i].front, Back: values[i].back});
+        
+        const updatedCards = [...decks[deckId].cards]
+        updatedCards[i] = values[i];
+        
+        dispatch(setDecks({[deckId]: {...decks[deckId], cards: updatedCards} }));
         setOpen();
     }
 

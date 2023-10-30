@@ -2,13 +2,13 @@
 import {Button, Col, Container, Input, Row} from "reactstrap";
 import CardsDisplay from "./shared/CardsDisplay";
 import {useParams} from 'react-router-dom';
-import {useGetDeckByIdQuery, useDeleteDeckByIdMutation, useUpdateDeckByIdMutation} from '../api/decksApi'
+import {useDeleteDeckByIdMutation, useUpdateDeckByIdMutation, useGetAllDecksByIdQuery} from '../api/decksApi'
 import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
 import {setDecks} from "../redux/decksSlice";
-import {fetchApiData} from "../redux/apiSlice";
 
 const Create = () => {
+    const userId = 1; //temp
     const { id } = useParams();
     const navigate = useNavigate();
     const [deleteDeck] = useDeleteDeckByIdMutation();
@@ -17,13 +17,10 @@ const Create = () => {
     const [wasLoaded, setWasLoaded] = useState(false);
 
     const dispatch = useDispatch();
-    const deckData = useSelector((state) => state.api.data);
     const decks = useSelector((state) => state.decks);
     const [deck, setDeck] = useState(null);
     
-    console.log(decks);
-    console.log("state decks");
-    
+    const deckData = useGetAllDecksByIdQuery(userId);
 
     const handleDelete = async(deckId) => {
         try{
@@ -51,31 +48,26 @@ const Create = () => {
 
         dispatch(setDecks({[id]: deck}));
     }
-
-    useEffect(() => {
-        dispatch(fetchApiData(`api/Decks/${id}`))
-    }, []);
     
-    if (!deckData)
+    if (deckData.isLoading)
         return(<div>Loading...</div>);
+    
 
-    console.log("res");
-    console.log(deckData);
+    if (!decks) {
+        const formatted = deckData.data.result.reduce((acc, deck) => {
+            acc[deck.id] = deck;
+            return acc;
+        }, {});
+        dispatch(setDecks(formatted));
 
-
-    if (!wasLoaded){
-        dispatch(setDecks({[deckData.result.id]: deckData.result}));
-        setWasLoaded(true);
+        return(<div>Loading...</div>); 
     }
-
     
     if (!deck) {
         setDeck(decks[id]);
         return(<div>Loading...</div>);
     }
     
-    console.log(decks);
-
     const name =
         isEditing
             ? <div>
@@ -131,7 +123,7 @@ const Create = () => {
 
             <Col className="m-5">
                 <p className="mb-2">Cards in deck:</p>
-                <CardsDisplay deck={deck}/>
+                <CardsDisplay deck={deck} deckId={id}/>
             </Col>
         </div>
     );
