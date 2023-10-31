@@ -1,14 +1,14 @@
-﻿import React from 'react';
-import {Container} from "reactstrap";
+﻿import {Container} from "reactstrap";
+import React, {useEffect, useState} from 'react';
 import DeckDisplay from "./shared/DeckDisplay";
-import {
-    useGetCommunityDecksQuery,
-    useGetPersonalDecksQuery
-} from "../api/decksApi";
-import { useEffect, useState } from 'react';
-import LoginComponent from "./LoginComponent"
 import Loading from "./shared/Loading";
+import {useGetAllDecksByIdQuery, useGetCommunityDecksQuery, useGetPersonalDecksQuery} from "../api/decksApi";
+import {useDispatch, useSelector} from "react-redux";
+import {setDecks} from "../redux/decksSlice";
+import LoginComponent from "./LoginComponent"
+
 const url = "https://localhost:7074/";
+
 
 const Browse = () => {
 
@@ -20,8 +20,16 @@ const Browse = () => {
     const [searchResults, setSearchResults] = useState([]);
 
     //Login functionality
+    const dispatch = useDispatch();
+    const decks = useSelector((state) => state.decks);
     const [token, setToken] = useState(JSON.parse(sessionStorage.getItem('token')));
     const [userId, setUserId] = useState(0);
+    
+    const deckData = useGetAllDecksByIdQuery(userId)
+
+    useEffect(() => {
+        deckData.refetch();
+    }, [userId]);
     const handleLogin = (newToken) => {
         setToken(newToken);
     }
@@ -31,8 +39,8 @@ const Browse = () => {
         }
     }, [token]);
 
-    const personalData = useGetPersonalDecksQuery(userId);
-    const communityData = useGetCommunityDecksQuery();
+   // const personalData = useGetPersonalDecksQuery(userId);
+   // const communityData = useGetCommunityDecksQuery();
     
     useEffect(() => {
         // Trigger data fetching when the component mounts or when searchKeyword changes
@@ -45,12 +53,22 @@ const Browse = () => {
         return <LoginComponent onLogin={handleLogin}></LoginComponent>
     }
 
-    if (personalData.isLoading || communityData.isLoading)
-        return(<Loading/>);
-    
-    const personalDecks = personalData.data.result;
-    const communityDecks = communityData.data.result;
+    if (deckData.isLoading) {
+        return <Loading />;
+    }
 
+    if (!decks) {
+        const formatted = deckData.data.result.reduce((acc, deck) => {
+            acc[deck.id] = deck;
+            return acc;
+        }, {});
+        dispatch(setDecks(formatted));
+        return <Loading/>
+    }
+
+    const communityDecks = Object.values(decks).filter(deck => !deck.isPersonal);
+    const personalDecks = Object.values(decks).filter(deck => deck.isPersonal);
+    
     const personalDecksFiltered = personalDecks.filter(deck => deck.name.includes(searchKeyword));
     const communityDecksFiltered = communityDecks.filter(deck => deck.name.includes(searchKeyword));
 
