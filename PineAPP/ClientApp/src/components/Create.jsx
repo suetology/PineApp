@@ -5,7 +5,7 @@ import {useParams} from 'react-router-dom';
 import {useDeleteDeckByIdMutation, useUpdateDeckByIdMutation, useGetAllDecksByIdQuery} from '../api/decksApi'
 import { useNavigate } from 'react-router-dom';
 import {useDispatch, useSelector} from "react-redux";
-import {setDecks} from "../redux/decksSlice";
+import {setDecks, deleteDeckState} from "../redux/decksSlice";
 
 const Create = () => {
     const [userId, setUserId] = useState(JSON.parse(sessionStorage.getItem('token')).userId); //temp
@@ -26,7 +26,9 @@ const Create = () => {
         try{
             const response = await deleteDeck(deckId);
             console.log("Successfully deleted deck: ", response);
-
+            
+            dispatch(deleteDeckState(deckId));
+            
             navigate("/browse");
         } catch (error)
         {
@@ -46,7 +48,7 @@ const Create = () => {
 
         await updateDeck({deckId: id, deck: deckDTO});
 
-        dispatch(setDecks({[id]: deck}));
+        dispatch(setDecks({[id]: {...decks[id], name: deck.name, description: deck.description}}));
     }
     
     if (deckData.isLoading)

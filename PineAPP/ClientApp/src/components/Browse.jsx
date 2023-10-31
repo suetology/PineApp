@@ -25,7 +25,7 @@ const Browse = () => {
     const [token, setToken] = useState(JSON.parse(sessionStorage.getItem('token')));
     const [userId, setUserId] = useState(0);
     
-    const deckData = useGetAllDecksByIdQuery(userId)
+    const deckData = useGetAllDecksByIdQuery(userId);
 
     useEffect(() => {
         deckData.refetch();

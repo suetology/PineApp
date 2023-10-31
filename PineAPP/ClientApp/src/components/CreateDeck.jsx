@@ -5,6 +5,8 @@ import { useAddDeckMutation} from '../api/decksApi';
 import { useNavigate } from 'react-router-dom';
 import {FileUpload} from "./FileUpload";
 import LoginComponent from "./LoginComponent"
+import {useDispatch, useSelector} from "react-redux";
+import {setDecks} from "../redux/decksSlice";
 
 const CreateDeck = () => {
 
@@ -13,6 +15,7 @@ const CreateDeck = () => {
     const [creatorId, setCreatorId] = useState(0);
     const [isPersonal, setIsPersonal] = useState(false);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleNameChange = (e) => {
         setName(e.target.value);
@@ -21,10 +24,6 @@ const CreateDeck = () => {
     const handleDescriptionChange = (e) => {
         setDescription(e.target.value);
     }
-
-    // const handleCreatorIdChange = (e) => {
-    //     setCreatorId(e.target.value);
-    // }
 
     const handleIsPersonalChange = (e) => {
         setIsPersonal(e.target.value === "Personal");
@@ -51,9 +50,7 @@ const CreateDeck = () => {
         e.preventDefault();
 
         const intCreatorId = +creatorId;
-
-        console.log(name, description, intCreatorId, isPersonal);
-    
+        
         const requestData =  {
             Name : name,
             IsPersonal : isPersonal,
@@ -64,16 +61,17 @@ const CreateDeck = () => {
         try {
             const response = await addDeck((requestData), {
               headers: {
-                'Content-Type': 'application/json', // Set the content type to JSON
+                'Content-Type': 'application/json',
               },
             });
             
             console.log("No error: " , response);
+            
+            dispatch(setDecks({[response.data.result.id]: {...response.data.result, cards: []}}))
 
             navigate("/browse");
           } catch (error) {
             console.error("Error adding deck:", error);
-            // Handle errors here
           }
     }
 
@@ -87,9 +85,6 @@ const CreateDeck = () => {
                         <Input value = {name} onChange = {handleNameChange}></Input>
                         <label>Description</label>
                         <Input value = {description} onChange = {handleDescriptionChange} type="textarea"></Input>
-                        {/* Not needed because of login functionality*/}
-                        {/* <label>Enter your Creator Id</label>
-                        <Input value = {creatorId} onChange = {handleCreatorIdChange}></Input> */}
                     </div>
                     <div>
                         <label>What type of deck are you creating?</label>

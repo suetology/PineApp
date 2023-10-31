@@ -74,11 +74,11 @@ public class DecksController : ControllerBase
     } 
     
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<List<Deck>>>> AddDeck([FromBody] CreateDeckDTO createDeckDto)
+    public async Task<ActionResult<ApiResponse<Deck>>> AddDeck([FromBody] CreateDeckDTO createDeckDto)
     {
     try
     {
-        var response = new ApiResponse<List<Deck>>(
+        var response = new ApiResponse<Deck>(
         isSuccess: false,
         statusCode: HttpStatusCode.BadRequest,
         result: null, // You can specify the result as needed
@@ -103,7 +103,7 @@ public class DecksController : ControllerBase
 
         if (DeckBuilder.ContainsForbiddenCharacters(createNewDeck.Name))
         {
-            response = new ApiResponse<List<Deck>>(
+            response = new ApiResponse<Deck>(
                 statusCode: HttpStatusCode.BadRequest,
                 isSuccess: false,
                 errorMessage: "Deck name contains forbidden characters"
@@ -113,7 +113,7 @@ public class DecksController : ControllerBase
         
         if (Enumerable.Any(_db.Decks, d => d.Equals(createNewDeck)))
         {
-            response = new ApiResponse<List<Deck>>(
+            response = new ApiResponse<Deck>(
                 statusCode: HttpStatusCode.Conflict,
                 isSuccess: false,
                 errorMessage: "Deck with such name already exists"
@@ -124,10 +124,10 @@ public class DecksController : ControllerBase
         _db.Decks.Add(createNewDeck);
         await _db.SaveChangesAsync();
 
-        response = new ApiResponse<List<Deck>>(
+        response = new ApiResponse<Deck>(
         isSuccess: true,
         statusCode: HttpStatusCode.Created,
-        result: new List<Deck> { createNewDeck },
+        result: createNewDeck,
         errorMessage: null);
 
         return CreatedAtRoute("GetDeck", new { deckId = createNewDeck.Id }, response);
@@ -145,11 +145,11 @@ public class DecksController : ControllerBase
     }
 
     [HttpDelete("{deckId:int}")]
-    public async Task<ActionResult<ApiResponse<List<Deck>>>> DeleteDeckById(int deckId)
+    public async Task<ActionResult<ApiResponse<Deck>>> DeleteDeckById(int deckId)
     {
         try
         {
-            var response = new ApiResponse<List<Deck>>(
+            var response = new ApiResponse<Deck>(
             isSuccess : false,
             statusCode : HttpStatusCode.InternalServerError,
             result : null,
@@ -163,10 +163,10 @@ public class DecksController : ControllerBase
                     return BadRequest(response);
                 }
 
-                response = new ApiResponse<List<Deck>>(
+                response = new ApiResponse<Deck>(
                 isSuccess: true,
                 statusCode: HttpStatusCode.NoContent,
-                result: null,
+                result: deck,
                 errorMessage: null);
 
                 _db.Decks.Remove(deck);
@@ -176,7 +176,7 @@ public class DecksController : ControllerBase
         }
         catch (Exception e)
         {
-            var response = new ApiResponse<List<Deck>>(
+            var response = new ApiResponse<Deck>(
             isSuccess: false,
             statusCode: HttpStatusCode.InternalServerError,
             result: null,
