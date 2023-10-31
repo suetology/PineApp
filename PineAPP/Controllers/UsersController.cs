@@ -78,6 +78,18 @@ public class UsersController : ControllerBase
                 UserName = createUserDto.UserName
             };
 
+            // Check if email is valid
+            if (!CreateUserDTO.IsEmailValid(newUser.Email))
+            {
+                response = new ApiResponse<User>(
+                    isSuccess: false,
+                    statusCode: HttpStatusCode.BadRequest,
+                    result: null,
+                    errorMessage: "Provided email is not valid"
+                );
+                return BadRequest(response);
+            }
+
             // Check for forbidden character
             if (newUser.UserName.ContainsAnyOfChars(new List<char>(){'*', '&', '@', '%', ',', '.', '/'}))
             {
