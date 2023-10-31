@@ -33,7 +33,6 @@ const LoginComponent = ({ onLogin }) => {
     }
 
     const authenticateUser = async (email, password) => {
-        console.log((new URL(window.location).pathname))
         const user = await getUserByEmail(email);
 
         if (user === null) {
@@ -47,7 +46,6 @@ const LoginComponent = ({ onLogin }) => {
                 onLogin(user);
             } catch (e) {
                 if ((new URL(window.location).pathname) == "/login") {
-                    console.log("islogis");
                     navigate("/browse");
                 }
             }

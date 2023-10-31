@@ -19,7 +19,5 @@ const answersSlice = createSlice({
 
 export const { 
     incrementCorrectAnswers, 
-    incrementWrongAnswers,
-    updateCorrectAnswers,
-    updateWrongAnswers} = answersSlice.actions;
+    incrementWrongAnswers} = answersSlice.actions;
 export default answersSlice.reducer;

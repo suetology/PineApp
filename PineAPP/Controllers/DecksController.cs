@@ -25,6 +25,17 @@ public class DecksController : ControllerBase
         var response = new ApiResponse<List<Deck>>(HttpStatusCode.OK, isSuccess: true, decks);
         return Ok(response);
     }
+    
+    [HttpGet("All/{creatorId:int}")]
+    public async Task<ActionResult<ApiResponse<List<Deck>>>> GetAllDecksById(int creatorId)
+    {
+        var decks = await _db.Decks
+                            .Where(deck => deck.CreatorId == creatorId)
+                            .Include(deck => deck.Cards).ToListAsync();
+        
+        var response = new ApiResponse<List<Deck>>(HttpStatusCode.OK, isSuccess: true, decks);
+        return Ok(response);
+    }
 
     [HttpGet("Personal/{creatorId:int}")]
     public async Task<ActionResult<ApiResponse<List<Deck>>>> GetPersonalDecks(int creatorId)

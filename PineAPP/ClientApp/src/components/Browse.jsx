@@ -1,4 +1,4 @@
-﻿import {Container} from "reactstrap";
+import {Container} from "reactstrap";
 import React, {useEffect, useState} from 'react';
 import DeckDisplay from "./shared/DeckDisplay";
 import Loading from "./shared/Loading";
