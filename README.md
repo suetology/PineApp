@@ -31,20 +31,17 @@ Visit the hosted URL to access PineApp. Create decks, add flashcards, and start 
 
 ## Requirements
 
-- Creating and using your own 
-  - class [x]
-  - struct [x]
-  - record
-  - enum
-- Property usage in struct and class; [x]
-- Named and optional argument usage;
-- Extension method usage; [x]
-- Iterating through collection the right way; [x]
-- Reading from a file using a stream; [x]
-- Create and use at least 1 generic type; [x]
-- Boxing and unboxing;
-- LINQ to Objects usage (methods or queries); [x] jei skaitosi DecksController
-- Implement at least one of the standard .NET interfaces (IEnumerable, IComparable, IComparer, IEquatable, IEnumerator, etc.) [x]
+ - Relational database is used for storing data; [x]
+ - Create generic method, event or delegate; define at least 2 generic constraints;
+ - Delegates usage;
+ - Create at least 1 exception type and throw it; meaningfully deal with it; (most of the exceptions are logged to a file or a server);
+ - Lambda expressions usage; [x]
+ - Usage of threading via Thread class;
+ - Usage of async/await; [x]
+ - Use at least 1 concurrent collection or Monitor;
+ - Regex usage; [x]
+ - No instances are created using 'new' keyword, dependency injection is used everywhere;
+ - Unit and integration tests coverage at least 20%;
 
 ## Contributing
 Pull requests are welcome. Please ensure that any changes are documented and tested before submitting.
