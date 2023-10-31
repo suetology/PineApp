@@ -395,6 +395,18 @@ public class DecksController : ControllerBase
         
         return Ok(card);
     }
+
+    [HttpGet("Search/{keyword}")]
+    public async Task<ActionResult<ApiResponse<List<Deck>>>> SearchDecks(string keyword)
+    {
+        var decks = await _db.Decks
+            .Where(deck => deck.Name.Contains(keyword))
+            .Include(deck => deck.Cards)
+            .ToListAsync();
+
+        var response = new ApiResponse<List<Deck>>(HttpStatusCode.OK, isSuccess: true, decks);
+        return Ok(response);
+    }
 }
 
 
