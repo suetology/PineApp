@@ -123,7 +123,7 @@ public class UsersController : ControllerBase
                 errorMessage: null
             );
 
-            return CreatedAtRoute("GetUserById", new { userId = newUser.UserId }, response);
+            return Ok(response);
         }
         catch (Exception e)
         {
@@ -133,7 +133,7 @@ public class UsersController : ControllerBase
                 result: null,
                 errorMessage: e.ToString());
 
-            return StatusCode((int)HttpStatusCode.InternalServerError, response);
+            return BadRequest(response);
         }
     }
     
