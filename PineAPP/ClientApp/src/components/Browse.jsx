@@ -38,9 +38,6 @@ const Browse = () => {
             setUserId(token.userId);
         }
     }, [token]);
-
-   // const personalData = useGetPersonalDecksQuery(userId);
-   // const communityData = useGetCommunityDecksQuery();
     
     useEffect(() => {
         // Trigger data fetching when the component mounts or when searchKeyword changes
@@ -117,14 +114,12 @@ const Browse = () => {
                 {loadingSearch ? 'Searching...' : 'Search'}
             </button>
 
-            {/* Display search results */}
             {searchError && <p>{searchError}</p>}
             {loadingSearch && <Loading />}
             {searchResults.length > 0 && (
                 <div>
                     {searchResults.map((deck) => (
                         <div key={deck.id}>
-                            {/* Add other deck information here */}
                         </div>
                     ))}
                 </div>
