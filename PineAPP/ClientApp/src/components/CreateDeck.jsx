@@ -17,6 +17,11 @@ const CreateDeck = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
+    // Retrieve userId
+    useEffect(() => {
+        setCreatorId((JSON.parse(sessionStorage.getItem('token')).userId));
+    });
+
     const handleNameChange = (e) => {
         setName(e.target.value);
     }
@@ -30,21 +35,6 @@ const CreateDeck = () => {
     }
 
     const [addDeck] = useAddDeckMutation();
-
-    //Login functionality
-    const [token, setToken] = useState(JSON.parse(sessionStorage.getItem('token')));
-    const handleLogin = (newToken) => {
-        setToken(newToken);
-    }
-    useEffect(() => {
-        if(token) {
-            setCreatorId(token.userId);
-        }
-    }, [token]);
-    if(!token) {
-        return <LoginComponent onLogin={handleLogin}></LoginComponent>
-    }
-    
     
     const handleAddDeck = async (e) => {
         e.preventDefault();
