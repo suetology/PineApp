@@ -22,19 +22,9 @@ const Browse = () => {
     //Login functionality
     const dispatch = useDispatch();
     const decks = useSelector((state) => state.decks);
-    const [userId, setUserId] = useState(0);
-
-    // Retrieve userId
-    useEffect(() => {
-        setUserId((JSON.parse(sessionStorage.getItem('token')).userId));
-    });
+    const userId = JSON.parse(sessionStorage.getItem('token')).userId;
     
     const deckData = useGetAllDecksByIdQuery(userId);
-
-    useEffect(() => {
-        deckData.refetch();
-    }, [userId]);
-    
     
     useEffect(() => {
         // Trigger data fetching when the component mounts or when searchKeyword changes
