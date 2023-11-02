@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging.Configuration;
 using PineAPP.Controllers;
 using PineAPP.Data;
 using PineAPP.Exceptions;
@@ -22,12 +24,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDbConnection"));
 });
-builder.Services.AddSingleton<ILogger>(provider =>
+builder.Logging.AddErrorLogger(configuration =>
 {
-    var logFilePath = builder.Configuration["ErrorLogger:LogFilePath"];
-    return new ErrorLogger(logFilePath);
+    configuration.FileName = "logs.log";
 });
-
 
 var app = builder.Build();
 

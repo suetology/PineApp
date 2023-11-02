@@ -12,10 +12,12 @@ namespace PineAPP.Controllers;
 public class DecksController : ControllerBase
 {
     private readonly ApplicationDbContext _db;
+    private readonly ILogger<DecksController> _logger;
 
-    public DecksController(ApplicationDbContext db)
+    public DecksController(ApplicationDbContext db, ILogger<DecksController> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
     [HttpGet]

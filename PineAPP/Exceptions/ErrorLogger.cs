@@ -2,15 +2,15 @@ namespace PineAPP.Exceptions;
 
 public class ErrorLogger : ILogger
 {
-    private readonly string _logFilePath;
+    private readonly ErrorLoggerProvider _errorLoggerProvider;
 
-    public ErrorLogger(string logFilePath)
+    public ErrorLogger(ErrorLoggerProvider errorLoggerProvider)
     {
-        _logFilePath = logFilePath;
+        _errorLoggerProvider = errorLoggerProvider;
 
-        if (!File.Exists(logFilePath))
+        if (!File.Exists(errorLoggerProvider.Config.FileName))
         {
-            File.Create(logFilePath).Close();
+            File.Create(errorLoggerProvider.Config.FileName).Close();
         }
     }
 
@@ -21,7 +21,7 @@ public class ErrorLogger : ILogger
 
     public bool IsEnabled(LogLevel logLevel)
     {
-        return true;
+        return logLevel != LogLevel.None;
     }
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
@@ -34,6 +34,6 @@ public class ErrorLogger : ILogger
         string logMessage = formatter(state, exception);
         string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{logLevel}] - {logMessage}";
 
-        File.AppendAllText(_logFilePath, logEntry + Environment.NewLine);
+        File.AppendAllText(_errorLoggerProvider.Config.FileName, logEntry + Environment.NewLine);
     }
 }
