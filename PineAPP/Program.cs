@@ -26,7 +26,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 });
 builder.Logging.AddErrorLogger(configuration =>
 {
-    configuration.FileName = "logs.log";
+    builder.Configuration.GetSection("FileErrorLogger").Bind(configuration);
 });
 
 var app = builder.Build();

@@ -7,11 +7,6 @@ public class ErrorLogger : ILogger
     public ErrorLogger(ErrorLoggerProvider errorLoggerProvider)
     {
         _errorLoggerProvider = errorLoggerProvider;
-
-        if (!File.Exists(errorLoggerProvider.Config.FileName))
-        {
-            File.Create(errorLoggerProvider.Config.FileName).Close();
-        }
     }
 
     public IDisposable BeginScope<TState>(TState state)
@@ -34,6 +29,17 @@ public class ErrorLogger : ILogger
         string logMessage = formatter(state, exception);
         string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{logLevel}] - {logMessage}";
 
-        File.AppendAllText(_errorLoggerProvider.Config.FileName, logEntry + Environment.NewLine);
+        Thread thread = new Thread(new ThreadStart(async () =>
+        {
+            try
+            {
+                Monitor.Enter(_errorLoggerProvider.Writer);
+                await _errorLoggerProvider.Writer.WriteLineAsync(logEntry);
+            }
+            finally
+            {
+                Monitor.Exit(_errorLoggerProvider.Writer);
+            }
+        }));
     }
 }
