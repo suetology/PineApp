@@ -18,6 +18,8 @@ public class ErrorLoggerProvider : ILoggerProvider
     
     public void Dispose()
     {
+        Writer.Flush();
+        Writer.Close();
     }
 
     public ILogger CreateLogger(string categoryName)

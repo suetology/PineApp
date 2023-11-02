@@ -25,21 +25,23 @@ public class ErrorLogger : ILogger
         {
             return;
         }
-
-        string logMessage = formatter(state, exception);
-        string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{logLevel}] - {logMessage}";
-
-        Thread thread = new Thread(new ThreadStart(async () =>
+        
+        Thread thread = new Thread(new ThreadStart( () =>
         {
+            string logMessage = formatter(state, exception);
+            string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{logLevel}] - {logMessage}";
+            
             try
             {
                 Monitor.Enter(_errorLoggerProvider.Writer);
-                await _errorLoggerProvider.Writer.WriteLineAsync(logEntry);
+                _errorLoggerProvider.Writer.WriteLine(logEntry);
+                _errorLoggerProvider.Writer.Flush();
             }
             finally
             {
                 Monitor.Exit(_errorLoggerProvider.Writer);
             }
         }));
+        thread.Start();
     }
 }
