@@ -1,6 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Logging.Configuration;
 using PineAPP.Controllers;
 using PineAPP.Data;
+using PineAPP.Exceptions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,10 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDbConnection"));
+});
+builder.Logging.AddErrorLogger(configuration =>
+{
+    builder.Configuration.GetSection("FileErrorLogger").Bind(configuration);
 });
 
 var app = builder.Build();
