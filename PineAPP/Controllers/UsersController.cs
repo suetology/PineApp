@@ -16,39 +16,68 @@ namespace PineAPP.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly ApplicationDbContext _db;
+    private readonly ILogger<UsersController> _logger;
 
-    public UsersController(ApplicationDbContext db)
+    public UsersController(ApplicationDbContext db, ILogger<UsersController> logger)
     {
         _db = db;
+        _logger = logger;
     }
 
     [HttpGet]
     public async Task<ActionResult<ApiResponse<List<User>>>> GetAllUsers()
     {
-        var allUsers = await _db.Users.ToListAsync();
-        var response = new ApiResponse<List<User>>(HttpStatusCode.OK, isSuccess: true, allUsers);
-        return Ok(response);
+        try
+        {
+            var allUsers = await _db.Users.ToListAsync();
+            var response = new ApiResponse<List<User>>(HttpStatusCode.OK, isSuccess: true, allUsers);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An error occurred in endpoint GetAllUsers");
+            var response = new ApiResponse<List<Deck>>(HttpStatusCode.InternalServerError, isSuccess: false);
+            return StatusCode((int)HttpStatusCode.InternalServerError, response);
+        }
     }
 
     [HttpGet("GetUserById/{userId:int}")]
     public async Task<ActionResult<ApiResponse<User>>> GetUserById(int userId)
     {
-        var user = await _db.Users
-            .Where(user => user.UserId == userId)
-            .FirstOrDefaultAsync();
-        var response = new ApiResponse<User>(HttpStatusCode.OK, isSuccess: true, user);
+        try
+        {
+            var user = await _db.Users
+                .Where(user => user.UserId == userId)
+                .FirstOrDefaultAsync();
+            var response = new ApiResponse<User>(HttpStatusCode.OK, isSuccess: true, user);
         
-        return Ok(response);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An error occurred in endpoint GetUserById");
+            var response = new ApiResponse<List<Deck>>(HttpStatusCode.InternalServerError, isSuccess: false);
+            return StatusCode((int)HttpStatusCode.InternalServerError, response);
+        }
     }
 
     [HttpGet("GetUserByEmail/{email}")]
     public async Task<ActionResult<ApiResponse<User>>> GetUserByEmail(string email)
     {
-        var user = await _db.Users
-            .Where(user => user.Email == email)
-            .FirstOrDefaultAsync();
-        var response = new ApiResponse<User>(HttpStatusCode.OK, isSuccess: true, user);
-        return Ok(response);
+        try
+        {
+            var user = await _db.Users
+                .Where(user => user.Email == email)
+                .FirstOrDefaultAsync();
+            var response = new ApiResponse<User>(HttpStatusCode.OK, isSuccess: true, user);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(e, "An error occurred in endpoint GetUserByEmail");
+            var response = new ApiResponse<List<Deck>>(HttpStatusCode.InternalServerError, isSuccess: false);
+            return StatusCode((int)HttpStatusCode.InternalServerError, response);
+        }
     }
 
     [HttpPost("Add")]
@@ -145,7 +174,8 @@ public class UsersController : ControllerBase
                 result: null,
                 errorMessage: e.ToString());
 
-            return BadRequest(response);
+            _logger.LogError(e, "An error occurred in endpoint AddUser");
+            return StatusCode((int)HttpStatusCode.InternalServerError, response);
         }
     }
     
