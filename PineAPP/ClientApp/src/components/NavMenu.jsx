@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
-import { Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import LoginStatusNavbar from './shared/LoginStatusNavbar';
+import { Button, Collapse, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLink } from 'reactstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import NavLinkLogin from './shared/NavLinkLogin.jsx';
+import LoginStatusNavbar from './shared/LoginStatusNavbar.jsx'
 
 const NavMenu = () => {
     const [isCollapsed, setCollapsed] = useState(true);
+
     
     return (
         <header>
@@ -19,10 +21,10 @@ const NavMenu = () => {
                   <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/browse">Browse</NavLink>
+                  <NavLinkLogin link={"/browse"}>Browse</NavLinkLogin>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/create">Create</NavLink>
+                  <NavLinkLogin link={"/create"}>Create</NavLinkLogin>
                 </NavItem>
               </ul >
               <ul className="navbar-nav ms-auto">

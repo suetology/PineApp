@@ -1,4 +1,4 @@
-import {Container} from "reactstrap";
+﻿import {Container} from "reactstrap";
 import React, {useEffect, useState} from 'react';
 import DeckDisplay from "./shared/DeckDisplay";
 import Loading from "./shared/Loading";
@@ -22,22 +22,9 @@ const Browse = () => {
     //Login functionality
     const dispatch = useDispatch();
     const decks = useSelector((state) => state.decks);
-    const [token, setToken] = useState(JSON.parse(sessionStorage.getItem('token')));
-    const [userId, setUserId] = useState(0);
+    const userId = JSON.parse(sessionStorage.getItem('token')).userId;
     
     const deckData = useGetAllDecksByIdQuery(userId);
-
-    useEffect(() => {
-        deckData.refetch();
-    }, [userId]);
-    const handleLogin = (newToken) => {
-        setToken(newToken);
-    }
-    useEffect(() => {
-        if(token) {
-            setUserId(token.userId);
-        }
-    }, [token]);
     
     useEffect(() => {
         // Trigger data fetching when the component mounts or when searchKeyword changes
@@ -46,9 +33,6 @@ const Browse = () => {
         }
     }, [searchKeyword]);
     
-    if(!token) {
-        return <LoginComponent onLogin={handleLogin}></LoginComponent>
-    }
 
     if (deckData.isLoading) {
         return <Loading />;
