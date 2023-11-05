@@ -40,7 +40,7 @@ const CardsDisplay = (props) => {
     
     const handleNewCard = async () => {
         const newCard = await addCard({ Back: "Back side", Front: "Front side", DeckId: deckId });
-        const updatedValues = [...values, newCard.data.result]
+        const updatedValues = [...values, newCard.data]
         setValue(updatedValues);
         dispatch(setDecks({[deckId]: {...decks[deckId], cards: updatedValues}}));
     }

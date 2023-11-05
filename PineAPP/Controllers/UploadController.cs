@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using PineAPP.Data;
 using PineAPP.Exceptions;
 using PineAPP.Models;
+using PineAPP.Services;
+using PineAPP.Services.Repositories;
 
 namespace PineAPP.Controllers;
 
@@ -11,77 +13,46 @@ namespace PineAPP.Controllers;
 [ApiController]
 public class UploadController : ControllerBase
 {
-    private readonly ApplicationDbContext _db;
+    private readonly IDecksRepository _decksRepository;
+    private readonly ICardsRepository _cardsRepository;
+    private readonly IDeckValidationService _deckValidationService;
 
-    public UploadController(ApplicationDbContext db)
+    public UploadController(
+        IDecksRepository decksRepository, 
+        ICardsRepository cardsRepository,
+        IDeckValidationService deckValidationService)
     {
-        _db = db;
+        _decksRepository = decksRepository;
+        _cardsRepository = cardsRepository;
+        _deckValidationService = deckValidationService;
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<Deck>>> UploadDeck(IFormFile file)
+    public async Task<ActionResult> UploadDeck(IFormFile file)
     {
-        ApiResponse<Deck> response;
-        
         if (file == null || file.Length == 0)
-        {
-            response = new ApiResponse<Deck>(
-                statusCode: HttpStatusCode.BadRequest,
-                isSuccess: false,
-                errorMessage: "File is null or empty"
-            );
-            return BadRequest(response);
-        }
+            return BadRequest("File is null or empty");
 
         using var reader = new StreamReader(file.OpenReadStream());
         var content = await reader.ReadToEndAsync();
         
         try
         {
-            var deckBuilder = new DeckBuilder(1);  //temporary hardcoded user id
+            var deckBuilder = new DeckBuilderService(1);  //temporary hardcoded user id
             var deck = deckBuilder.CreateDeckFromString(content);
 
-            if (DeckBuilder.ContainsForbiddenCharacters(deck.Name))
-            {
-                response = new ApiResponse<Deck>(
-                    statusCode: HttpStatusCode.BadRequest,
-                    isSuccess: false,
-                    errorMessage: "Deck name contains forbidden characters"
-                );
-                return BadRequest(response);
-            }
-
-            if (Enumerable.Any(_db.Decks, d => d.Equals(deck)))
-            {
-                response = new ApiResponse<Deck>(
-                    statusCode: HttpStatusCode.Conflict,
-                    isSuccess: false,
-                    errorMessage: "Deck with such name already exists"
-                );
-                return Conflict(response);
-            }
+            _deckValidationService.ValidateDeck(deck);
             
-            _db.Decks.Add(deck);
-            _db.Cards.AddRange(deck.Cards);
-            await _db.SaveChangesAsync();
+            _decksRepository.Add(deck);
+            _cardsRepository.AddRange(deck.Cards);
             
-            response = new ApiResponse<Deck>(
-                statusCode: HttpStatusCode.Created,
-                isSuccess: true,
-                result: deck
-            );
+            await _decksRepository.SaveChangesAsync();
 
-            return CreatedAtRoute("GetDeck", new { deckId = deck.Id }, response);
+            return CreatedAtRoute("GetDeck", new { deckId = deck.Id }, deck);
         }
-        catch (InvalidFormatException ex)
+        catch (Exception ex)
         {
-            response = new ApiResponse<Deck>(
-                statusCode: HttpStatusCode.BadRequest,
-                isSuccess: false,
-                errorMessage: ex.Message
-            );
-
-            return BadRequest(response);
+            return BadRequest(ex.Message);
         }
     }
 }   

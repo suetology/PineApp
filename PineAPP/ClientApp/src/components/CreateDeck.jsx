@@ -57,7 +57,7 @@ const CreateDeck = () => {
             
             console.log("No error: " , response);
             
-            dispatch(setDecks({[response.data.result.id]: {...response.data.result, cards: []}}))
+            dispatch(setDecks({[response.data.id]: {...response.data, cards: []}}))
 
             navigate("/browse");
           } catch (error) {

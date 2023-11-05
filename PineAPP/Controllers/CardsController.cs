@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PineAPP.Data;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
+using PineAPP.Services.Repositories;
 
 namespace PineAPP.Controllers;
 
@@ -11,31 +12,22 @@ namespace PineAPP.Controllers;
 [ApiController]
 public class CardsController : ControllerBase
 {
-    private readonly ApplicationDbContext _db;
+    private readonly ICardsRepository _cardsRepository;
 
-    public CardsController(ApplicationDbContext db)
+    public CardsController(ICardsRepository cardsRepository)
     {
-        _db = db;
+        _cardsRepository = cardsRepository;
     }
 
     [HttpPost]
-    public async Task<ActionResult<ApiResponse<Card>>> AddCard([FromBody] CreateCardDTO createCard)
+    public async Task<ActionResult> AddCard([FromBody] CreateCardDTO createCard)
     {
-        var response = new ApiResponse<Card>(
-        isSuccess: false,
-        statusCode: HttpStatusCode.BadRequest,
-        result: null, // You can specify the result as needed
-        errorMessage: "CreateDeckDTO is null.");
-
         try
         {
-
             if(ModelState.IsValid)
             {
-                if(createCard == null)
-                {
-                    return BadRequest(response);
-                }    
+                if (createCard == null)
+                    return BadRequest("CreateDeckDTO is null.");
             }
 
             Card card = new()
@@ -45,125 +37,80 @@ public class CardsController : ControllerBase
                 DeckId = createCard.DeckId
             };
 
-            _db.Cards.Add(card);
-            await _db.SaveChangesAsync();
-
-            response = new ApiResponse<Card>(
-            isSuccess: true,
-            statusCode: HttpStatusCode.Created,
-            result: card,
-            errorMessage: null);
+            _cardsRepository.Add(card);
+            await _cardsRepository.SaveChangesAsync();
 
             //return CreatedAtRoute("GetCard", new { deckId = card.DeckId }, response);       
-            return Ok(response);
-        } catch(Exception e)
+            return Ok(card);
+        } 
+        catch(Exception e)
         {
-            response = new ApiResponse<Card>(
-            isSuccess: false,
-            statusCode: HttpStatusCode.InternalServerError,
-            result: null,
-            errorMessage: e.ToString()
-        );
-
-            return BadRequest(response);
+            return BadRequest(e.Message);
         }
     }
 
     [HttpPut("{cardId:int}")]
-    public async Task<ActionResult<ApiResponse<Card>>> UpdateCardById(int cardId, [FromBody] UpdateCardDTO updateCard)
+    public async Task<ActionResult> UpdateCardById(int cardId, [FromBody] UpdateCardDTO updateCard)
     {
         try
         {
             if (cardId == 0 || updateCard == null)
-            {
                 return BadRequest("Wrong ID or Card");
-            }
 
-            var existingCard = await _db.Cards.FindAsync(cardId);
+            var existingCard = _cardsRepository.GetById(cardId);
 
             if (existingCard == null)
-            {
                 return NotFound("Does not exist");
-            }
 
             existingCard.Front = updateCard.Front;
             existingCard.Back = updateCard.Back;
 
-            _db.Cards.Update(existingCard);
-            await _db.SaveChangesAsync();
+            _cardsRepository.Update(existingCard);
+            await _cardsRepository.SaveChangesAsync();
     
             return Ok(existingCard);
         }
         catch(Exception e)
         {
-            var response = new ApiResponse<Card>(
-                isSuccess: false,
-                statusCode: HttpStatusCode.InternalServerError,
-                result: null,
-                errorMessage: e.ToString());
-
-            return BadRequest(response);
+            return BadRequest(e.Message);
         }
     }
     
     [HttpDelete("{cardId:int}")]
-    public async Task<ActionResult<ApiResponse<Card>>> DeleteCardById(int cardId)
+    public async Task<ActionResult> DeleteCardById(int cardId)
     {
         try
         {
-            var response = new ApiResponse<Card>(
-                isSuccess : false,
-                statusCode : HttpStatusCode.InternalServerError,
-                result : null,
-                errorMessage: "Card id is 0, Deck does not exist/is invalid");
-
             if (ModelState.IsValid)
             {
-                Card card = await _db.Cards.FindAsync(cardId);
+                var card = _cardsRepository.GetById(cardId);
                 if (cardId == 0 || card is null)
                 {
-                    return BadRequest(response);
+                    return BadRequest("Card id is 0, Deck does not exist/is invalid");
                 }
 
-                response = new ApiResponse<Card>(
-                    isSuccess: true,
-                    statusCode: HttpStatusCode.NoContent,
-                    result: null,
-                    errorMessage: null);
-
-                _db.Cards.Remove(card);
-                await _db.SaveChangesAsync();
-                return Ok(response);
+                _cardsRepository.Remove(card);
+                await _cardsRepository.SaveChangesAsync();
+                return Ok();
             }
         }
         catch (Exception e)
         {
-            var response = new ApiResponse<Card>(
-                isSuccess: false,
-                statusCode: HttpStatusCode.InternalServerError,
-                result: null,
-                errorMessage: e.ToString());
-        
-            return BadRequest(response);
+            return BadRequest(e.Message);
         }
 
         return NotFound();
     }
     
     [HttpGet("{cardId:int}")]
-    public async Task<ActionResult<ApiResponse<Card>>> GetCardById(int cardId)
+    public ActionResult GetCardById(int cardId)
     {
-        var card = await _db.Cards.FindAsync(cardId);
+        var card = _cardsRepository.GetById(cardId);
         if (card == null)
-        {
             return NotFound("Card not found");
-        }
     
-        var totalCardsInDeck = await _db.Cards.Where(c => c.DeckId == card.DeckId).CountAsync();
-        var currentCardIndex = await _db.Cards.Where(c => c.DeckId == card.DeckId && c.Id <= cardId).CountAsync();
-        
-        card.TotalCardsInDeck = totalCardsInDeck;
-        card.CurrentCardIndex = currentCardIndex;
+        card.TotalCardsInDeck = _cardsRepository.GetTotalCardsInCurrentDeck(card);
+        card.CurrentCardIndex = _cardsRepository.GetCurrentCardIndex(card);
         
         return Ok(card);
     }

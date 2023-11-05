@@ -39,7 +39,7 @@ const Browse = () => {
     }
 
     if (!decks) {
-        const formatted = deckData.data.result.reduce((acc, deck) => {
+        const formatted = deckData.data.reduce((acc, deck) => {
             acc[deck.id] = deck;
             return acc;
         }, {});
@@ -67,7 +67,7 @@ const Browse = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                setSearchResults(data.result);
+                setSearchResults(data);
                 setSearchError(null);
             } else {
                 if (response.status === 404) {

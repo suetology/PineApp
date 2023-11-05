@@ -3,15 +3,13 @@ using PineAPP.Extensions;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
 
-namespace PineAPP.Controllers;
+namespace PineAPP.Services;
 
-public class DeckBuilder
+public class DeckBuilderService
 {
-    private static readonly List<char> _forbiddenCharacters = new() { '_', '@', '&' };
-    
     private readonly int _userId;
     
-    public DeckBuilder(int userId)
+    public DeckBuilderService(int userId)
     {
         _userId = userId;
     }
@@ -19,13 +17,11 @@ public class DeckBuilder
     public Deck CreateDeckFromString(string data)
     {
         var lines = data.Split(Environment.NewLine);
-
-        if (lines.Length < 3)
+        
+        if (data.Length < 3)
             throw new InvalidFormatException("Data does not contain enough information about deck");
-
+        
         var name = lines[0];
-        if (ContainsForbiddenCharacters(name))
-            throw new InvalidFormatException("Deck name contains invalid symbols");
         
         var description = lines[1];
         var isPersonalStr = lines[2];
@@ -49,7 +45,7 @@ public class DeckBuilder
             Name = name,
             Description = description,
             IsPersonal = isPersonal,
-            CreatorId = _userId,      //temp
+            CreatorId = _userId,
             Cards = cards
         };
 
@@ -75,10 +71,5 @@ public class DeckBuilder
         };
 
         return card;
-    }
-    
-    public static bool ContainsForbiddenCharacters(string name)
-    {
-        return name.ContainsAnyOfChars(_forbiddenCharacters);
     }
 }

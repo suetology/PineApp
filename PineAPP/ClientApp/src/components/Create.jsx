@@ -56,7 +56,7 @@ const Create = () => {
     
 
     if (!decks) {
-        const formatted = deckData.data.result.reduce((acc, deck) => {
+        const formatted = deckData.data.reduce((acc, deck) => {
             acc[deck.id] = deck;
             return acc;
         }, {});
