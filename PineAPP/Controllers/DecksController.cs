@@ -97,6 +97,10 @@ public class DecksController : ControllerBase
         try
         {
             var deck = _decksRepository.GetDeckByIdWithCards(deckId);
+            if (deck == null)
+            {
+                return NotFound(); 
+            }
             return Ok(deck);
         }
         catch (Exception e)
@@ -104,19 +108,18 @@ public class DecksController : ControllerBase
             _logger.LogError(e, "An error occurred in endpoint GetDeckById");
             return StatusCode((int)HttpStatusCode.InternalServerError, e.Message); 
         }
-        
-    } 
+    }
     
     [HttpPost]
     public async Task<ActionResult> AddDeck([FromBody] CreateDeckDTO createDeckDto)
     {
         try
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 if (createDeckDto == null)
                 {
-                    return BadRequest("CreateDeckDTO is null.");
+                    return BadRequest(ModelState);
                 }
             }
 
@@ -151,7 +154,7 @@ public class DecksController : ControllerBase
             {
                 var deck = _decksRepository.GetDeckByIdWithCards(deckId);
                 if (deckId == 0 || deck is null)
-                    return BadRequest("Deck id is 0, Deck does not exist/is invalid");
+                    return NotFound("Deck id is 0, Deck does not exist/is invalid");
 
                 _decksRepository.Remove(deck);
                 await _decksRepository.SaveChangesAsync();
