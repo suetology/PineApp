@@ -6,6 +6,7 @@ using PineAPP.Data;
 using PineAPP.Exceptions;
 using PineAPP.Services;
 using PineAPP.Services.Repositories;
+using PineAPP.Services.Factories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,6 +33,10 @@ builder.Services.AddTransient<IUsersRepository, UsersRepository>();
 builder.Services.AddTransient<ICardsRepository, CardsRepository>();
 builder.Services.AddTransient<IUserValidationService, UserValidationService>();
 builder.Services.AddTransient<IDeckValidationService, DeckValidationService>();
+builder.Services.AddTransient<IDeckFactory, DeckFactory>();
+builder.Services.AddTransient<ICardFactory, CardFactory>();
+builder.Services.AddTransient<IUserFactory, UserFactory>();
+builder.Services.AddTransient<IDeckBuilderService, DeckBuilderService>();
 
 builder.Logging.AddErrorLogger(configuration =>
 {

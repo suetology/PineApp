@@ -2,16 +2,21 @@
 using PineAPP.Extensions;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
+using PineAPP.Services.Factories;
 
 namespace PineAPP.Services;
 
-public class DeckBuilderService
+public class DeckBuilderService : IDeckBuilderService
 {
-    private readonly int _userId;
-    
-    public DeckBuilderService(int userId)
+    private readonly IDeckFactory _deckFactory;
+    private readonly ICardFactory _cardFactory;
+
+    public DeckBuilderService(
+        IDeckFactory deckFactory, 
+        ICardFactory cardFactory)
     {
-        _userId = userId;
+        _deckFactory = deckFactory;
+        _cardFactory = cardFactory;
     }
     
     public Deck CreateDeckFromString(string data)
@@ -39,15 +44,13 @@ public class DeckBuilderService
             var card = CreateCardFromString(lines[i]);
             cards.Add(card);
         }
-        
-        var deck = new Deck
-        {
-            Name = name,
-            Description = description,
-            IsPersonal = isPersonal,
-            CreatorId = _userId,
-            Cards = cards
-        };
+
+        var deck = _deckFactory.CreateDeck(
+            name: name, 
+            description: description, 
+            isPersonal: isPersonal, 
+            creatorId: 1, 
+            cards: cards); // temp hardcoded creatorId
 
         return deck;
     }
@@ -63,12 +66,7 @@ public class DeckBuilderService
         var back = parts[1];
         var examples = parts.Length == 3 ? parts[2] : "";
 
-        var card = new Card
-        {
-            Front = front,
-            Back = back,
-            Examples = examples
-        };
+        var card = _cardFactory.CreateCard(front, back, examples);
 
         return card;
     }

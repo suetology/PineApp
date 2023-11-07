@@ -8,8 +8,8 @@ using PineAPP.Data;
 using PineAPP.Extensions;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
-using PineAPP.Services;
 using PineAPP.Services.Repositories;
+using PineAPP.Services.Factories;
 
 namespace PineAPP.Controllers;
 
@@ -19,16 +19,16 @@ public class UsersController : ControllerBase
 {
     private readonly ILogger<UsersController> _logger;
     private readonly IUsersRepository _usersRepository;
-    private readonly IUserValidationService _userValidationService;
+    private readonly IUserFactory _userFactory;
 
     public UsersController(
         ILogger<UsersController> logger, 
         IUsersRepository usersRepository, 
-        IUserValidationService userValidationService)
+        IUserFactory userFactory)
     {
         _logger = logger;
         _usersRepository = usersRepository;
-        _userValidationService = userValidationService;
+        _userFactory = userFactory;
     }
 
     [HttpGet]
@@ -89,14 +89,7 @@ public class UsersController : ControllerBase
                 }
             }
 
-            var newUser = new User()
-            {
-                Email = createUserDto.Email,
-                Password = createUserDto.Password,
-                UserName = createUserDto.UserName
-            };
-            
-            _userValidationService.ValidateUser(newUser);
+            var newUser = _userFactory.CreateUser(createUserDto.Email, createUserDto.Password, createUserDto.UserName);
             
             _usersRepository.Add(newUser);
             await _usersRepository.SaveChangesAsync();

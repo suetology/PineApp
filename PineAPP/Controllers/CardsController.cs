@@ -5,6 +5,7 @@ using PineAPP.Data;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
 using PineAPP.Services.Repositories;
+using PineAPP.Services.Factories;
 
 namespace PineAPP.Controllers;
 
@@ -13,10 +14,14 @@ namespace PineAPP.Controllers;
 public class CardsController : ControllerBase
 {
     private readonly ICardsRepository _cardsRepository;
+    private readonly ICardFactory _cardFactory;
 
-    public CardsController(ICardsRepository cardsRepository)
+    public CardsController(
+        ICardsRepository cardsRepository, 
+        ICardFactory cardFactory)
     {
         _cardsRepository = cardsRepository;
+        _cardFactory = cardFactory;
     }
 
     [HttpPost]
@@ -30,12 +35,10 @@ public class CardsController : ControllerBase
                     return BadRequest("CreateDeckDTO is null.");
             }
 
-            Card card = new()
-            {
-                Front = createCard.Front,
-                Back = createCard.Back,
-                DeckId = createCard.DeckId
-            };
+            var card = _cardFactory.CreateCard(
+                front: createCard.Front, 
+                back: createCard.Back, 
+                deckId: createCard.DeckId);
 
             _cardsRepository.Add(card);
             await _cardsRepository.SaveChangesAsync();

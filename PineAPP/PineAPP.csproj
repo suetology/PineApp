@@ -42,17 +42,6 @@
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <_ContentIncludedByDefault Remove="TestProject\obj\project.assets.json" />
-        <_ContentIncludedByDefault Remove="TestProject\obj\TestProject.csproj.nuget.dgspec.json" />
-    <ItemGroup>
-      <Compile Remove="TestProject\ControllerIntegrationTests.cs" />
-      <Compile Remove="Data\CustomWebApplicationFactory.cs" />
-      <Compile Remove="Data\Utilities.cs" />
-    </ItemGroup>
-
-    </ItemGroup>
-
 
 
 

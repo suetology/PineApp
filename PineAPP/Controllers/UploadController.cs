@@ -6,6 +6,7 @@ using PineAPP.Exceptions;
 using PineAPP.Models;
 using PineAPP.Services;
 using PineAPP.Services.Repositories;
+using PineAPP.Services.Factories;
 
 namespace PineAPP.Controllers;
 
@@ -15,16 +16,16 @@ public class UploadController : ControllerBase
 {
     private readonly IDecksRepository _decksRepository;
     private readonly ICardsRepository _cardsRepository;
-    private readonly IDeckValidationService _deckValidationService;
+    private readonly IDeckBuilderService _deckBuilderService;
 
     public UploadController(
         IDecksRepository decksRepository, 
         ICardsRepository cardsRepository,
-        IDeckValidationService deckValidationService)
+        IDeckBuilderService deckBuilderService)
     {
         _decksRepository = decksRepository;
         _cardsRepository = cardsRepository;
-        _deckValidationService = deckValidationService;
+        _deckBuilderService = deckBuilderService;
     }
 
     [HttpPost]
@@ -38,10 +39,7 @@ public class UploadController : ControllerBase
         
         try
         {
-            var deckBuilder = new DeckBuilderService(1);  //temporary hardcoded user id
-            var deck = deckBuilder.CreateDeckFromString(content);
-
-            _deckValidationService.ValidateDeck(deck);
+            var deck = _deckBuilderService.CreateDeckFromString(content);
             
             _decksRepository.Add(deck);
             _cardsRepository.AddRange(deck.Cards);

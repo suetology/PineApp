@@ -6,6 +6,7 @@ using PineAPP.Models;
 using PineAPP.Models.Dto;
 using PineAPP.Services;
 using PineAPP.Services.Repositories;
+using PineAPP.Services.Factories;
 
 namespace PineAPP.Controllers;
 
@@ -15,15 +16,18 @@ public class DecksController : ControllerBase
 {
     private readonly ILogger<DecksController> _logger;
     private readonly IDecksRepository _decksRepository;
+    private readonly IDeckFactory _deckFactory;
     private readonly IDeckValidationService _deckValidationService;
 
     public DecksController(
         ILogger<DecksController> logger, 
         IDecksRepository decksRepository,
+        IDeckFactory deckFactory,
         IDeckValidationService deckValidationService)
     {
         _logger = logger;
         _decksRepository = decksRepository;
+        _deckFactory = deckFactory;
         _deckValidationService = deckValidationService;
     }
 
@@ -123,15 +127,11 @@ public class DecksController : ControllerBase
                 }
             }
 
-            Deck createNewDeck = new()
-            {
-                Name = createDeckDto.Name,
-                Description = createDeckDto.Description,
-                IsPersonal = createDeckDto.IsPersonal,
-                CreatorId = createDeckDto.CreatorId,
-            };
-
-            _deckValidationService.ValidateDeck(createNewDeck);
+            var createNewDeck = _deckFactory.CreateDeck(
+                createDeckDto.Name, 
+                createDeckDto.Description, 
+                createDeckDto.IsPersonal, 
+                createDeckDto.CreatorId);
             
             _decksRepository.Add(createNewDeck);
             await _decksRepository.SaveChangesAsync();
@@ -189,7 +189,7 @@ public class DecksController : ControllerBase
             existingDeck.Correct = createDeckDto.Correct;
             existingDeck.Wrong = createDeckDto.Wrong;
                 
-            _deckValidationService.CheckForForbiddenCharacters(existingDeck);
+            _deckValidationService.ValidateDeck(existingDeck);
                     
             _decksRepository.Update(existingDeck);
             await _decksRepository.SaveChangesAsync();
