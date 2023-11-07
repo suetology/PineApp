@@ -31,8 +31,16 @@ const LoginStatusNavbar = () => {
     }
     
 
+    const flexContainerStyle = {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+    };
+    
     const navbarIfLoggedIn = () => {
       return (
+      <div style={flexContainerStyle}>    
         <ul className="navbar-nav">
           <NavItem>
             <Button style={ style1 } tag={ Link } to="/account" >{ token.userName }</Button>
@@ -41,11 +49,13 @@ const LoginStatusNavbar = () => {
             <Button style={ style_LogOut } onClick={() => (token ? handleLogOut() : true)}>Log Out</Button>
           </NavItem>
         </ul>
+      </div>
       );
     }
 
     const navbarIfNotLoggegIn = () => {
       return (
+      <div style={flexContainerStyle}>
         <ul className="navbar-nav">
           <NavItem>
             <Button style={ style1 } tag={Link} to="/register" >Sign Up</Button>
@@ -54,6 +64,7 @@ const LoginStatusNavbar = () => {
             <Button style={ style_logIn }onClick={() => (token ? true : handleLogIn() )}>Log In</Button>
           </NavItem>
         </ul>
+    </div>
       );
     }
 

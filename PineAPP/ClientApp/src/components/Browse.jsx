@@ -6,6 +6,7 @@ import {useGetAllDecksByIdQuery, useGetCommunityDecksQuery, useGetPersonalDecksQ
 import {useDispatch, useSelector} from "react-redux";
 import {setDecks} from "../redux/decksSlice";
 import LoginComponent from "./LoginComponent"
+import './css/Search.css';
 
 const url = "https://localhost:7074/";
 
@@ -88,16 +89,19 @@ const Browse = () => {
     
     return (
         <div>
-            <input
-                type="text"
-                placeholder="Search decks by keyword"
-                value={searchKeyword}
-                onChange={(e) => setSearchKeyword(e.target.value)}
-            />
-            <button onClick={fetchSearchResults} disabled={loadingSearch}>
-                {loadingSearch ? 'Searching...' : 'Search'}
-            </button>
-
+            <div className="search-container">
+                <input
+                    className="search-input"
+                    type="text"
+                    placeholder="Search decks by keyword"
+                    value={searchKeyword}
+                    onChange={(e) => setSearchKeyword(e.target.value)}
+                />
+                <button onClick={fetchSearchResults} disabled={loadingSearch}
+                        className="search-button">
+                    {loadingSearch ? 'Searching...' : 'Search'}
+                </button>
+            </div>
             {searchError && <p>{searchError}</p>}
             {loadingSearch && <Loading />}
             {searchResults.length > 0 && (
