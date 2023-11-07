@@ -18,9 +18,18 @@ public class DeckValidationService : IDeckValidationService
     
     public void ValidateDeck(Deck deck)
     {
+        CheckForForbiddenCharacters(deck);
+        CheckForNameAvailability(deck);
+    }
+
+    public void CheckForForbiddenCharacters(Deck deck)
+    {
         if (deck.Name.ContainsAnyOfChars(ForbiddenCharacters))
             throw new InvalidDeckDataException("Deck name contains forbidden characters");
-            
+    }
+    
+    public void CheckForNameAvailability(Deck deck)
+    {
         if (_decksRepository.DeckExists(deck))
             throw new InvalidDeckDataException("Deck with such name already exists");
     }

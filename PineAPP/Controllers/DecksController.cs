@@ -189,7 +189,7 @@ public class DecksController : ControllerBase
             existingDeck.Correct = createDeckDto.Correct;
             existingDeck.Wrong = createDeckDto.Wrong;
                 
-            _deckValidationService.ValidateDeck(existingDeck);
+            _deckValidationService.CheckForForbiddenCharacters(existingDeck);
                     
             _decksRepository.Update(existingDeck);
             await _decksRepository.SaveChangesAsync();
