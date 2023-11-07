@@ -2,7 +2,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, NavLink, Input, Label, Col, Container } from 'reactstrap';
 
-const LoginComponent = ({ onLogin }) => {
+const LoginComponent = () => {
 
     const url = "https://localhost:7074/";
     const refEmailInput = useRef(null);
@@ -42,15 +42,8 @@ const LoginComponent = ({ onLogin }) => {
             setAuthMessage("Login successful.");
             setAuthMessageColor("green");
             sessionStorage.setItem('token', JSON.stringify(user));
-            try {
-                onLogin(user);
-            } catch (e) {
-                if ((new URL(window.location).pathname) == "/login") {
-                    navigate("/browse");
-                }
-            }
-
-
+            // Navigate to "/browse" when login
+            navigate("/browse");
         } else {
             setAuthMessage("Incorrect password.");
         }

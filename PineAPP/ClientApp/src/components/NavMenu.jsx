@@ -73,10 +73,10 @@ const NavMenu = () => {
                   <NavLink tag={Link} className="text-dark" to="/">Home</NavLink>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/browse">Browse</NavLink>
+                  <NavLinkLogin link={"/browse"}>Browse</NavLinkLogin>
                 </NavItem>
                 <NavItem>
-                  <NavLink tag={Link} className="text-dark" to="/create">Create</NavLink>
+                  <NavLinkLogin link={"/create"}>Create</NavLinkLogin>
                 </NavItem>
               </ul >
             </Collapse>
