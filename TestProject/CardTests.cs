@@ -1,8 +1,11 @@
+using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using PineAPP.Controllers;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
+using PineAPP.Services.Factories;
 using PineAPP.Services.Repositories;
 
 namespace PineApp.TestProject;
@@ -14,8 +17,12 @@ public class CardTests
     {
         // Arrange data
         var mockRepo = new Mock<ICardsRepository>();
-        var controller = new CardsController(mockRepo.Object);
+        var mockFactory = new Mock<ICardFactory>();
+        var controller = new CardsController(mockRepo.Object, mockFactory.Object);
         var newCard = new CreateCardDTO { Front = "Question?", Back = "Answer", DeckId = 1 };
+        
+        var mockCard = new Card { Front = "Question?", Back = "Answer", Examples = default ,DeckId = 1 };
+        mockFactory.Setup(f => f.CreateCard("Question?", "Answer",  default, 1)).Returns(mockCard);
 
         // Act, invoke method
         var result = await controller.AddCard(newCard);
@@ -34,7 +41,8 @@ public class CardTests
     {
         // Arrange
         var mockRepo = new Mock<ICardsRepository>();
-        var controller = new CardsController(mockRepo.Object);
+        var mockFactory = new Mock<ICardFactory>();
+        var controller = new CardsController(mockRepo.Object, mockFactory.Object);
         var cardId = 1;
         var card = new Card { Id = cardId, Front = "Question?", Back = "Answer", DeckId = 1 };
         mockRepo.Setup(repo => repo.GetById(cardId)).Returns(card);
@@ -53,7 +61,8 @@ public class CardTests
     {
         // Arrange
         var mockRepo = new Mock<ICardsRepository>();
-        var controller = new CardsController(mockRepo.Object);
+        var mockFactory = new Mock<ICardFactory>();
+        var controller = new CardsController(mockRepo.Object, mockFactory.Object);
         var cardId = 1;
         var existingCard = new Card { Id = cardId, Front = "Original Question?", Back = "Original Answer", DeckId = 1 };
         var updateCardDTO = new UpdateCardDTO { Front = "Updated Question?", Back = "Updated Answer" };
@@ -76,7 +85,8 @@ public class CardTests
     {
         // Arrange
         var mockRepo = new Mock<ICardsRepository>();
-        var controller = new CardsController(mockRepo.Object);
+        var mockFactory = new Mock<ICardFactory>();
+        var controller = new CardsController(mockRepo.Object, mockFactory.Object);
         var cardId = 1;
         var expectedCard = new Card { Id = cardId, Front = "Question?", Back = "Answer", DeckId = 1 };
         mockRepo.Setup(repo => repo.GetById(cardId)).Returns(expectedCard);
@@ -95,7 +105,8 @@ public class CardTests
     {
         // Arrange
         var mockRepo = new Mock<ICardsRepository>();
-        var controller = new CardsController(mockRepo.Object);
+        var mockFactory = new Mock<ICardFactory>();
+        var controller = new CardsController(mockRepo.Object, mockFactory.Object);
         controller.ModelState.AddModelError("error", "some error"); // Force a model state error
 
         // Act
@@ -111,7 +122,8 @@ public class CardTests
         // Arrange
         var mockRepo = new Mock<ICardsRepository>();
         mockRepo.Setup(repo => repo.SaveChangesAsync()).Throws(new Exception("Some exception message"));
-        var controller = new CardsController(mockRepo.Object);
+        var mockFactory = new Mock<ICardFactory>();
+        var controller = new CardsController(mockRepo.Object, mockFactory.Object);
         var createCardDto = new CreateCardDTO { Front = "Front", Back = "Back", DeckId = 1 };
 
         // Act
@@ -128,7 +140,8 @@ public class CardTests
         // Arrange
         var mockRepo = new Mock<ICardsRepository>();
         mockRepo.Setup(repo => repo.GetById(It.IsAny<int>())).Returns((Card)null);
-        var controller = new CardsController(mockRepo.Object);
+        var mockFactory = new Mock<ICardFactory>();
+        var controller = new CardsController(mockRepo.Object, mockFactory.Object);
         var updateCardDto = new UpdateCardDTO { Front = "New Front", Back = "New Back" };
 
         // Act
@@ -143,7 +156,8 @@ public class CardTests
     {
         // Arrange
         var mockRepo = new Mock<ICardsRepository>();
-        var controller = new CardsController(mockRepo.Object);
+        var mockFactory = new Mock<ICardFactory>();
+        var controller = new CardsController(mockRepo.Object, mockFactory.Object);
 
         // Act
         var result = await controller.DeleteCardById(0);

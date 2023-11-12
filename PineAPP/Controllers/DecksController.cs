@@ -136,7 +136,8 @@ public class DecksController : ControllerBase
             _decksRepository.Add(createNewDeck);
             await _decksRepository.SaveChangesAsync();
 
-            return CreatedAtRoute("GetDeck", new { deckId = createNewDeck.Id }, createNewDeck);
+            //return CreatedAtRoute("GetDeck", new { deckId = createNewDeck.Id }, createNewDeck);
+            return Ok(createNewDeck);
         }
         catch (Exception e)
         {

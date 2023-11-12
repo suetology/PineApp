@@ -1,10 +1,15 @@
+using System;
+using System.Collections.Generic;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Moq;
 using PineAPP.Controllers;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
 using PineAPP.Services;
+using PineAPP.Services.Factories;
 using PineAPP.Services.Repositories;
 
 namespace PineApp.TestProject;
@@ -17,12 +22,13 @@ public class DeckTests
         // Arrange
         var mockRepo = new Mock<IDecksRepository>();
         var mockLogger = new Mock<ILogger<DecksController>>();
+        var mockFactory = new Mock<IDeckFactory>();
         var mockValidationService = new Mock<IDeckValidationService>();
         var decks = new List<Deck> { new Deck(), new Deck() };
     
         mockRepo.Setup(repo => repo.GetAllWithCards()).Returns(decks);
     
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
     
         // Act
         var result = controller.GetAllDecks();
@@ -43,7 +49,8 @@ public class DeckTests
     
         mockRepo.Setup(repo => repo.GetAllWithCards()).Throws(new Exception());
     
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
     
         // Act
         var result = controller.GetAllDecks();
@@ -61,7 +68,8 @@ public class DeckTests
         var mockLogger = new Mock<ILogger<DecksController>>();
         var mockValidationService = new Mock<IDeckValidationService>();
     
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
         controller.ModelState.AddModelError("Name", "Required");
     
         // Act
@@ -87,24 +95,33 @@ public class DeckTests
             IsPersonal = true,
             CreatorId = 1
         };
+
+        var mockDeck = new Deck
+        {
+            Name = "Test Deck",
+            Description = "Test Description",
+            IsPersonal = true,
+            CreatorId = 1
+        };
         
         //mock repo simulating deck added successfully
         mockRepo.Setup(repo => repo.Add(It.IsAny<Deck>())).Verifiable();
 
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        mockFactory.Setup(f => f.CreateDeck("Test Deck", "Test Description", true, 1, default)).Returns(mockDeck);
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
 
         // Act
         var result = await controller.AddDeck(newDeckDto);
 
         // Assert
-        var createdAtRouteResult = Assert.IsType<CreatedAtRouteResult>(result);
-        Assert.Equal(201, createdAtRouteResult.StatusCode); // HTTP 201 Created
+        var objectResult = Assert.IsType<OkObjectResult>(result);
+        Assert.Equal(200, objectResult.StatusCode); // HTTP 201 Created
         
         //verifying if the method was called, and only once
         mockRepo.Verify(repo => repo.Add(It.IsAny<Deck>()), Times.Once);
         
-        var deck = Assert.IsType<Deck>(createdAtRouteResult.Value);
-        Assert.Equal("GetDeck", createdAtRouteResult.RouteName); 
+        var deck = Assert.IsType<Deck>(objectResult.Value);
         Assert.Equal(newDeckDto.Name, deck.Name); 
     }
 
@@ -120,7 +137,8 @@ public class DeckTests
     
         mockRepo.Setup(repo => repo.GetDeckByIdWithCards(1)).Returns(deck);
     
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
     
         // Act
         var result = await controller.DeleteDeckById(1);
@@ -141,7 +159,8 @@ public class DeckTests
     
         mockRepo.Setup(repo => repo.GetDeckByIdWithCards(It.IsAny<int>())).Returns((Deck)null);
     
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
     
         // Act
         var result = await controller.DeleteDeckById(1);
@@ -161,7 +180,8 @@ public class DeckTests
 
         mockRepo.Setup(repo => repo.GetDeckByIdWithCards(1)).Returns(deck);
 
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
 
         // Act
         var result = controller.GetDeckById(1);
@@ -183,7 +203,8 @@ public class DeckTests
         // Setup the repository to return null when GetDeckByIdWithCards is called with any integer.
         mockRepo.Setup(repo => repo.GetDeckByIdWithCards(It.IsAny<int>())).Returns((Deck)null);
 
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
 
         // Act
         var result = controller.GetDeckById(1);
@@ -204,7 +225,8 @@ public class DeckTests
 
         mockRepo.Setup(repo => repo.GetDecksByCreatorId(It.IsAny<int>())).Returns(decks);
 
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
 
         // Act
         var result = controller.GetAllDecksById(1);
@@ -226,7 +248,8 @@ public class DeckTests
 
         mockRepo.Setup(repo => repo.GetPersonalDecks(It.IsAny<int>())).Returns(personalDecks);
     
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
 
         // Act
         var result = controller.GetPersonalDecks(1);
@@ -248,7 +271,8 @@ public class DeckTests
 
         mockRepo.Setup(repo => repo.GetCommunityDecks()).Returns(communityDecks);
     
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
 
         // Act
         var result = controller.GetCommunityDecks();
@@ -274,7 +298,8 @@ public class DeckTests
         mockRepo.Setup(repo => repo.SaveChangesAsync()).Returns(Task.FromResult(1)).Verifiable(); // Assumes one change was made
 
     
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
 
         // Act
         var result = await controller.UpdateDeckById(1, updateDeckDto);
@@ -294,7 +319,8 @@ public class DeckTests
         var mockRepo = new Mock<IDecksRepository>();
         var mockLogger = new Mock<ILogger<DecksController>>();
         var mockValidationService = new Mock<IDeckValidationService>();
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
         
         // Act
         var nullDtoResult = await controller.UpdateDeckById(1, null);
@@ -310,7 +336,8 @@ public class DeckTests
         var mockRepo = new Mock<IDecksRepository>();
         var mockLogger = new Mock<ILogger<DecksController>>();
         var mockValidationService = new Mock<IDeckValidationService>();
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
         var updateDeckDto = new CreateDeckDTO { Name = "Updated Name", Description = "Updated Description", IsPersonal = true, CreatorId = 1 };
 
         mockRepo.Setup(repo => repo.GetDeckByIdWithCards(It.IsAny<int>())).Returns((Deck)null);
@@ -333,7 +360,8 @@ public class DeckTests
 
         mockRepo.Setup(repo => repo.GetAllWithCards()).Returns(emptyDecks);
 
-        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockValidationService.Object);
+        var mockFactory = new Mock<IDeckFactory>();
+        var controller = new DecksController(mockLogger.Object, mockRepo.Object, mockFactory.Object, mockValidationService.Object);
 
         // Act
         var result = controller.GetAllDecks();
