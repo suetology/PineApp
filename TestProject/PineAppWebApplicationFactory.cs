@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 using PineAPP.Data;
+using PineAPP.Exceptions;
 using PineAPP.Models;
 
 namespace PineApp.TestProject;
@@ -27,6 +29,11 @@ public class PineAppWebApplicationFactory : WebApplicationFactory<Program>
             {
                 options.UseInMemoryDatabase("InMemoryDbForTesting");
                 options.EnableSensitiveDataLogging();
+            });
+            
+            services.AddLogging(loggingBuilder =>
+            {
+                loggingBuilder.ClearProviders();
             });
             
             var serviceProvider = services.BuildServiceProvider();
