@@ -99,7 +99,7 @@ const NavMenu = () => {
                         >
                             <div className="nav-timer-container">
                                 <SimplePomodoroTimer timerData={timerData}/>
-                                <img src="/timer.png" alt="Pomodoro Icon" style={{ height: '40px' }} />
+                                <img src="/timer.png" alt="Pomodoro Icon" style={{ height: '40px', marginLeft: '10px' }} />
                             </div>
                         </NavLink>
                     </NavItem>
