@@ -97,8 +97,10 @@ const NavMenu = () => {
                             style={{ cursor: 'pointer' }}
                             onClick={toggleTimerModal}
                         >
-                            <img src="/timer.png" alt="Pomodoro Icon" style={{ height: '40px' }} />
-                            <SimplePomodoroTimer timerData={timerData} />
+                            <div className="nav-timer-container">
+                                <SimplePomodoroTimer timerData={timerData}/>
+                                <img src="/timer.png" alt="Pomodoro Icon" style={{ height: '40px' }} />
+                            </div>
                         </NavLink>
                     </NavItem>
                 <LoginStatusNavbar></LoginStatusNavbar>
