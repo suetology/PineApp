@@ -28,7 +28,6 @@ const PomodoroTimer = ({ timerData, toggleTimer, resetTimer }) => {
                 }
                 setMode(nextMode);
                 resetTimer(DURATIONS[nextMode]);
-                // TODO: Implement notifications
             } else {
                 interval = setInterval(() => {
                     toggleTimer();
@@ -57,6 +56,15 @@ const PomodoroTimer = ({ timerData, toggleTimer, resetTimer }) => {
         }
     };
 
+    const handleReset = () => {
+        const modeKey = mode.replace(' ', '');
+        const newDuration = DURATIONS[modeKey];
+        resetTimer({
+            ...newDuration,
+            isActive: false
+        });
+    };
+    
     return (
         <div className="pomodoro-container">
             <div className="mode-selector">
@@ -76,7 +84,7 @@ const PomodoroTimer = ({ timerData, toggleTimer, resetTimer }) => {
                     <button onClick={toggleTimer} className="start-button">
                         {isActive ? 'Pause' : 'Start'}
                     </button>
-                    <button onClick={() => resetTimer({ minutes: 25, seconds: 0, isActive: false })} className="reset-button">
+                    <button onClick={handleReset} className="reset-button">
                         Reset
                     </button>
                 </div>
