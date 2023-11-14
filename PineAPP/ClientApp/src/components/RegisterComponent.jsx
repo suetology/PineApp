@@ -125,9 +125,9 @@ const RegisterComponent = () => {
                 <h6 className='input-error-message'>{errorGeneral}</h6>
 
 
-                <Label>Already have an account?</Label><br/>
+                {/* <Label>Already have an account?</Label><br/>
                 <Label style={{marginRight: 10}}>Log in</Label>
-                <Button tag={Link} to="/login" className='yellow-button'>Here</Button>
+                <Button tag={Link} to="/login" className='yellow-button'>Here</Button> */}
             </div>
         </Container>
     );
