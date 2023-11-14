@@ -1,4 +1,3 @@
-
 :root {
     --navbar-height: 80px;
 }
@@ -35,10 +34,14 @@
 }
 
 .input-field {
-    margin-top: 10px;
     margin-bottom: 10px;
 }
 
 .yellow-button {
     background-color: goldenrod;
+}
+
+.input-error-message {
+    margin-bottom: 20px;
+    color: red;
 }
