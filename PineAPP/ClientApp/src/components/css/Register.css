@@ -42,3 +42,7 @@
 .yellow-button {
     background-color: goldenrod;
 }
+
+.input-error-message {
+    color: red;
+}
