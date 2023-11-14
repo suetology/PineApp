@@ -10,7 +10,6 @@ public class ApplicationDbContext : DbContext
     
     public DbSet<Deck> Decks { get; set; }
     public DbSet<Card> Cards { get; set; }
-    
     public DbSet<User> Users { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

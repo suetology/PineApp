@@ -29,7 +29,7 @@ public class ErrorLogger : ILogger
         Thread thread = new Thread(new ThreadStart( () =>
         {
             string logMessage = formatter(state, exception);
-            string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{logLevel}] - {logMessage}";
+            string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} [{logLevel}] - {logMessage}: {exception?.Message}";
             
             try
             {

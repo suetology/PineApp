@@ -1,6 +1,7 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, NavLink, Input, Label, Col, Container } from 'reactstrap';
+import {useGetUserByEmailQuery} from "../api/usersApi";
 
 const LoginComponent = () => {
 
@@ -25,14 +26,13 @@ const LoginComponent = () => {
     const getUserByEmail = async (email) => {
         try {
             const response = await fetch(url + `api/Users/GetUserByEmail/${email}`);
-            const data = await response.json();
-            return data.result;
+            return await response.json();
         } catch (e) {
             return null;
         }
     }
 
-    const authenticateUser = async (email, password) => {
+    const authenticateUser = async (email, password, a) => {
         const user = await getUserByEmail(email);
 
         if (user === null) {
@@ -71,7 +71,7 @@ const LoginComponent = () => {
                             marginBottom: "10px"
                         }}
                     ></Input>
-                    <Button onClick={() => authenticateUser(refEmailInput.current.value, refPasswordInput.current.value)}>Login</Button> <br />
+                    <Button onClick={() => authenticateUser(refEmailInput.current.value, refPasswordInput.current.value, refPasswordInput)}>Login</Button> <br />
                     <h6 style={{ color: authMessageColor }}>{authMessage}</h6>
                 </div>
             </Col>

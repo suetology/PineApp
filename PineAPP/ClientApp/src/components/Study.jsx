@@ -26,7 +26,7 @@ const Study = () => {
     const deckData = useGetDeckByIdQuery(id);
     useEffect(() => {
         if (!deckData.isLoading && deckData.isSuccess) {
-            setCards(deckData.data.result.cards);
+            setCards(deckData.data.cards);
             setLoading(false);
         }
     }, [deckData]);
@@ -39,7 +39,7 @@ const Study = () => {
                 {`${index + 1}/${cards.length}`}
             </div>
             <div className="deck-name">
-                {deckData.data.result.name}
+                {deckData.data.name}
             </div>
         </div>
     );
@@ -106,7 +106,7 @@ const Study = () => {
             </div>
         );
 
-    if (isCompleted) return (<Completion correct={correctAnswers} wrong={wrongAnswers} deck={deckData.data.result}/>);  // counts pass to Completion
+    if (isCompleted) return (<Completion correct={correctAnswers} wrong={wrongAnswers} deck={deckData.data}/>);  // counts pass to Completion
     
     let buttons = isFlipped && (
         <div className="p-1">

@@ -13,10 +13,11 @@ public class Card
     [Required]
     [MaxLength(255)]
     public string Back { get; set; }
-    [MaxLength(1000)]
-    public string Examples { get; set; }
 
     public int DeckId { get; set; }
+    
+    [MaxLength(1000)]
+    public string Examples { get; set; }
     
     public int TotalCardsInDeck { get; set; }
     

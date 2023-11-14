@@ -2,30 +2,31 @@
 using PineAPP.Extensions;
 using PineAPP.Models;
 using PineAPP.Models.Dto;
+using PineAPP.Services.Factories;
 
-namespace PineAPP.Controllers;
+namespace PineAPP.Services;
 
-public class DeckBuilder
+public class DeckBuilderService : IDeckBuilderService
 {
-    private static readonly List<char> _forbiddenCharacters = new() { '_', '@', '&' };
-    
-    private readonly int _userId;
-    
-    public DeckBuilder(int userId)
+    private readonly IDeckFactory _deckFactory;
+    private readonly ICardFactory _cardFactory;
+
+    public DeckBuilderService(
+        IDeckFactory deckFactory, 
+        ICardFactory cardFactory)
     {
-        _userId = userId;
+        _deckFactory = deckFactory;
+        _cardFactory = cardFactory;
     }
     
     public Deck CreateDeckFromString(string data)
     {
         var lines = data.Split(Environment.NewLine);
-
-        if (lines.Length < 3)
+        
+        if (data.Length < 3)
             throw new InvalidFormatException("Data does not contain enough information about deck");
-
+        
         var name = lines[0];
-        if (ContainsForbiddenCharacters(name))
-            throw new InvalidFormatException("Deck name contains invalid symbols");
         
         var description = lines[1];
         var isPersonalStr = lines[2];
@@ -43,15 +44,13 @@ public class DeckBuilder
             var card = CreateCardFromString(lines[i]);
             cards.Add(card);
         }
-        
-        var deck = new Deck
-        {
-            Name = name,
-            Description = description,
-            IsPersonal = isPersonal,
-            CreatorId = _userId,      //temp
-            Cards = cards
-        };
+
+        var deck = _deckFactory.CreateDeck(
+            name: name, 
+            description: description, 
+            isPersonal: isPersonal, 
+            creatorId: 1, 
+            cards: cards); // temp hardcoded creatorId
 
         return deck;
     }
@@ -67,18 +66,8 @@ public class DeckBuilder
         var back = parts[1];
         var examples = parts.Length == 3 ? parts[2] : "";
 
-        var card = new Card
-        {
-            Front = front,
-            Back = back,
-            Examples = examples
-        };
+        var card = _cardFactory.CreateCard(front, back, examples);
 
         return card;
-    }
-    
-    public static bool ContainsForbiddenCharacters(string name)
-    {
-        return name.ContainsAnyOfChars(_forbiddenCharacters);
     }
 }
