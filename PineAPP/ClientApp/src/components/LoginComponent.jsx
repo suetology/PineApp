@@ -1,7 +1,7 @@
 ﻿import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, NavLink, Input, Label, Col, Container } from 'reactstrap';
-import {useGetUserByEmailQuery} from "../api/usersApi";
+import { useGetUserByEmailQuery } from "../api/usersApi";
 
 const LoginComponent = () => {
 
@@ -51,30 +51,33 @@ const LoginComponent = () => {
 
     return (
         <Container fluid>
-            <Col md="3">
-                <div id="Login">
-                    <h5>Login:</h5>
-                    <Input
-                        innerRef={refEmailInput}
-                        type="text"
-                        placeholder={"Email:"}
-                        style={{
-                            marginBottom: "10px"
-                        }}
-                    ></Input>
+            <h1 style={{textAlign: "center", margin: 20}}>Login</h1>
+            <div id="Login">
+                <Label>Email:</Label>
+                <Input
+                    innerRef={refEmailInput}
+                    type="text"
+                    placeholder={"Email:"}
+                    style={{
+                        marginBottom: "10px"
+                    }}
+                ></Input>
 
-                    <Input
-                        innerRef={refPasswordInput}
-                        type="password"
-                        placeholder={"Password:"}
-                        style={{
-                            marginBottom: "10px"
-                        }}
-                    ></Input>
-                    <Button onClick={() => authenticateUser(refEmailInput.current.value, refPasswordInput.current.value, refPasswordInput)}>Login</Button> <br />
-                    <h6 style={{ color: authMessageColor }}>{authMessage}</h6>
-                </div>
-            </Col>
+                <Label>Password:</Label>
+                <Input
+                    innerRef={refPasswordInput}
+                    type="password"
+                    placeholder={"Password:"}
+                    style={{
+                        marginBottom: "10px"
+                    }}
+                ></Input>
+                <h6 style={{ color: authMessageColor }}>{authMessage}</h6>
+                <Button 
+                    className="yellow-button"
+                    onClick={() => authenticateUser(refEmailInput.current.value, refPasswordInput.current.value, refPasswordInput)}>
+                Login</Button> <br />
+            </div>
         </Container>
     );
 

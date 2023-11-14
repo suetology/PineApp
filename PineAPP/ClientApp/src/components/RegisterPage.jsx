@@ -8,7 +8,7 @@ const RegisterPage = () => {
 
     return (
         <div className="register-page">
-            <div className="background-image"></div>
+            <div className="background-image-register"></div>
             <Row xs={3}>
                 <Col></Col>
                 <div className="transparent-column">

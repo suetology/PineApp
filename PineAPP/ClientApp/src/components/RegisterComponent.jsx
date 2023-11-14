@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useRef } from "react";
 import { Button, Col, Container, Input, Label, Row } from "reactstrap";
 import './css/Register.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 
 
 
@@ -103,7 +103,7 @@ const RegisterComponent = () => {
     return (
         <Container>
             <div>
-                <h1>Welcome to PineAPP</h1>
+                <h1 style={{ textAlign: "center" }}>Welcome to PineAPP</h1>
                 <h2 style={{ marginBottom: 20 }}>An online community dedicated to learning and helping others learn</h2>
 
                 <Label>Username:</Label>
@@ -123,6 +123,11 @@ const RegisterComponent = () => {
                 <Button className='yellow-button' onClick={() => handleSubmit()}>Sign Up!</Button>
 
                 <h6 className='input-error-message'>{errorGeneral}</h6>
+
+
+                <Label>Already have an account?</Label><br/>
+                <Label style={{marginRight: 10}}>Log in</Label>
+                <Button tag={Link} to="/login" className='yellow-button'>Here</Button>
             </div>
         </Container>
     );

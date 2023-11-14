@@ -3,8 +3,8 @@ import Browse from "./components/Browse";
 import Create from "./components/Create";
 import Study from "./components/Study";
 import CreateDeck from "./components/CreateDeck"
-import LoginPage from "./components/LoginComponent.jsx";
 import RegisterPage from "./components/RegisterPage.jsx";
+import LoginPage from './components/LoginPage';
 
 const AppRoutes = [
   {
