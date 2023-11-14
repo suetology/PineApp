@@ -1,6 +1,7 @@
 ﻿import React, { useState, useEffect } from 'react';
 import './css/PomodoroTimer.css';
 import Tasks from './Tasks';
+import DURATIONS from './timerDurations';
 
 const PomodoroTimer = ({ timerData, toggleTimer, resetTimer }) => {
     const [mode, setMode] = useState('Pomodoro');
@@ -11,31 +12,59 @@ const PomodoroTimer = ({ timerData, toggleTimer, resetTimer }) => {
     useEffect(() => {
         let interval;
 
-        if (isActive && minutes === 0 && seconds === 0) {
-            if (mode === 'Pomodoro') {
-                setMode('Short Break');
-                resetTimer({ minutes: 5, seconds: 0 });
+        if (isActive) {
+            if (minutes === 0 && seconds === 0) {
+                let nextMode = 'Pomodoro';
+                switch (mode) {
+                    case 'Pomodoro':
+                        nextMode = 'Short Break';
+                        break;
+                    case 'Short Break':
+                        nextMode = 'Long Break';
+                        break;
+                    case 'Long Break':
+                        nextMode = 'Pomodoro';
+                        break;
+                }
+                setMode(nextMode);
+                resetTimer(DURATIONS[nextMode]);
             } else {
-                setMode('Pomodoro');
-                resetTimer({ minutes: 25, seconds: 0 });
+                interval = setInterval(() => {
+                    toggleTimer();
+                }, 1000);
             }
-            
-            // TODO notifications
-            
-        } else if (isActive) {
-            interval = setInterval(() => {
-            }, 1000);
         } else {
             clearInterval(interval);
         }
 
         return () => clearInterval(interval);
-    }, [isActive, minutes, seconds, mode]);
+    }, [isActive, minutes, seconds, mode, resetTimer, toggleTimer]);
 
     const changeMode = (newMode) => {
-        setMode(newMode);
+        const modeKey = newMode.replace(' ', '');
+        const newDuration = DURATIONS[modeKey];
+
+        if (newDuration) {
+            setMode(newMode);
+            resetTimer({
+                minutes: newDuration.minutes,
+                seconds: newDuration.seconds,
+                isActive: false
+            });
+        } else {
+            console.error(`Invalid mode: ${newMode}`);
+        }
     };
 
+    const handleReset = () => {
+        const modeKey = mode.replace(' ', '');
+        const newDuration = DURATIONS[modeKey];
+        resetTimer({
+            ...newDuration,
+            isActive: false
+        });
+    };
+    
     return (
         <div className="pomodoro-container">
             <div className="mode-selector">
@@ -45,18 +74,22 @@ const PomodoroTimer = ({ timerData, toggleTimer, resetTimer }) => {
             </div>
             <div className="pomodoro-header">
                 <div className="timer">
-                    {isActive ? 'Time to focus!' : `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`}
+                    {
+                        isActive
+                            ? (mode === 'Pomodoro' ? 'Time to focus!' : 'Time for a break!')
+                            : `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`
+                    }
                 </div>
                 <div className="buttons">
                     <button onClick={toggleTimer} className="start-button">
                         {isActive ? 'Pause' : 'Start'}
                     </button>
-                    <button onClick={() => resetTimer({ minutes: 25, seconds: 0, isActive: false })} className="reset-button">
+                    <button onClick={handleReset} className="reset-button">
                         Reset
                     </button>
                 </div>
             </div>
-                <Tasks tasks={tasks} setTasks={setTasks} />
+            <Tasks tasks={tasks} setTasks={setTasks} />
         </div>
     );
 };

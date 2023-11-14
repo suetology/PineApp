@@ -4,62 +4,72 @@ import { Link } from 'react-router-dom';
 import LoginStatusNavbar from './shared/LoginStatusNavbar';
 import PomodoroTimer from './PomodoroTimer';
 import SimplePomodoroTimer from './SimplePomodoroTimer';
+import DURATIONS from './timerDurations';
+import NavLinkLogin from "./shared/NavLinkLogin";
 
 const NavMenu = () => {
     const [isCollapsed, setCollapsed] = useState(true);
     const [isTimerModalOpen, setTimerModalOpen] = useState(false);
     
     const [timerData, setTimerData] = useState({
-        isActive: false,
-        minutes: 25,
-        seconds: 0,
+        ...DURATIONS.Pomodoro,
+        isActive: false
     });
-    
+
     const toggleTimer = () => {
-        setTimerData((prevState) => ({
-            ...prevState,
-            isActive: !prevState.isActive,
-        }));
+        setTimerData((prevState) => {
+            if (prevState.isActive) {
+                let newSeconds = prevState.seconds;
+                let newMinutes = prevState.minutes;
+
+                if (newSeconds === 0) {
+                    if (newMinutes === 0) {
+                        // todo should switch mode or stop
+                        // todo timer logic here
+                    } else {
+                        newMinutes--;
+                        newSeconds = 59;
+                    }
+                } else {
+                    newSeconds--;
+                }
+
+                return {
+                    ...prevState,
+                    minutes: newMinutes,
+                    seconds: newSeconds
+                };
+            } else {
+                return { ...prevState, isActive: !prevState.isActive };
+            }
+        });
     };
 
     const resetTimer = (newData) => {
-        setTimerData((prevData) => ({
-            ...prevData,
+        console.log(`Resetting timer with data: ${JSON.stringify(newData)}`);
+        setTimerData({
             ...newData,
-        }));
+            isActive: false
+        });
     };
 
     useEffect(() => {
         let interval;
 
-        if (timerData.isActive && timerData.minutes === 0 && timerData.seconds === 0) {
-            // TODO Timer has reached 0, add what happens when it's done
-        } else if (timerData.isActive) {
+        if (timerData.isActive) {
             interval = setInterval(() => {
-                if (timerData.seconds === 0) {
-                    if (timerData.minutes === 0) {
-                        
-                        clearInterval(interval);
-                        
-                    } else {
-                        resetTimer({ minutes: timerData.minutes - 1, seconds: 59 });
-                    }
-                } else {
-                    resetTimer({ seconds: timerData.seconds - 1 });
-                }
+                toggleTimer();
             }, 1000);
         } else {
             clearInterval(interval);
         }
-
         return () => clearInterval(interval);
-    }, [timerData]);
-
+    }, [timerData.isActive]);
+    
     const toggleTimerModal = () => {
         setTimerModalOpen(!isTimerModalOpen);
     };
-
-
+    
     return (
         <header>
           <Navbar className="navbar-expand-sm navbar-toggleable-sm ng-white border-bottom bg-white">
@@ -87,8 +97,10 @@ const NavMenu = () => {
                             style={{ cursor: 'pointer' }}
                             onClick={toggleTimerModal}
                         >
-                            <img src="/timer.png" alt="Pomodoro Icon" style={{ height: '40px' }} />
-                            <SimplePomodoroTimer timerData={timerData} />
+                            <div className="nav-timer-container">
+                                <SimplePomodoroTimer timerData={timerData}/>
+                                <img src="/timer.png" alt="Pomodoro Icon" style={{ height: '40px', marginLeft: '10px' }} />
+                            </div>
                         </NavLink>
                     </NavItem>
                 <LoginStatusNavbar></LoginStatusNavbar>

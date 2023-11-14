@@ -38,6 +38,11 @@
     color: #333;
 }
 
+.nav-timer-container {
+    display: flex;
+    align-items: center;
+}
+
 .pomodoro-container {
     max-width: 400px;
     margin: 0 auto;
