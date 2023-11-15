@@ -3,7 +3,7 @@ import ClipLoader from "react-spinners/PropagateLoader";
 function Loading() {
 
     return (
-        <div>
+        <div data-testid="spinner">
             <ClipLoader
                 loading={true}
                 color={"#aed683"}
