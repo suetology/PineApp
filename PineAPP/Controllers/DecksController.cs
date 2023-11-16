@@ -133,6 +133,8 @@ public class DecksController : ControllerBase
                 createDeckDto.IsPersonal, 
                 createDeckDto.CreatorId);
             
+            _logger.LogDebug("aaaaaaaaaaaaaaaaaa");
+            
             _decksRepository.Add(createNewDeck);
             await _decksRepository.SaveChangesAsync();
 

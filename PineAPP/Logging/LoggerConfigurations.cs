@@ -1,6 +1,6 @@
 namespace PineAPP.Exceptions;
 
-public class ErrorLoggerConfigurations
+public class LoggerConfigurations
 {
     public virtual string FileName { get; set; }
 }
