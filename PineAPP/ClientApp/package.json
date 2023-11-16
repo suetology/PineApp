@@ -36,6 +36,7 @@
   "devDependencies": {
     "@babel/preset-env": "^7.23.3",
     "@babel/preset-react": "^7.23.3",
+    "@testing-library/jest-dom": "^6.1.4",
     "@testing-library/react": "^14.1.0",
     "ajv": "^8.12.0",
     "babel": "^6.23.0",
@@ -52,7 +53,8 @@
     "nan": "^2.17.0",
     "node-fetch": "^3.3.2",
     "redux-mock-store": "^1.5.4",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "whatwg-fetch": "^3.6.19"
   },
   "jest": {
     "testEnvironment": "jsdom",

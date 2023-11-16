@@ -1,37 +1,55 @@
 ﻿import React from 'react';
 import { render, fireEvent, waitFor, waitForElementToBeRemoved  } from '@testing-library/react';
+import '@testing-library/jest-dom'
 import Browse from "../components/Browse";
 import { Provider } from "react-redux";
 import { store } from "../mocks/mockStore";
+import { BrowserRouter } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 
 beforeEach(() => {
-    // Create a mock token object with userId
     const mockToken = JSON.stringify({ userId: '0' });
   
-    // Mock sessionStorage.getItem to return the mock token for 'token'
     Storage.prototype.getItem = jest.fn((key) => {
       if (key === 'token') {
         return mockToken;
       }
       return null;
     });
+
   });
   
   afterEach(() => {
-    // Clear the mock
     jest.restoreAllMocks();
+    jest.resetAllMocks();
   });
   
 
+
+
+
 describe('Browse Component', () => {
   it("handles search input and fetches results", async () => {
-    // Mock global fetch here if necessary
+
+    global.fetch = jest.fn().mockImplementation((url) => {
+      if (url.includes('api/Decks/Search')) {
+          return Promise.resolve({
+              ok: true,
+              json: () => Promise.resolve([{id: 1, name: 'MockFirst', isPersonal: false}]),
+          });
+      }
+      return Promise.resolve({
+          ok: false,
+          status: 404,
+      });
+    });
 
     const { getByPlaceholderText, getByText, queryByTestId } = render(
-      <Provider store={store}>
+    <Provider store={store}>
+      <BrowserRouter>
         <Browse />
-      </Provider>
+      </BrowserRouter>
+    </Provider>
     );
     
 
@@ -42,20 +60,48 @@ describe('Browse Component', () => {
 
 
     // Simulate typing in the search input
-    // fireEvent.change(searchInput, { target: { value: 'test' } });
+    fireEvent.change(searchInput, { target: { value: 'First' } });
 
-    // // Simulate clicking the search button
-    // fireEvent.click(searchButton);
+    // Simulate clicking the search button
+    fireEvent.click(searchButton);
 
-    // // Use waitFor for asynchronous updates
-    // await waitFor(() => {
-    //   // Assert that the search results or loading spinner are displayed
-    //   // If loading spinner has a unique text or test-id, use that for assertion
-    //   // For example: expect(getByTestId('loading-spinner')).toBeInTheDocument();
-    //   // If you are expecting specific search results, assert for those
-    //   expect(getByText('Mock Deck')).toBeInTheDocument();
-    // });
+    await waitFor(() => {
+      expect(getByText('MockFirst')).toBeInTheDocument();
+    });
   });
 
-  // ... other tests
+  it("handles search errors", async () => {
+
+    global.fetch = jest.fn().mockImplementation((url) => {
+      if (url.includes('api/Decks/Search')) {
+        return Promise.resolve({
+          ok: false,
+          status: 404,
+        });
+      }
+      
+    });
+
+    const { getByPlaceholderText, getByText, queryByTestId } = render(
+    <Provider store={store}>
+      <BrowserRouter>
+        <Browse />
+      </BrowserRouter>
+    </Provider>
+    );
+    
+    const searchInput = getByPlaceholderText("Search decks by keyword");
+    const searchButton = getByText("Search");
+
+    // Simulate typing in the search input
+    fireEvent.change(searchInput, { target: { value: 'isToFail' } });
+
+    // Simulate clicking the search button
+    fireEvent.click(searchButton);
+
+    await waitFor(() => {
+      expect(getByText('No results found.')).toBeInTheDocument();
+    });
+
+  });
 });

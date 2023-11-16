@@ -48,6 +48,7 @@ const Browse = () => {
         return <Loading/>
     }
 
+
     const communityDecks = Object.values(decks).filter(deck => !deck.isPersonal);
     const personalDecks = Object.values(decks).filter(deck => deck.isPersonal);
     
@@ -66,6 +67,7 @@ const Browse = () => {
             setLoadingSearch(true);
             const response = await fetch(url + `api/Decks/Search/${searchKeyword}`);
 
+            
             if (response.ok) {
                 const data = await response.json();
                 setSearchResults(data);

@@ -4,8 +4,8 @@ import decksReducer from '../redux/decksSlice';
 
 
 const mockDecks = [
-  { id: 1, name: 'Mock Deck 1', isPersonal: false},
-  { id: 2, name: 'Mock Deck 2', isPersonal: true},
+  { id: 1, name: 'MockFirst', description: "a", isPersonal: false, creatorId: 0, cards: []},
+  { id: 2, name: 'MockSecond', description: "a", isPersonal: true, creatorId: 0, cards: []},
 ];
 
 export const store = configureStore({
@@ -21,8 +21,10 @@ decksApi.injectEndpoints({
   overrideExisting: true,
   endpoints: (builder) => ({
     getAllDecksById: builder.query({
-      queryFn: (creatorId) => ({ data: mockDecks.filter(deck => deck.creatorId === creatorId) }),
+      queryFn: (creatorId) => ({ data: mockDecks }),
     }),
-    // ...other endpoints
+    getDeckById: builder.query({
+      queryFn: (deckId) => ({ data: mockDecks.filter(deck => deck.id === deckId)})
+    }),
   }),
 });
