@@ -13,7 +13,7 @@ public class DecksRepository : Repository<Deck>, IDecksRepository
 
     public bool DeckExists(Deck deck)
     {
-        return _db.Decks.Any(d => d.Equals(deck));
+        return _db.Decks.Any(d => d.Name == deck.Name);
     }
 
     public Deck GetDeckByIdWithCards(int id)
