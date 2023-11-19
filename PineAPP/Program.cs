@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging.Configuration;
 using PineAPP.Controllers;
 using PineAPP.Data;
 using PineAPP.Exceptions;
+using PineAPP.Extensions;
+using PineAPP.Middleware;
 using PineAPP.Services;
 using PineAPP.Services.Repositories;
 using PineAPP.Services.Factories;
@@ -38,15 +40,19 @@ builder.Services.AddTransient<ICardFactory, CardFactory>();
 builder.Services.AddTransient<IUserFactory, UserFactory>();
 builder.Services.AddTransient<IDeckBuilderService, DeckBuilderService>();
 
-builder.Logging.AddErrorLogger(configuration =>
+builder.Logging.AddLogger(configuration =>
 {
-    builder.Configuration.GetSection("FileErrorLogger").Bind(configuration);
+    builder.Configuration.GetSection("FileLogger").Bind(configuration);
 });
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseRequestLogging();
+}
+else
 {
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();

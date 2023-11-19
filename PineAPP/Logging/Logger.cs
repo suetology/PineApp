@@ -1,12 +1,12 @@
 namespace PineAPP.Exceptions;
 
-public class ErrorLogger : ILogger
+public class Logger : ILogger
 {
-    private readonly ErrorLoggerProvider _errorLoggerProvider;
+    private readonly LoggerProvider _loggerProvider;
 
-    public ErrorLogger(ErrorLoggerProvider errorLoggerProvider)
+    public Logger(LoggerProvider loggerProvider)
     {
-        _errorLoggerProvider = errorLoggerProvider;
+        _loggerProvider = loggerProvider;
     }
 
     public IDisposable BeginScope<TState>(TState state)
@@ -33,13 +33,13 @@ public class ErrorLogger : ILogger
             
             try
             {
-                Monitor.Enter(_errorLoggerProvider.Writer);
-                _errorLoggerProvider.Writer.WriteLine(logEntry);
-                _errorLoggerProvider.Writer.Flush();
+                Monitor.Enter(_loggerProvider.Writer);
+                _loggerProvider.Writer.WriteLine(logEntry);
+                _loggerProvider.Writer.Flush();
             }
             finally
             {
-                Monitor.Exit(_errorLoggerProvider.Writer);
+                Monitor.Exit(_loggerProvider.Writer);
             }
         }));
         thread.Start();

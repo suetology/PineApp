@@ -3,12 +3,12 @@ using Microsoft.Extensions.Options;
 namespace PineAPP.Exceptions;
 
 [ProviderAlias("FileErrorLogger")]
-public class ErrorLoggerProvider : ILoggerProvider
+public class LoggerProvider : ILoggerProvider
 {
-    public readonly ErrorLoggerConfigurations Config;
+    public readonly LoggerConfigurations Config;
     public readonly StreamWriter Writer;
     
-    public ErrorLoggerProvider(IOptions<ErrorLoggerConfigurations> config, IWebHostEnvironment hostingEnvironment)
+    public LoggerProvider(IOptions<LoggerConfigurations> config, IWebHostEnvironment hostingEnvironment)
     {
         Config = config.Value;
         Config.FileName = Path.Combine(hostingEnvironment.ContentRootPath, Config.FileName);
@@ -24,6 +24,6 @@ public class ErrorLoggerProvider : ILoggerProvider
 
     public ILogger CreateLogger(string categoryName)
     {
-        return new ErrorLogger(this);
+        return new Logger(this);
     }
 }
