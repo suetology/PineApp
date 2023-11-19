@@ -50,6 +50,8 @@ const Create = () => {
 
         dispatch(setDecks({[id]: {...decks[id], name: deck.name, description: deck.description}}));
     }
+
+
     
     if (deckData.isLoading)
         return(<div>Loading...</div>);
@@ -60,14 +62,16 @@ const Create = () => {
             acc[deck.id] = deck;
             return acc;
         }, {});
+        console.log(formatted);
         dispatch(setDecks(formatted));
+
+        setDeck(formatted[id]);
 
         return(<div>Loading...</div>); 
     }
-    
-    if (!deck) {
-        setDeck(decks[id]);
-        return(<div>Loading...</div>);
+   
+    if (!deck){
+        return(<div>Loading...</div>); 
     }
     
     const name =
