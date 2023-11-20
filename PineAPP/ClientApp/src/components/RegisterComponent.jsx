@@ -16,15 +16,6 @@ const RegisterComponent = () => {
     const refUserNameInput = useRef(null);
     const navigate = useNavigate();
 
-    const isUser = (userObject) => {
-        return (
-            Object.hasOwn(userObject, 'userId') &&
-            Object.hasOwn(userObject, 'userName') &&
-            Object.hasOwn(userObject, 'email') &&
-            Object.hasOwn(userObject, 'password')
-        );
-    };
-
     // error messages
     const [errorUsername, setErrorUsername] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
@@ -70,7 +61,7 @@ const RegisterComponent = () => {
 
         try {
             const user = await postUser(createUserDto);
-            if (isUser(user)) {
+            if (user.ok) {
                 console.log("User created!");
                 sessionStorage.setItem('token', JSON.stringify(user));
                 navigate('/browse');

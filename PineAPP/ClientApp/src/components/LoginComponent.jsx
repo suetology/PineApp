@@ -2,7 +2,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, NavLink, Input, Label, Col, Container } from 'reactstrap';
-import { useGetUserByEmailQuery } from "../api/usersApi";
 
 const LoginComponent = () => {
 
@@ -74,6 +73,7 @@ const LoginComponent = () => {
                 ></Input>
                 <h6 style={{ color: authMessageColor }}>{authMessage}</h6>
                 <Button 
+                    data-testid="login-button"
                     className="yellow-button"
                     onClick={() => authenticateUser(refEmailInput.current.value, refPasswordInput.current.value, refPasswordInput)}>
                 Login</Button> <br />
