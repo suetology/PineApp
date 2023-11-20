@@ -1,4 +1,5 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿import React from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, NavLink, Input, Label, Col, Container } from 'reactstrap';
 import { useGetUserByEmailQuery } from "../api/usersApi";
@@ -16,8 +17,7 @@ const LoginComponent = () => {
 
     // Navigate to "/browse if already logged in"
     useEffect(() => {
-        if (
-            sessionStorage.getItem('token')) {
+        if (sessionStorage.getItem('token')) {
             navigate("/browse");
         }
     }, []);
@@ -35,7 +35,7 @@ const LoginComponent = () => {
     const authenticateUser = async (email, password, a) => {
         const user = await getUserByEmail(email);
 
-        if (user === null) {
+        if (!user) {
             setAuthMessage("Incorrect email.");
             setAuthMessageColor("red");
         } else if (password === user.password) {
