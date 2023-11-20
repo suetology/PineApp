@@ -71,6 +71,7 @@ const Create = () => {
     }
    
     if (!deck){
+        setDeck(decks[id]);
         return(<div>Loading...</div>); 
     }
     
