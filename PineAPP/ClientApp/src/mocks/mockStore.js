@@ -26,5 +26,16 @@ decksApi.injectEndpoints({
     getDeckById: builder.query({
       queryFn: (deckId) => ({ data: mockDecks.filter(deck => deck.id === deckId)})
     }),
+    addDeck : builder.mutation({
+      queryFn : ({Name, IsPersonal, CreatorId, Description}) => ({
+          data: {
+              id: 0,
+              Name,
+              IsPersonal,
+              CreatorId,
+              Description,
+          }
+      }),
+    }),
   }),
 });

@@ -71,10 +71,10 @@ const CreateDeck = () => {
                 <Form onSubmit={handleAddDeck}>
                     <div>
                         <h1>Create new deck</h1>
-                        <label>Name</label>
-                        <Input value = {name} onChange = {handleNameChange}></Input>
-                        <label>Description</label>
-                        <Input value = {description} onChange = {handleDescriptionChange} type="textarea"></Input>
+                        <label htmlFor="deckName">Name</label>
+                        <Input id="deckName" value = {name} onChange = {handleNameChange}></Input>
+                        <label htmlFor="deckDescription">Description</label>
+                        <Input id="deckDescription" value={description} onChange={handleDescriptionChange} type="textarea" />
                     </div>
                     <div>
                         <label>What type of deck are you creating?</label>
