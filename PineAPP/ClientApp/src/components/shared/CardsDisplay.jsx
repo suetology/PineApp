@@ -80,7 +80,7 @@ const CardsDisplay = (props) => {
                         />
                     </Col>
                     <img onClick={() => handleDelete(card.id)} src="/trash.svg" className="btn" alt="delete" style={{cursor: "pointer"}}/>
-                    <img onClick={() => handleUpdateCard(card.id, i)} style={{cursor: "pointer", height: "12pt"}} className="m-2" src="/check.svg" alt="save"/>
+                    <img onClick={() => handleUpdateCard(card.id, i)} style={{cursor: "pointer", height: "12pt"}} className="m-2" src="/check.svg" alt="save" data-testid={`save-button-${i}`}/>
                 </AccordionBody>
             </AccordionItem>
         ));

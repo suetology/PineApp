@@ -4,8 +4,7 @@ import { useState, useEffect } from 'react';
 import { useAddDeckMutation} from '../api/decksApi';
 import { useNavigate } from 'react-router-dom';
 import {FileUpload} from "./FileUpload";
-import LoginComponent from "./LoginComponent"
-import {useDispatch, useSelector} from "react-redux";
+import {useDispatch} from "react-redux";
 import {setDecks} from "../redux/decksSlice";
 
 const CreateDeck = () => {

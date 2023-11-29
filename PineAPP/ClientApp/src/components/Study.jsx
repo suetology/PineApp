@@ -12,7 +12,6 @@ const Study = () => {
 
     const { id } = useParams();
     const [isFlipped, setFlipped] = useState(false);
-    const [isEditing, setEditing] = useState(false);
     const [isCompleted, setCompleted] = useState(false);
     const [isLoading, setLoading] = useState(true);
     const [index, setIndex] = useState(0);
@@ -47,16 +46,6 @@ const Study = () => {
         setFlipped(!isFlipped);
     };
 
-    const handleSave = () => {
-        setEditing(false);
-    };
-
-    const handleChange = (type, newValue) => {
-        const newCard = [...cards];
-        newCard[index] = { ...newCard[index], [type]: newValue };
-        setCards(newCard);
-    };
-
     const handleCorrectClick = () => {
         dispatch(incrementCorrectAnswers());
         setFlipped(false);
@@ -75,14 +64,8 @@ const Study = () => {
         }, 100);
     };
     
-    let cardFrontContent = isEditing
-        ? (
-            <div className="card-face card-front">
-                <Input className="fw-bold mb-2" value={cards[index].front} onChange={(e) => handleChange('front', e.target.value)} />
-                <Button onClick={handleSave}>Save</Button>
-            </div>
-        )
-        : (
+    let cardFrontContent = 
+        (
             <div className="card-face card-front">
                 <div className="card-content-container">
                     <h2 className="fw-bold mb-2">{cards[index].front}</h2>
@@ -91,15 +74,8 @@ const Study = () => {
             </div>
         );
 
-    let cardBackContent = isEditing
-        ? (
-            <div className="card-face card-back">
-                <Input value={cards[index].back} type="textarea" onChange={(e) => handleChange('back', e.target.value)} />
-                <Input value={cards[index].examples} type="textarea" onChange={(e) => handleChange('examples', e.target.value)} />
-                <Button onClick={handleSave}>Save</Button>
-            </div>
-        )
-        : (
+    let cardBackContent =
+        (
             <div className="card-face card-back">
                 <h2 className="fw-bold mb-2">{cards[index].back}</h2>
                 <p>{cards[index].examples}</p>
@@ -117,12 +93,12 @@ const Study = () => {
 
     return (
         <Row className="h-75 justify-content-center align-items-center pt-2">
-            {/* Progress Tracker */}
             <Col md={8} sm={10} className="d-flex justify-content-center">
                 {cardProgress}
             </Col>
             <Col id="card-container" md={8} sm={10}>
                 <div
+                    data-testid="card"
                     id="card"
                     className={`h-100 ${isFlipped ? 'flipped' : ''}`}
                     onClick={handleCardClick}

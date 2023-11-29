@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent, waitFor, getByLabelText, getByDisplayValue } from '@testing-library/react';
+import { render, fireEvent, waitFor, screen } from '@testing-library/react';
 import '@testing-library/jest-dom'
 import CreateDeck from '../components/CreateDeck';
 import { Provider } from "react-redux";
@@ -8,9 +8,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'), // This line preserves other exports
-  useNavigate: jest.fn() // Mock implementation of useNavigate
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: jest.fn()
 }));
+
 
 beforeEach(() => {
   const mockToken = JSON.stringify({ userId: '0' });
@@ -83,8 +84,35 @@ describe('CreateDeck Component', () => {
   
     await waitFor(() => {
         expect(mockNavigate).toHaveBeenCalledWith('/browse');
-      });
+    });
 
+  });
+
+  it('handles file selection', () => {
+    const { getByTestId, getByText } = renderComponent();
+    const input = getByTestId("file-input");
+    const file = new File(['hello'], 'hello.png', { type: 'image/png' });
+  
+    fireEvent.change(input, { target: { files: [file] } });
+    expect(input.files[0]).toBe(file);
+
+    const uploadButton = getByText("Upload");
+
+    fireEvent.click(uploadButton);
+
+    expect(screen.queryByText('Error uploading file')).toBeNull();
+  });
+
+  it('handles wrong upload', () => {
+    const { getByTestId, getByText } = renderComponent();
+    const input = getByTestId("file-input");
+    const uploadButton = getByText("Upload");
+
+    fireEvent.change(input, { target: { files: [] } });
+
+    fireEvent.click(uploadButton);
+
+    expect(getByText("Error uploading file")).toBeInTheDocument();
   });
 
 });

@@ -39,7 +39,7 @@ export const FileUpload = () => {
     return (
         <div>
             <div>
-                <input className="mt-4" type="file" onChange={handleFileChange} ref={fileInputRef}/>
+                <input className="mt-4" type="file" onChange={handleFileChange} ref={fileInputRef} data-testid="file-input"/>
                 <Button onClick={handleUpload}>Upload</Button>
             </div>
             <div>{isSuccess ? "" : errorMsg}</div>
