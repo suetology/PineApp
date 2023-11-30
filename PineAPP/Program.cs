@@ -9,6 +9,7 @@ using PineAPP.Middleware;
 using PineAPP.Services;
 using PineAPP.Services.Repositories;
 using PineAPP.Services.Factories;
+using PineAPP.Services.Interceptors;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,9 +31,21 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDbConnection"));
 });
 
-builder.Services.AddTransient<IDecksRepository, DecksRepository>();
-builder.Services.AddTransient<IUsersRepository, UsersRepository>();
-builder.Services.AddTransient<ICardsRepository, CardsRepository>();
+
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddSingleton<PerformanceMetricsInterceptor>();
+    builder.Services.AddInterceptedTransient<IDecksRepository, DecksRepository>();
+    builder.Services.AddInterceptedTransient<IUsersRepository, UsersRepository>();
+    builder.Services.AddInterceptedTransient<ICardsRepository, CardsRepository>();
+}
+else
+{
+    builder.Services.AddTransient<IDecksRepository, DecksRepository>();
+    builder.Services.AddTransient<IUsersRepository, UsersRepository>();
+    builder.Services.AddTransient<ICardsRepository, CardsRepository>();
+}
+
 builder.Services.AddTransient<IUserValidationService, UserValidationService>();
 builder.Services.AddTransient<IDeckValidationService, DeckValidationService>();
 builder.Services.AddTransient<IDeckFactory, DeckFactory>();
