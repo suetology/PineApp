@@ -46,12 +46,17 @@ else
     builder.Services.AddTransient<ICardsRepository, CardsRepository>();
 }
 
+builder.Services.AddHttpClient<NotificationClient>();
+
 builder.Services.AddTransient<IUserValidationService, UserValidationService>();
 builder.Services.AddTransient<IDeckValidationService, DeckValidationService>();
 builder.Services.AddTransient<IDeckFactory, DeckFactory>();
 builder.Services.AddTransient<ICardFactory, CardFactory>();
 builder.Services.AddTransient<IUserFactory, UserFactory>();
 builder.Services.AddTransient<IDeckBuilderService, DeckBuilderService>();
+builder.Services.AddSingleton<INotificationClient, NotificationClient>();
+
+
 
 builder.Logging.AddLogger(configuration =>
 {
