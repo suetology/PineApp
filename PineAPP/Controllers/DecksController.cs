@@ -18,17 +18,20 @@ public class DecksController : ControllerBase
     private readonly IDecksRepository _decksRepository;
     private readonly IDeckFactory _deckFactory;
     private readonly IDeckValidationService _deckValidationService;
+    private readonly INotificationClient _notificationClient;
 
     public DecksController(
         ILogger<DecksController> logger, 
         IDecksRepository decksRepository,
         IDeckFactory deckFactory,
-        IDeckValidationService deckValidationService)
+        IDeckValidationService deckValidationService,
+        INotificationClient notificationClient)
     {
         _logger = logger;
         _decksRepository = decksRepository;
         _deckFactory = deckFactory;
         _deckValidationService = deckValidationService;
+        _notificationClient = notificationClient;
     }
 
     [HttpGet]
@@ -133,12 +136,12 @@ public class DecksController : ControllerBase
                 createDeckDto.IsPersonal, 
                 createDeckDto.CreatorId);
             
-            _logger.LogDebug("aaaaaaaaaaaaaaaaaa");
-            
             _decksRepository.Add(createNewDeck);
             await _decksRepository.SaveChangesAsync();
 
-            //return CreatedAtRoute("GetDeck", new { deckId = createNewDeck.Id }, createNewDeck);
+            if (!createNewDeck.IsPersonal)
+                await _notificationClient.SendNotification("The new " + createNewDeck.Name + " deck is created. Check it out!");
+
             return Ok(createNewDeck);
         }
         catch (Exception e)
