@@ -140,7 +140,7 @@ public class DecksController : ControllerBase
             await _decksRepository.SaveChangesAsync();
 
             if (!createNewDeck.IsPersonal)
-                await _notificationClient.SendNotification("The new " + createNewDeck.Name + " is created. Check it out!");
+                await _notificationClient.SendNotification("The new " + createNewDeck.Name + " deck is created. Check it out!");
 
             return Ok(createNewDeck);
         }

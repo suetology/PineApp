@@ -1,4 +1,6 @@
-﻿namespace PineAPP.Services;
+﻿using System.Text;
+
+namespace PineAPP.Services;
 
 public class NotificationClient : INotificationClient
 {
@@ -12,7 +14,7 @@ public class NotificationClient : INotificationClient
 
     public async Task SendNotification(string message)
     {
-        var content = new StringContent(message);
+        var content = new StringContent("\"" + message + "\"", Encoding.UTF8, "application/json");
         await _httpClient.PostAsync(_url, content);
     }
 }
